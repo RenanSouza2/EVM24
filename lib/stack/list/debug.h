@@ -6,4 +6,6 @@
 #ifdef DEBUG
 #endif
 
+stack_l_p s_list_create(stack_l_p sl_next, word_t w);
+
 #endif
