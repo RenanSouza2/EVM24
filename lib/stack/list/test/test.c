@@ -2,9 +2,9 @@
 #include <assert.h>
 
 #include "../debug.h"
-#include "../../../utils/clu/bin/header.h"
+#include "../../../../utils/clu/bin/header.h"
 
-void test_stack()
+void test_stack_list()
 {
     printf("\n%s\t\t", __func__);
 
@@ -15,7 +15,7 @@ void test_stack()
 int main() 
 {
     setbuf(stdout, NULL);
-    test_stack();
+    test_stack_list();
     printf("\n\n\tTest successful\n\n");
     return 0;
 }

@@ -1,24 +1,39 @@
-FLAGS = -c -Wall -Werror -Wfatal-errors
+DIRS := $(wildcard */.)
 
-LIB_ROOT = ..
-DIR = $(shell basename $(CURDIR))
+LIB_FILES = $(foreach DIR,$(DIRS),$(dir $(DIR))lib.o)
+DGB_FILES = $(foreach DIR,$(DIRS),$(dir $(DIR))debug.o)
 
 build: lib.o
 
-lib.o: code.c
-	echo "Building $(DIR) object"
-	gcc -o $@ $^ $(FLAGS)
 
-debug.o: code.c
-	echo "Building $(DIR) debug"
-	gcc -o $@ $^ $(FLAGS) -D DEBUG
 
+lib.o: $(LIB_FILES)
+	ld -r -o $@ $^
+	
+debug.o: $(DGB_FILES)
+	ld -r -o $@ $^
+
+
+
+.PHONY: $(LIB_FILES)
+$(LIB_FILES):
+	$(MAKE) --directory=$(dir $@)
+
+.PHONY: $(DGB_FILES)
+$(DGB_FILES):
+	$(MAKE) debug.o --directory=$(dir $@)
+
+
+
+.PHONY: clean c
 clean c:
-	rm -f *.o
-	$(MAKE) clean --directory=test
+	rm -rf *.o
+	for DIR in $(DIRS) ; do \
+		( $(MAKE) clean --directory=$$DIR ) || exit $$? ; \
+	done
 
 .PHONY: test t
 test t:
-	$(MAKE) --directory=test
-
-export
+	for DIR in $(DIRS) ; do \
+		( $(MAKE) test --directory=$$DIR ) || exit $$? ; \
+	done

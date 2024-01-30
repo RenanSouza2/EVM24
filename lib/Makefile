@@ -2,7 +2,7 @@ DIRS := $(wildcard */.)
 
 LIB_FILES = $(foreach DIR,$(DIRS),$(dir $(DIR))lib.o)
 DGB_FILES = $(foreach DIR,$(DIRS),$(dir $(DIR))debug.o)
-MEM_FILE = ../utils/clu/bin/bin.o
+CLU_FILE = ../utils/clu/bin/bin.o
 
 build: lib.o
 
@@ -11,7 +11,7 @@ build: lib.o
 lib.o: $(LIB_FILES)
 	ld -r -o $@ $^
 	
-debug.o: $(DGB_FILES) $(MEM_FILE)
+debug.o: $(DGB_FILES) $(CLU_FILE)
 	ld -r -o $@ $^
 
 
@@ -24,8 +24,8 @@ $(LIB_FILES):
 $(DGB_FILES):
 	$(MAKE) debug.o --directory=$(dir $@)
 
-.PHONY: $(MEM_FILE)
-$(MEM_FILE):
+.PHONY: $(CLU_FILE)
+$(CLU_FILE):
 	$(MAKE) --directory=$(dir $@)
 
 
