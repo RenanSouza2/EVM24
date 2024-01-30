@@ -4,9 +4,19 @@
 #include "../debug.h"
 #include "../../../utils/clu/bin/header.h"
 
+void test_word_size()
+{
+    printf("\n\t%s\t\t", __func__);
+    
+    assert(sizeof(word_t) == 32);
+}
+
+
 void test_word()
 {
     printf("\n%s\t\t", __func__);
+
+    test_word_size();
 
     assert(mem_empty());
 }
