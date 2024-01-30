@@ -4,7 +4,7 @@ LIB = lib
 run:
 	$(MAKE) --directory=$(SRC) 
 
-build:
+build b:
 	$(MAKE) build --directory=$(SRC)
 	
 clean c:
