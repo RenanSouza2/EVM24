@@ -4,9 +4,6 @@
 #include "struct.h"
 
 #ifdef DEBUG
-
-void hello_debug();
-
 #endif
 
 #endif
