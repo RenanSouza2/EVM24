@@ -1,5 +1,5 @@
-#ifndef __EXAMPLE_STRUCT_H__
-#define __EXAMPLE_STRUCT_H__
+#ifndef __WORD_STRUCT_H__
+#define __WORD_STRUCT_H__
 
 #include "header.h"
 
