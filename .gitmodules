@@ -1,0 +1,3 @@
+[submodule "utils/clu"]
+	path = utils/clu
+	url = https://github.com/RenanSouza2/clu.git
