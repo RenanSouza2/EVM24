@@ -1,6 +1,6 @@
-#ifndef __EXAMPLE_H__
-#define __EXAMPLE_H__
+#ifndef __STACK_HEAD_H__
+#define __STACK_HEAD_H__
 
-#include "../../utils/struct.h"
+#include "../../../utils/struct.h"
 
 #endif

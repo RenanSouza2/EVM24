@@ -12,12 +12,12 @@ void test_stack_list_create()
     printf("\n\t%s\t\t", __func__);
 
     word_t w = WORD(4, 3, 2, 1);
-    stack_l_p sl = stack_l_create((stack_l_p)1, w);
+    stack_l_p sl = stack_l_create((stack_l_p)1, &w);
     assert(sl->sl == (stack_l_p)1);
     assert(word_immed(w, 4, 3, 2, 1));
     free(sl);
 
-    sl = stack_l_create(NULL, w);
+    sl = stack_l_create(NULL, &w);
     assert(sl->sl == NULL);
     free(sl);
 
@@ -29,7 +29,7 @@ void test_stack_list_pop()
     printf("\n\t%s\t\t", __func__);
 
     word_t w = WORD(4, 3, 2, 1);
-    stack_l_p sl = stack_l_create((stack_l_p)1, w);
+    stack_l_p sl = stack_l_create((stack_l_p)1, &w);
     sl = stack_l_pop(sl);
     assert(sl == (stack_l_p)1);
 

@@ -3,4 +3,6 @@
 
 #include "../../utils/struct.h"
 
+PLACEHOLDER(word);
+
 #endif
