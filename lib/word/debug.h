@@ -9,6 +9,7 @@
 
 #define WORD(V3, V2, V1, V0) ((word_t){{V0, V1, V2, V3}})
 
+void word_display(word_t w);
 bool word_immed(word_t w, u64 v3, u64 v2, u64 v1, u64 v0);
 
 #endif

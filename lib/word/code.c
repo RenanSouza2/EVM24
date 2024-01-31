@@ -7,6 +7,13 @@
 
 #include "../../utils/clu/bin/header.h"
 
+void word_display(word_t w)
+{
+    printf("0x");
+    for(int i=V_MAX-1; i>=0; i--)
+        printf("%lx", w.v[i]);
+}
+
 bool word_immed(word_t w, u64 v3, u64 v2, u64 v1, u64 v0)
 {
     word_t w_exp = WORD(v3, v2, v1, v0);
