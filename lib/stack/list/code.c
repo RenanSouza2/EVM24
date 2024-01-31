@@ -9,11 +9,19 @@
 
 #endif
 
-s_list_p s_list_create(s_list_p sl_next, word_t w)
+stack_l_p stack_l_create(stack_l_p sl_next, word_t w)
 {
-    s_list_p sl = malloc(sizeof(s_list_t));
+    stack_l_p sl = malloc(sizeof(stack_l_t));
     assert(sl);
 
-    *sl = (s_list_t){sl_next, w};
+    *sl = (stack_l_t){sl_next, w};
     return sl;
+}
+
+stack_l_p stack_l_pop(stack_l_p sl)
+{
+    assert(sl);
+    stack_l_p sl_next = sl->sl;
+    free(sl);
+    return sl_next;
 }

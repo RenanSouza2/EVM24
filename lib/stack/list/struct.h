@@ -6,9 +6,9 @@
 
 #define S_MAX 1024
 
-STRUCT(s_list)
+STRUCT(stack_l)
 {
-    s_list_p sl;
+    stack_l_p sl;
     word_t w;
 };
 
