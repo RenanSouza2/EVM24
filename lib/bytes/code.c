@@ -49,3 +49,8 @@ void bytes_free(bytes_t b)
 {
     if(b.v) free(b.v);
 }
+
+uchar bytes_access(bytes_t b, int i)
+{
+    return i < b.size ? b.v[i] : 0;
+}

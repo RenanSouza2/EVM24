@@ -5,6 +5,8 @@
 #include "../debug.h"
 #include "../../../utils/clu/bin/header.h"
 
+
+
 void test_bytes_cton()
 {
     printf("\n\t%s\t\t", __func__);
@@ -93,15 +95,36 @@ void test_bytes_init_immed()
     assert(mem_empty());
 }
 
+void test_bytes_access()
+{
+    printf("\n\t%s\t\t", __func__);
+
+    bytes_t b = bytes_init_immed("0x000102030405060708090a0b0c0d0e0f");
+    for(int i=0; i<16; i++)
+        assert(bytes_access(b, i) == i);
+        
+    assert(bytes_access(b, 16) == 0);
+    bytes_free(b);
+
+    b = bytes_init_immed("0x");
+    assert(bytes_access(b, 0) == 0);
+
+    assert(mem_empty());
+}
+
+
+
 void test_bytes()
 {
     printf("\n%s\t\t", __func__);
 
     test_bytes_cton();
     test_bytes_init_immed();
+    test_bytes_access();
 
     assert(mem_empty());
 }
+
 
 
 int main() 
