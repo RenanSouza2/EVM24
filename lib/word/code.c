@@ -40,11 +40,11 @@ void word_add_immed(word_p w, int i, u64 v)
         word_add_immed(w, i+1, 1);
 }
 
-word_t word_add(word_t w1, word_t w2)
+word_t word_add(word_p w1, word_p w2)
 {
-    word_t w = w1;
+    word_t w = *w1;
     for(int i=0; i<V_MAX; i++)
-        word_add_immed(&w, i, w2.v[i]);
+        word_add_immed(&w, i, w2->v[i]);
 
     return w;
 }
