@@ -4,6 +4,13 @@
 #include "struct.h"
 
 #ifdef DEBUG
+
+uchar cton(uchar c);
+bytes_t bytes_init_immed(char str[]);
+
 #endif
+
+bytes_t bytes_init(uchar b[], int size);
+void bytes_free(bytes_t b);
 
 #endif

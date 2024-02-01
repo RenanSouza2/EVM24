@@ -3,4 +3,12 @@
 
 #include "header.h"
 
+typedef unsigned char uchar;
+
+STRUCT(bytes)
+{
+    uchar *v;
+    int size;
+};
+
 #endif
