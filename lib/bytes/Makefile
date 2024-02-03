@@ -9,8 +9,16 @@ lib.o: code.c
 	echo "Building $(DIR) object"
 	gcc -o $@ $^ $(FLAGS)
 
-debug.o: code.c
-	echo "Building $(DIR) debug"
+debug.o: debug_core.o debug_debug.o
+	echo "Linking $(DIR) debug"
+	ld -r -o $@ $^
+
+debug_core.o: code.c
+	echo "Building $(DIR) debug core"
+	gcc -o $@ $^ $(FLAGS) -D DEBUG
+
+debug_debug.o: debug.c
+	echo "Building $(DIR) debug core"
 	gcc -o $@ $^ $(FLAGS) -D DEBUG
 
 clean c:
