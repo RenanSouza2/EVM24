@@ -2,8 +2,7 @@
 #define __BYTES_STRUCT_H__
 
 #include "header.h"
-
-typedef unsigned char uchar;
+#include "../utils/types.h"
 
 STRUCT(bytes)
 {

@@ -62,6 +62,35 @@ void test_word_add_immed()
     assert(mem_empty());
 }
 
+void test_word_set_bytes()
+{
+    printf("\n\t%s\t\t", __func__);
+    
+    word_t w = WORD(0, 0, 0, 0);
+    word_set_byte(&w, 0, 0xff);
+    assert(word_immed(w, 0, 0, 0, 0xff));
+
+    w = WORD(0, 0, 0, 0);
+    word_set_byte(&w, 1, 0xff);
+    assert(word_immed(w, 0, 0, 0, 0xff00));
+
+    w = WORD(0, 0, 0, 0);
+    word_set_byte(&w, 7, 0xff);
+    assert(word_immed(w, 0, 0, 0, U64_FF));
+
+    w = WORD(0, 0, 0, 0);
+    word_set_byte(&w, 8, 0xff);
+    assert(word_immed(w, 0, 0, 0xff, 0));
+
+    w = WORD(0, 0, 0, 0);
+    word_set_byte(&w, 31, 0xff);
+    assert(word_immed(w, U64_FF, 0, 0, 0));
+
+    assert(mem_empty());
+}
+
+
+
 void test_word_add()
 {
     printf("\n\t%s\t\t", __func__);
@@ -93,6 +122,7 @@ void test_word()
     test_word_size();
     test_word_eq_bool();
     test_word_add_immed();
+    test_word_set_bytes();
     test_word_add();
 
     assert(mem_empty());
