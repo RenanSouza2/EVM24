@@ -7,9 +7,6 @@
 #ifdef DEBUG
 #endif
 
-mem_t mem_init();
-void mem_free(mem_t m);
-
 word_t mem_get_word(mem_p m, int i);
 void mem_set_word(mem_p m, int i, word_p w);
 

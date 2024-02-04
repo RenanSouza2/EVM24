@@ -10,6 +10,6 @@ STRUCT(stack)
     int count;
 };
 
-stack_t stack_initialize();
+stack_t stack_init();
 
 #endif

@@ -6,4 +6,7 @@
 
 typedef bytes_t mem_t;
 
+mem_t mem_init();
+void mem_free(mem_t m);
+
 #endif

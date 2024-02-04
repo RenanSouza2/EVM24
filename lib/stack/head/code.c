@@ -48,7 +48,7 @@ bool stack_push_immed(stack_p s, word_t w)
 
 #endif
 
-stack_t stack_initialize()
+stack_t stack_init()
 {
     return (stack_t){NULL, 0};
 }

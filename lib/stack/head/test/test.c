@@ -7,11 +7,11 @@
 
 
 
-void test_stack_initialize()
+void test_stack_init()
 {
     printf("\n\t%s\t\t", __func__);
 
-    stack_t s = stack_initialize();
+    stack_t s = stack_init();
     assert(stack(s, 0) == true);
 
     assert(mem_empty());
@@ -23,7 +23,7 @@ void test_stack_push()
 
     printf("\n\t\t%s 1\t\t", __func__);
     word_t w1 = WORD(4, 3, 2, 1);
-    stack_t s = stack_initialize();
+    stack_t s = stack_init();
     assert(stack_push(&s, &w1) == true);
     assert(stack(s, 1, w1));
 
@@ -34,7 +34,7 @@ void test_stack_push()
     stack_free(&s);
 
     printf("\n\t\t%s 3\t\t", __func__);
-    s = stack_initialize();
+    s = stack_init();
     word_t w = WORD(0, 0, 0, 0);
     for(int i=0; i<1024; i++)
         assert(stack_push(&s, &w) == true);
@@ -49,7 +49,7 @@ void test_stack_pop()
     printf("\n\t%s\t\t", __func__);
 
     word_t w = WORD(0, 0, 0, 0);
-    stack_t s = stack_initialize();
+    stack_t s = stack_init();
     assert(stack_pop(&w, &s) == false);
 
     assert(stack_push_immed(&s, WORD(4, 3, 2, 1)) == true);
@@ -75,7 +75,7 @@ void test_stack()
 {
     printf("\n%s\t\t", __func__);
 
-    test_stack_initialize();
+    test_stack_init();
     test_stack_push();
     test_stack_pop();
 
