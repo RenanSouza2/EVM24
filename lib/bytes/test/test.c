@@ -39,49 +39,49 @@ void test_bytes_init_immed()
     assert(b.size == 1);
     assert(b.v);
     assert(b.v[0] == 0);
-    bytes_free(b);
+    bytes_free(&b);
 
     printf("\n\t\t%s  3\t\t", __func__);
     b = bytes_init_immed("0x01");
     assert(b.size == 1);
     assert(b.v);
     assert(b.v[0] == 1);
-    bytes_free(b);
+    bytes_free(&b);
 
     printf("\n\t\t%s  4\t\t", __func__);
     b = bytes_init_immed("0x0f");
     assert(b.size == 1);
     assert(b.v);
     assert(b.v[0] == 15);
-    bytes_free(b);
+    bytes_free(&b);
 
     printf("\n\t\t%s  5\t\t", __func__);
     b = bytes_init_immed("0x10");
     assert(b.size == 1);
     assert(b.v);
     assert(b.v[0] == 16);
-    bytes_free(b);
+    bytes_free(&b);
 
     printf("\n\t\t%s  6\t\t", __func__);
     b = bytes_init_immed("0x80");
     assert(b.size == 1);
     assert(b.v);
     assert(b.v[0] == 128);
-    bytes_free(b);
+    bytes_free(&b);
 
     printf("\n\t\t%s  7\t\t", __func__);
     b = bytes_init_immed("0xf0");
     assert(b.size == 1);
     assert(b.v);
     assert(b.v[0] == 240);
-    bytes_free(b);
+    bytes_free(&b);
 
     printf("\n\t\t%s  8\t\t", __func__);
     b = bytes_init_immed("0xff");
     assert(b.size == 1);
     assert(b.v);
     assert(b.v[0] == 255);
-    bytes_free(b);
+    bytes_free(&b);
 
     printf("\n\t\t%s  9\t\t", __func__);
     b = bytes_init_immed("0x0000");
@@ -89,7 +89,7 @@ void test_bytes_init_immed()
     assert(b.v);
     assert(b.v[0] == 0);
     assert(b.v[1] == 0);
-    bytes_free(b);
+    bytes_free(&b);
 
     printf("\n\t\t%s 10\t\t", __func__);
     b = bytes_init_immed("0x1234");
@@ -97,7 +97,7 @@ void test_bytes_init_immed()
     assert(b.v);
     assert(b.v[0] == 18);
     assert(b.v[1] == 52);
-    bytes_free(b);
+    bytes_free(&b);
 
     assert(mem_empty());
 }
@@ -116,14 +116,14 @@ void test_bytes_expand()
     bytes_expand(&b, 0);
     assert(b.size == 0);
     assert(b.v == NULL);
-    bytes_free(b);
+    bytes_free(&b);
 
     b = bytes_init_immed("0xff");
     bytes_expand(&b, 2);
     assert(b.size == 2);
     assert(b.v[0] == 0xff);
     assert(b.v[1] == 0x00);
-    bytes_free(b);
+    bytes_free(&b);
 
     assert(mem_empty());
 }
@@ -136,7 +136,7 @@ void test_bytes_get_byte()
     for(int i=0; i<32; i++)
         assert(bytes_get_byte(&b, i) == i);
     assert(bytes_get_byte(&b, 64) == 0);
-    bytes_free(b);
+    bytes_free(&b);
 
     b = bytes_init_immed("0x");
     assert(bytes_get_byte(&b, 0) == 0);
@@ -164,7 +164,7 @@ void test_bytes_set_byte()
     assert(b.size == 3);
     assert(b.v);
     assert(b.v[0] == 0xfe);
-    bytes_free(b);
+    bytes_free(&b);
 
     assert(mem_empty());
 }
@@ -176,7 +176,7 @@ void test_bytes_get_word()
     bytes_t b = bytes_init_immed("0x");
     word_t w = bytes_get_word(&b, 0);
     assert(word_immed(w, 0, 0, 0, 0));
-    bytes_free(b);
+    bytes_free(&b);
 
     b = bytes_init_immed("0x");
     bytes_set_byte(&b, 0, 0xff);
@@ -185,7 +185,7 @@ void test_bytes_get_word()
 
     w = bytes_get_word(&b, 1);
     assert(word_immed(w, 0, 0, 0, 0));
-    bytes_free(b);
+    bytes_free(&b);
 
     b = bytes_init_immed("0x");
     bytes_set_byte(&b, 31, 0xff);
@@ -194,7 +194,7 @@ void test_bytes_get_word()
 
     w = bytes_get_word(&b, 1);
     assert(word_immed(w, 0, 0, 0, 0xff00));
-    bytes_free(b);
+    bytes_free(&b);
 
     assert(mem_empty());
 }
@@ -219,7 +219,7 @@ void test_bytes_set_word()
     for(int i=1; i<33; i++)
         assert(bytes_get_byte(&b, i) == 0xee);
     assert(bytes_get_byte(&b, 33) == 0x00);
-    bytes_free(b);
+    bytes_free(&b);
 
     assert(mem_empty());
 }
@@ -242,8 +242,8 @@ void test_bytes_get_bytes()
     assert(b1.v[3] == 0x03);
     assert(b1.v[4] == 0x04);
     assert(b1.v[5] == 0x00);
-    bytes_free(b0);
-    bytes_free(b1);
+    bytes_free(&b0);
+    bytes_free(&b1);
 
     assert(mem_empty());
 }

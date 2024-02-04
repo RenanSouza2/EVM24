@@ -18,9 +18,9 @@ bytes_t bytes_init(uchar b[], int size)
     return (bytes_t){b, size};
 }
 
-void bytes_free(bytes_t b)
+void bytes_free(bytes_p b)
 {
-    if(b.v) free(b.v);
+    if(b->v) free(b->v);
 }
 
 
