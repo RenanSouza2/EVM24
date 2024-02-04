@@ -1,5 +1,5 @@
-#ifndef __EXAMPLE_H__
-#define __EXAMPLE_H__
+#ifndef __FRAME_H__
+#define __FRAME_H__
 
 #include "../../utils/struct.h"
 
