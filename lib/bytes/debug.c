@@ -1,11 +1,4 @@
-#include <stdlib.h>
-#include <stdbool.h>
-#include <string.h>
-#include <assert.h>
-
-#include "debug.h"
 #include "../../utils/clu/bin/header.h"
-#include "../utils/types.h"
 
 uchar cton(uchar c)
 {

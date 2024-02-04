@@ -7,7 +7,7 @@
 
 #ifdef DEBUG
 
-#include "../../utils/clu/bin/header.h"
+#include "debug.c"
 
 #endif
 
@@ -71,7 +71,7 @@ bytes_t bytes_get_bytes(bytes_p b, int i, int size)
     
     uchar *v = calloc(size, 1);
     assert(v);
-    for(int _i = 0; _i < 32; _i++)
+    for(int _i = 0; _i < size; _i++)
         v[_i] = bytes_get_byte(b, i+_i);
     
     return (bytes_t){v, size};
