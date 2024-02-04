@@ -223,11 +223,10 @@ void test_bytes_set_word()
     for(int i=1; i<33; i++)
         assert(bytes_get_byte(&b, i) == 0xee);
     assert(bytes_get_byte(&b, 33) == 0x00);
+    bytes_free(b);
 
     assert(mem_empty());
 }
-
-
 
 
 
