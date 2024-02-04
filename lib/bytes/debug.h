@@ -2,16 +2,19 @@
 #define __BYTES_DEBUG_H__
 
 #include "struct.h"
+#include "../word/struct.h"
 
 #ifdef DEBUG
 
 uchar cton(uchar c);
+void bytes_display(bytes_t b);
 bytes_t bytes_init_immed(char str[]);
 
 #endif
 
 bytes_t bytes_init(uchar b[], int size);
-void bytes_free(bytes_t b);
-uchar bytes_access(bytes_t b, int i);
+
+uchar bytes_get_byte(bytes_p b, int i);
+bytes_t bytes_get_bytes(bytes_p b, int i, int size);
 
 #endif

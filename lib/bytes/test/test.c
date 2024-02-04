@@ -1,9 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
-
 #include "../debug.h"
 #include "../../../utils/clu/bin/header.h"
+#include "../../word/debug.h"
 
 
 
@@ -32,82 +29,221 @@ void test_bytes_init_immed()
 {
     printf("\n\t%s\t\t", __func__);
 
+    printf("\n\t\t%s  1\t\t", __func__);
     bytes_t b = bytes_init_immed("0x");
     assert(b.v == NULL);
     assert(b.size == 0);
 
+    printf("\n\t\t%s  2\t\t", __func__);
     b = bytes_init_immed("0x00");
     assert(b.size == 1);
     assert(b.v);
     assert(b.v[0] == 0);
-    bytes_free(b);
+    bytes_free(&b);
 
+    printf("\n\t\t%s  3\t\t", __func__);
     b = bytes_init_immed("0x01");
     assert(b.size == 1);
     assert(b.v);
     assert(b.v[0] == 1);
-    bytes_free(b);
+    bytes_free(&b);
 
+    printf("\n\t\t%s  4\t\t", __func__);
     b = bytes_init_immed("0x0f");
     assert(b.size == 1);
     assert(b.v);
     assert(b.v[0] == 15);
-    bytes_free(b);
+    bytes_free(&b);
 
+    printf("\n\t\t%s  5\t\t", __func__);
     b = bytes_init_immed("0x10");
     assert(b.size == 1);
     assert(b.v);
     assert(b.v[0] == 16);
-    bytes_free(b);
+    bytes_free(&b);
 
+    printf("\n\t\t%s  6\t\t", __func__);
     b = bytes_init_immed("0x80");
     assert(b.size == 1);
     assert(b.v);
     assert(b.v[0] == 128);
-    bytes_free(b);
+    bytes_free(&b);
 
+    printf("\n\t\t%s  7\t\t", __func__);
     b = bytes_init_immed("0xf0");
     assert(b.size == 1);
     assert(b.v);
     assert(b.v[0] == 240);
-    bytes_free(b);
+    bytes_free(&b);
 
+    printf("\n\t\t%s  8\t\t", __func__);
     b = bytes_init_immed("0xff");
     assert(b.size == 1);
     assert(b.v);
     assert(b.v[0] == 255);
-    bytes_free(b);
+    bytes_free(&b);
 
+    printf("\n\t\t%s  9\t\t", __func__);
     b = bytes_init_immed("0x0000");
     assert(b.size == 2);
     assert(b.v);
     assert(b.v[0] == 0);
     assert(b.v[1] == 0);
-    bytes_free(b);
+    bytes_free(&b);
 
+    printf("\n\t\t%s 10\t\t", __func__);
     b = bytes_init_immed("0x1234");
     assert(b.size == 2);
     assert(b.v);
     assert(b.v[0] == 18);
     assert(b.v[1] == 52);
-    bytes_free(b);
+    bytes_free(&b);
 
     assert(mem_empty());
 }
 
-void test_bytes_access()
+
+
+void test_bytes_expand()
 {
     printf("\n\t%s\t\t", __func__);
 
-    bytes_t b = bytes_init_immed("0x000102030405060708090a0b0c0d0e0f");
-    for(int i=0; i<16; i++)
-        assert(bytes_access(b, i) == i);
-        
-    assert(bytes_access(b, 16) == 0);
-    bytes_free(b);
+    bytes_t b = bytes_init_immed("0x");
+    bytes_expand(&b, 0);
+    assert(b.size == 0);
+    assert(b.v == NULL);
+
+    bytes_expand(&b, 0);
+    assert(b.size == 0);
+    assert(b.v == NULL);
+    bytes_free(&b);
+
+    b = bytes_init_immed("0xff");
+    bytes_expand(&b, 2);
+    assert(b.size == 2);
+    assert(b.v[0] == 0xff);
+    assert(b.v[1] == 0x00);
+    bytes_free(&b);
+
+    assert(mem_empty());
+}
+
+void test_bytes_get_byte()
+{
+    printf("\n\t%s\t\t", __func__);
+
+    bytes_t b = bytes_init_immed("0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f");
+    for(int i=0; i<32; i++)
+        assert(bytes_get_byte(&b, i) == i);
+    assert(bytes_get_byte(&b, 64) == 0);
+    bytes_free(&b);
 
     b = bytes_init_immed("0x");
-    assert(bytes_access(b, 0) == 0);
+    assert(bytes_get_byte(&b, 0) == 0);
+
+    assert(mem_empty());
+}
+
+void test_bytes_set_byte()
+{
+    printf("\n\t%s\t\t", __func__);
+
+    bytes_t b = bytes_init_immed("0x");
+    bytes_set_byte(&b, 0, 0xff);
+    assert(b.size == 1);
+    assert(b.v);
+    assert(b.v[0] == 0xff);
+    
+    bytes_set_byte(&b, 2, 0xff);
+    assert(b.size == 3);
+    assert(b.v);
+    assert(b.v[1] == 0x00);
+    assert(b.v[2] == 0xff);
+
+    bytes_set_byte(&b, 0, 0xfe);
+    assert(b.size == 3);
+    assert(b.v);
+    assert(b.v[0] == 0xfe);
+    bytes_free(&b);
+
+    assert(mem_empty());
+}
+
+void test_bytes_get_word()
+{
+    printf("\n\t%s\t\t", __func__);
+
+    bytes_t b = bytes_init_immed("0x");
+    word_t w = bytes_get_word(&b, 0);
+    assert(word_immed(w, 0, 0, 0, 0));
+    bytes_free(&b);
+
+    b = bytes_init_immed("0x");
+    bytes_set_byte(&b, 0, 0xff);
+    w = bytes_get_word(&b, 0);
+    assert(word_immed(w, U64_FF, 0, 0, 0));
+
+    w = bytes_get_word(&b, 1);
+    assert(word_immed(w, 0, 0, 0, 0));
+    bytes_free(&b);
+
+    b = bytes_init_immed("0x");
+    bytes_set_byte(&b, 31, 0xff);
+    w = bytes_get_word(&b, 0);
+    assert(word_immed(w, 0, 0, 0, 0xff));
+
+    w = bytes_get_word(&b, 1);
+    assert(word_immed(w, 0, 0, 0, 0xff00));
+    bytes_free(&b);
+
+    assert(mem_empty());
+}
+
+void test_bytes_set_word()
+{
+    printf("\n\t%s\t\t", __func__);
+
+    bytes_t b = bytes_init_immed("0x");
+    word_t w = WORD(U64_MAX, U64_MAX, U64_MAX, U64_MAX);
+    bytes_set_word(&b, 0, &w);
+    assert(b.size == 32);
+    for(int i=0; i<32; i++)
+        assert(bytes_get_byte(&b, i) == 0xff);
+    assert(bytes_get_byte(&b, 32) == 0x00);
+
+    for(int i=0; i<32; i++)
+        word_set_byte(&w, i, 0xee);
+    
+    bytes_set_word(&b, 1, &w);
+    assert(bytes_get_byte(&b, 0) == 0xff);
+    for(int i=1; i<33; i++)
+        assert(bytes_get_byte(&b, i) == 0xee);
+    assert(bytes_get_byte(&b, 33) == 0x00);
+    bytes_free(&b);
+
+    assert(mem_empty());
+}
+
+void test_bytes_get_bytes()
+{
+    printf("\n\t%s\t\t", __func__);
+
+    bytes_t b0 = bytes_init_immed("0x0001020304");
+    bytes_t b1 = bytes_get_bytes(&b0, 0, 0);
+    assert(b1.size == 0);
+    assert(b1.v == NULL);
+
+    b1 = bytes_get_bytes(&b0, 0, 5);
+    assert(b1.size == 5);
+    assert(b1.v);
+    assert(b1.v[0] == 0x00);
+    assert(b1.v[1] == 0x01);
+    assert(b1.v[2] == 0x02);
+    assert(b1.v[3] == 0x03);
+    assert(b1.v[4] == 0x04);
+    assert(b1.v[5] == 0x00);
+    bytes_free(&b0);
+    bytes_free(&b1);
 
     assert(mem_empty());
 }
@@ -120,7 +256,13 @@ void test_bytes()
 
     test_bytes_cton();
     test_bytes_init_immed();
-    test_bytes_access();
+
+    test_bytes_expand();
+    test_bytes_get_byte();
+    test_bytes_set_byte();
+    test_bytes_get_word();
+    test_bytes_set_word();
+    test_bytes_get_bytes();
 
     assert(mem_empty());
 }
