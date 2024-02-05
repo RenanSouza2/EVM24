@@ -10,4 +10,6 @@ STRUCT(bytes)
     int size;
 };
 
+bytes_t bytes_init_zero();
+
 #endif

@@ -13,4 +13,9 @@ STRUCT(frame)
     mem_t m;
 };
 
+STRUCT(frame_o)
+{
+    bytes_t returndata;
+};
+
 #endif

@@ -3,6 +3,7 @@
 #include <assert.h>
 
 #include "debug.h"
+#include "../bytes/struct.h"
 
 #ifdef DEBUG
 
@@ -32,10 +33,27 @@ bool word_immed(word_t w, u64 v3, u64 v2, u64 v1, u64 v0)
 
 
 
-word_t word_init_zero()
+word_t word_from_zero()
 {
     return (word_t){{0, 0, 0, 0}};
 }
+
+word_t word_from_bytes(bytes_p b)
+{
+    int size = b->size;
+    assert(size <= 32);
+
+    word_t w = word_from_zero();
+    for(int i=0; i<size; i++)
+    {
+        uchar u = bytes_get_byte(b, size-1-i);
+        word_set_byte(&w, i, u);
+    }
+    bytes_free(b);
+    return w;
+}
+
+
 
 bool word_eq_bool(word_p w1, word_p w2)
 {

@@ -35,9 +35,41 @@ void frame_free(frame_t f)
     mem_free(f.m);
 }
 
+uchar frame_get_op(frame_p f)
+{
+    return bytes_get_byte(&f->code, f->pc);
+}
 
 
-// void frame_execute(bytes_t code)
-// {
-//     frame_t f = frame_init(code);
-// }
+
+
+frame_o_t frame_stop(frame_p f)
+{
+    return (frame_o_t){bytes_init_zero()};
+}
+
+bool frame_push(frame_p f)
+{
+    uchar op = frame_get_op(f);
+    int size = op - 0x5f;
+    bytes_t b = bytes_get_bytes(&f->code, f->pc+1, size);
+    word_t w = word_from_bytes(&b);
+    if(!stack_push(&f->s, &w)) return false;
+    f->pc += 1 + size;
+    return true;
+}
+
+frame_o_t frame_execute(bytes_t code)
+{
+    frame_t f = frame_init(code);
+
+    while(true)
+    {
+        switch (frame_get_op(&f))
+        {
+            case 0: return frame_stop(&f);
+
+            default: assert(false);
+        }
+    }
+}

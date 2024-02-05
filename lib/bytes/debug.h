@@ -14,7 +14,6 @@ bytes_t bytes_init_immed(char str[]);
 
 bytes_t bytes_init(uchar b[], int size);
 
-uchar bytes_get_byte(bytes_p b, int i);
 bytes_t bytes_get_bytes(bytes_p b, int i, int size);
 
 #endif

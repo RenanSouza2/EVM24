@@ -62,6 +62,11 @@ bytes_t bytes_init_immed(char str[])
 
 
 
+bytes_t bytes_init_zero()
+{
+    return (bytes_t){NULL, 0};
+}
+
 bytes_t bytes_init(uchar b[], int size)
 {
     return (bytes_t){b, size};
@@ -98,7 +103,7 @@ void bytes_set_byte(bytes_p b, int i, uchar u)
 
 word_t bytes_get_word(bytes_p b, int i)
 {
-    word_t w = word_init_zero();
+    word_t w = word_from_zero();
     for(int _i = 0; _i < 32; _i++)
     {
         uchar u = bytes_get_byte(b, i+_i);

@@ -6,11 +6,14 @@
 
 #define V_MAX 4
 
+PLACEHOLDER(bytes);
+
 STRUCT(word)
 {
     u64 v[V_MAX];
 };
 
-word_t word_init_zero();
+word_t word_from_zero();
+word_t word_from_bytes(bytes_p b);
 
 #endif
