@@ -48,6 +48,23 @@ void test_frame_stop()
     assert(mem_empty());
 }
 
+void test_frame_mtore()
+{
+    printf("\n\t%s\t\t", __func__);
+
+    frame_t f = frame_init_immed("0x60ff5f51");
+    assert(frame_push(&f) == true);
+    assert(frame_push(&f) == true);
+    assert(frame_mstore(&f) == true);
+    printf("\nsize: %d\t", f.m.size);
+    assert(f.m.size == 32);
+    assert(f.m.v != NULL);
+    assert(word_immed(bytes_get_word(&f.m, 0), 0, 0, 0, 0xff));
+    frame_free(f);
+
+    assert(mem_empty());
+}
+
 void test_frame_push()
 {
     printf("\n\t%s\t\t", __func__);
@@ -73,12 +90,9 @@ void test_frame_push()
     }
 
     frame_t f = frame_init_immed("0x5f");
+    word_t w = word_from_zero();
     for(int i=0; i<1024; i++)
-    {
-        f.pc = 0;
-        assert(frame_push(&f) == true);
-    }
-    f.pc = 0;
+        assert(stack_push(&f.s, &w) == true);
     assert(frame_push(&f) == false);
     frame_free(f);
 
@@ -94,6 +108,7 @@ void test_frame()
     test_frame_init();
 
     test_frame_stop();
+    test_frame_mtore();
     test_frame_push();
 
     assert(mem_empty());

@@ -16,7 +16,7 @@
 void stack_display(stack_t s)
 {
     printf("\nstack");
-    printf("\n\tcout: %d", s.count);
+    printf("\n\tcount: %d", s.count);
     printf("\n");
     stack_l_display(s.sl);
     printf("\n");
@@ -47,6 +47,8 @@ bool stack_push_immed(stack_p s, word_t w)
 }
 
 #endif
+
+
 
 stack_t stack_init()
 {

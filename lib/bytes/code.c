@@ -47,16 +47,36 @@ bytes_t bytes_init_immed(char str[])
     assert(str[0] == '0');
     assert(str[1] == 'x');
 
-    if(len == 2) return bytes_init(NULL, 0);
+    if(len == 2) return (bytes_t){NULL, 0};
 
     int size = len / 2 - 1;
     uchar *b = malloc(size);
     for(int i=0; i<size; i++)
         b[i] = (cton(str[2 * i + 2]) << 4) | cton(str[2 * i + 3]);
 
-    return bytes_init(b, size);
+    return (bytes_t){b, size};
 }
 
+bool bytes_immed(bytes_t b, char str[])
+{
+    bytes_t b_exp = bytes_init_immed(str);
+    if(b.size != b_exp.size) 
+    {
+        printf("\n\n\tERROR BYTES ASSERT 1 | EXPECTED LENGTH OF %d BUT IT WAS %d\n\n", b_exp.size, b.size);
+        bytes_free(&b_exp);
+        return false;
+    }
+    for(int i=0; i<b.size; i++)
+        if(b.v[i] != b_exp.v[i])
+        {
+            printf("\n\n\tERROR BYTES ASSERT 2 | EXPECTED BYTE %d TO BE %02x BUT IT WAS %02x\n\n", i, b_exp.v[i], b.v[i]);
+            bytes_free(&b_exp);
+            return false;
+        }
+
+    bytes_free(&b_exp);
+    return true;
+}
 
 #endif
 
@@ -65,11 +85,6 @@ bytes_t bytes_init_immed(char str[])
 bytes_t bytes_init_zero()
 {
     return (bytes_t){NULL, 0};
-}
-
-bytes_t bytes_init(uchar b[], int size)
-{
-    return (bytes_t){b, size};
 }
 
 void bytes_free(bytes_p b)

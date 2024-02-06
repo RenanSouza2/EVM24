@@ -7,7 +7,7 @@
 #ifdef DEBUG
 #endif
 
+void mem_expand(mem_p m, int i);
 word_t mem_get_word(mem_p m, int i);
-void mem_set_word(mem_p m, int i, word_p w);
 
 #endif

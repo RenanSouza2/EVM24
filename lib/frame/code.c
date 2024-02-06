@@ -1,7 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include <assert.h>
 
 #include "debug.h"
+#include "../bytes/struct.h"
+#include "../mem/header.h"
 
 #ifdef DEBUG
 
@@ -59,6 +63,18 @@ bool frame_push(frame_p f)
     return true;
 }
 
+bool frame_mstore(frame_p f)
+{
+    word_t w_pos, w_value;
+    if(!stack_pop(&w_pos, &f->s)) return false;
+    if(!stack_pop(&w_value, &f->s)) return false;
+
+    mem_set_word(&f->m, w_pos.v[0], &w_value);
+    f->pc++;
+    
+    return true;
+}
+
 frame_o_t frame_execute(bytes_t code)
 {
     frame_t f = frame_init(code);
@@ -68,8 +84,12 @@ frame_o_t frame_execute(bytes_t code)
         switch (frame_get_op(&f))
         {
             case 0: return frame_stop(&f);
+            case 0x51: if(!frame_mstore(&f));
+            case 0x5f ... 0x7f: if(!frame_push(&f)) break;
 
             default: assert(false);
         }
     }
+
+    return frame_stop(&f);
 }
