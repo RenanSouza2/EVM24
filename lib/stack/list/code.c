@@ -6,6 +6,8 @@
 
 #ifdef DEBUG
 
+#include <stdarg.h>
+
 #include "../../../utils/clu/bin/header.h"
 #include "../../word/debug.h"
 
@@ -19,14 +21,25 @@ void stack_l_display(stack_l_p sl)
     printf("\n");
 }
 
-bool stack_l(stack_l_p sl, int n, ...)
+stack_l_p stack_l_init_immed_variadic(int n, va_list *args)
+{
+    stack_l_p sl = NULL;
+    for(int i=0; i<n; i++)
+    {
+        word_t w = va_arg(*args, word_t);
+        sl = stack_l_create(sl, &w);
+    }
+    return sl;
+}
+
+bool stack_l_immed(stack_l_p sl, int n, ...)
 {
     va_list args;
     va_start(args, n);
-    return stack_l(sl, n, args);
+    return stack_l_immed_variadic(sl, n, args);
 }
 
-bool stack_l_var(stack_l_p sl, int n, va_list args)
+bool stack_l_immed_variadic(stack_l_p sl, int n, va_list args)
 {
     int i;
     for(i=0; sl && i < n; sl = sl->sl, i++)
@@ -34,20 +47,20 @@ bool stack_l_var(stack_l_p sl, int n, va_list args)
         word_t w = va_arg(args, word_t);
         if(!word_eq_bool(&sl->w, &w))
         {
-            printf("\nSTACK LIST ASSERTION ERROR 1 | word %d differed\t\t", i);
+            printf("\n\n\tSTACK LIST ASSERTION ERROR 1 | WORD ASSERTION ERROR | %d\t\t", i);
             return false;
         }
     }
 
     if(i < n)
     {
-        printf("\nSTACK LIST ASSERTION ERROR 2 | less words than expected | %d %d\t\t", i, n);
+        printf("\n\n\tSTACK LIST ASSERTION ERROR 2 | LESS WORDS ERROR | %d %d\t\t", i, n);
         return false;
     }
 
     if(sl != NULL)
     {
-        printf("\nSTACK LIST ASSERTION ERROR 3 | more words than expected | %d\t\t", n);
+        printf("\n\n\tSTACK LIST ASSERTION ERROR 3 | MORE WORDS ERROR | %d\t\t", n);
         return false;
     }
 

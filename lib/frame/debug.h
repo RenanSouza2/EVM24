@@ -6,6 +6,9 @@
 #ifdef DEBUG
 
 frame_t frame_init_immed(char str_code[]);
+frame_t frame_init_immed_setup(char str_code[], char str_mem[], int n, ...);
+
+bool frame_immed(frame_t f, int pc, char str_mem[], int n, ...);
 
 #endif
 

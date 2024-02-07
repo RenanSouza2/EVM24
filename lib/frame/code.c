@@ -9,13 +9,56 @@
 
 #ifdef DEBUG
 
+#include <stdarg.h>
+
 #include "../../utils/clu/bin/header.h"
+#include "../stack/head/debug.h"
 #include "../bytes/debug.h"
+#include "../mem/debug.h"
 
 frame_t frame_init_immed(char str_code[])
 {
     bytes_t code = bytes_init_immed(str_code);
     return frame_init(code);
+}
+
+frame_t frame_init_immed_setup(char str_code[], char str_mem[], int n, ...)
+{
+    va_list args;
+    va_start(args, n);
+    return (frame_t)
+    {
+        0,
+        bytes_init_immed(str_code),
+        stack_init_immed_variadic(n, &args),
+        mem_init_immed(str_mem)
+    };
+}
+
+bool frame_immed(frame_t f, int pc, char str_mem[], int n, ...)
+{
+    if(f.pc != pc)
+    {
+        printf("\n\n\tFRAME ASSERTION ERROR 1 | PC DID NOT MATCH | %d %d\n\n", f.pc, pc);
+        return false;
+    }
+
+    if(str_mem)
+    if(!mem_immed(f.m, str_mem))
+    {
+        printf("\n\tFRAME ASSERTION ERROR 2 | MEM ASSERTION ERROR\n\n");
+        return false;
+    }
+
+    va_list args;
+    va_start(args, n);
+    if(!stack_immed_variadic(f.s, n, args))
+    {
+        printf("\n\tFRAME ASSERTION ERROR 3 | MEM ASSERTION ERROR\n\n");
+        return false;
+    }
+
+    return true;
 }
 
 #endif
@@ -24,11 +67,12 @@ frame_t frame_init_immed(char str_code[])
 
 frame_t frame_init(bytes_t code)
 {
-    return (frame_t){
+    return (frame_t)
+    {
         0,
         code,
         stack_init(),
-        mem_init()
+        mem_init(),
     };
 }
 
@@ -55,6 +99,9 @@ frame_o_t frame_stop(frame_p f)
 bool frame_push(frame_p f)
 {
     uchar op = frame_get_op(f);
+    assert(0x59 <= op);
+    assert(op <= 0x7f);
+
     int size = op - 0x5f;
     bytes_t b = bytes_get_bytes(&f->code, f->pc+1, size);
     word_t w = word_from_bytes(&b);

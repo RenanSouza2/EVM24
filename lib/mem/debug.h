@@ -5,6 +5,12 @@
 #include "../word/struct.h"
 
 #ifdef DEBUG
+
+#include <stdbool.h>
+
+mem_t mem_init_immed(char str[]);
+bool mem_immed(mem_t m, char str[]);
+
 #endif
 
 void mem_expand(mem_p m, int i);

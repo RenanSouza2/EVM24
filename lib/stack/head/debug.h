@@ -8,7 +8,9 @@
 #include "../../word/struct.h"
 
 void stack_display(stack_t s);
-bool stack(stack_t s, int n, ...);
+stack_t stack_init_immed_variadic(int n, va_list *args);
+bool stack_immed(stack_t s, int n, ...);
+bool stack_immed_variadic(stack_t s, int n, va_list args);
 bool stack_push_immed(stack_p s, word_t w);
 
 #endif

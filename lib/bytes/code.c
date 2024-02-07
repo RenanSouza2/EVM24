@@ -60,16 +60,21 @@ bytes_t bytes_init_immed(char str[])
 bool bytes_immed(bytes_t b, char str[])
 {
     bytes_t b_exp = bytes_init_immed(str);
+    return bytes(b, b_exp);
+}
+
+bool bytes(bytes_t b, bytes_t b_exp)
+{
     if(b.size != b_exp.size) 
     {
-        printf("\n\n\tERROR BYTES ASSERT 1 | EXPECTED LENGTH OF %d BUT IT WAS %d\n\n", b_exp.size, b.size);
+        printf("\n\n\tBYTES ASSETION ERROR 1 | DIFFERENT LENGTH | %d %d\n\n", b.size, b_exp.size);
         bytes_free(&b_exp);
         return false;
     }
     for(int i=0; i<b.size; i++)
         if(b.v[i] != b_exp.v[i])
         {
-            printf("\n\n\tERROR BYTES ASSERT 2 | EXPECTED BYTE %d TO BE %02x BUT IT WAS %02x\n\n", i, b_exp.v[i], b.v[i]);
+            printf("\n\n\tBYTES ASSETION ERROR 2 | BYTE %d | %02x %02x\n\n", i, b.v[i], b_exp.v[i]);
             bytes_free(&b_exp);
             return false;
         }

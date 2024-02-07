@@ -11,7 +11,9 @@
 uchar cton(uchar c);
 void bytes_display(bytes_t b);
 bytes_t bytes_init_immed(char str[]);
+
 bool bytes_immed(bytes_t b, char str[]);
+bool bytes(bytes_t b, bytes_t b_exp);
 
 #endif
 

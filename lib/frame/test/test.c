@@ -48,18 +48,13 @@ void test_frame_stop()
     assert(mem_empty());
 }
 
-void test_frame_mtore()
+void test_frame_mstore()
 {
     printf("\n\t%s\t\t", __func__);
 
-    frame_t f = frame_init_immed("0x60ff5f51");
-    assert(frame_push(&f) == true);
-    assert(frame_push(&f) == true);
+    frame_t f = frame_init_immed_setup("0x51", "0x", 2, WORD1(0xff), WORD1(0x00));
     assert(frame_mstore(&f) == true);
-    printf("\nsize: %d\t", f.m.size);
-    assert(f.m.size == 32);
-    assert(f.m.v != NULL);
-    assert(word_immed(bytes_get_word(&f.m, 0), 0, 0, 0, 0xff));
+    assert(frame_immed(f, 1, "0x00000000000000000000000000000000000000000000000000000000000000ff", 0));
     frame_free(f);
 
     assert(mem_empty());
@@ -74,18 +69,15 @@ void test_frame_push()
         char str[70];
         memset(str, 0, 70);
         sprintf(str, "0x%x", 0x5f + i);
-        for(int j=4; j<4+2*i; j++)
-            str[j] = 'f';
+        memset(&str[4], 'f', 2*i);
 
         word_t w = word_from_zero();
         memset(w.v, 0xff, i);
         
         frame_t f = frame_init_immed(str);
         assert(frame_push(&f) == true);
-        assert(f.pc == i + 1);
-        assert(f.s.count == 1);
-        assert(f.s.sl != NULL);
-        assert(word_eq_bool(&f.s.sl->w, &w) == true);
+        assert(frame_immed(f, i+1, "0x", 1, w));
+
         frame_free(f);
     }
 
@@ -108,7 +100,7 @@ void test_frame()
     test_frame_init();
 
     test_frame_stop();
-    test_frame_mtore();
+    test_frame_mstore();
     test_frame_push();
 
     assert(mem_empty());

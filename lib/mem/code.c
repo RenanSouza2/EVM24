@@ -6,6 +6,20 @@
 #ifdef DEBUG
 
 #include "../../utils/clu/bin/header.h"
+#include "../bytes/debug.h"
+
+mem_t mem_init_immed(char str[])
+{
+    mem_t m = bytes_init_immed(str);
+    mem_expand(&m, m.size);
+    return m;
+}
+
+bool mem_immed(mem_t m, char str[])
+{
+    mem_t m_exp = mem_init_immed(str);
+    return bytes(m, m_exp);
+}
 
 #endif
 

@@ -22,19 +22,30 @@ void stack_display(stack_t s)
     printf("\n");
 }
 
-bool stack(stack_t s, int n, ...)
+stack_t stack_init_immed_variadic(int n, va_list *args)
+{
+    stack_l_p sl = stack_l_init_immed_variadic(n, args);
+    return (stack_t){sl, n};
+}
+
+bool stack_immed(stack_t s, int n, ...)
+{
+    va_list args;
+    va_start(args, n);
+    return stack_immed_variadic(s, n, args);
+}
+
+bool stack_immed_variadic(stack_t s, int n, va_list args)
 {
     if(s.count != n)
     {
-        printf("\nSTACK ASSERTION ERROR 1 | number of word differ %d %d\t\t", s.count, n);
+        printf("\n\tSTACK ASSERTION ERROR 1 | number of word differ %d %d\t\t", s.count, n);
         return false;
     }
 
-    va_list args;
-    va_start(args, n);
-    if(!stack_l_var(s.sl, n, args))
+    if(!stack_l_immed_variadic(s.sl, n, args))
     {
-        printf("\nSTACK ASSERTION ERROR 2 | STACK LIST ASSERTION ERROR\t\t");
+        printf("\n\tSTACK ASSERTION ERROR 2 | STACK LIST ASSERTION ERROR\t\t");
         return false;
     }
 

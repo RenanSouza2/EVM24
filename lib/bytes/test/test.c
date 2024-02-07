@@ -167,7 +167,6 @@ void test_bytes_set_byte()
     assert(bytes_immed(b, "0xff00ff"));
 
     bytes_set_byte(&b, 0, 0xfe);
-    bytes_display(b);
     assert(bytes_immed(b, "0xfe00ff"));
     bytes_free(&b);
 
