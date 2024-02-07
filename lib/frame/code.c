@@ -89,11 +89,41 @@ uchar frame_get_op(frame_p f)
 }
 
 
-
+bool frame_pop(frame_p f) // TODO test
+{
+    return stack_pop(NULL, &f->s);
+}
 
 frame_o_t frame_stop(frame_p f)
 {
     return (frame_o_t){bytes_init_zero()};
+}
+
+bool frame_mload(frame_p f) // TODO test
+{
+    word_t w_pos;
+    if(!stack_pop(&w_pos, &f->s)) return false;
+
+    word_t  w_value;
+    w_value = mem_get_word(&f->m, w_pos.v[0]);
+
+    if(!stack_push(&f->s, &w_value)) return false;
+    f->pc++;
+
+    return true;
+}
+
+bool frame_mstore(frame_p f)
+{
+    word_t w_pos, w_value;
+    if(!stack_pop(&w_pos, &f->s)) return false;
+    if(!stack_pop(&w_value, &f->s)) return false;
+
+    // TODO
+    mem_set_word(&f->m, w_pos.v[0], &w_value);
+    f->pc++;
+    
+    return true;
 }
 
 bool frame_push(frame_p f)
@@ -110,17 +140,7 @@ bool frame_push(frame_p f)
     return true;
 }
 
-bool frame_mstore(frame_p f)
-{
-    word_t w_pos, w_value;
-    if(!stack_pop(&w_pos, &f->s)) return false;
-    if(!stack_pop(&w_value, &f->s)) return false;
 
-    mem_set_word(&f->m, w_pos.v[0], &w_value);
-    f->pc++;
-    
-    return true;
-}
 
 frame_o_t frame_execute(bytes_t code)
 {
@@ -130,8 +150,13 @@ frame_o_t frame_execute(bytes_t code)
     {
         switch (frame_get_op(&f))
         {
+            // TODO fix this loop break
             case 0: return frame_stop(&f);
-            case 0x51: if(!frame_mstore(&f));
+
+            case 0x50: if(!frame_pop(&f)) break;
+            case 0x51: if(!frame_mload(&f)) break;
+            case 0x52: if(!frame_mstore(&f)) break;
+
             case 0x5f ... 0x7f: if(!frame_push(&f)) break;
 
             default: assert(false);

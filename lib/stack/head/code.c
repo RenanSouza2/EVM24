@@ -84,8 +84,8 @@ bool stack_pop(word_p w, stack_p s)
 {
     if(s->count == 0) return false;
 
-    *w = s->sl->w;
-    s->count--;
+    if(w) *w = s->sl->w;
+    s->count--; // TODO test
     s->sl = stack_l_pop(s->sl);
     return true;
 }
