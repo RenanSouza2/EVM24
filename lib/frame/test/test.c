@@ -84,7 +84,7 @@ void test_frame_push()
     frame_t f = frame_init_immed("0x5f");
     word_t w = word_from_zero();
     for(int i=0; i<1024; i++)
-        assert(stack_d_push(&f.s, &w) == true);
+        assert(stack_evm_push(&f.s, &w) == true);
     assert(frame_push(&f) == false);
     frame_free(f);
 

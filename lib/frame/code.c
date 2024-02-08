@@ -91,7 +91,7 @@ uchar frame_get_op(frame_p f)
 
 bool frame_pop(frame_p f) // TODO test
 {
-    return stack_d_pop(NULL, &f->s);
+    return stack_evm_pop(NULL, &f->s);
 }
 
 frame_o_t frame_stop(frame_p f)
@@ -102,12 +102,12 @@ frame_o_t frame_stop(frame_p f)
 bool frame_mload(frame_p f) // TODO test
 {
     word_t w_pos;
-    if(!stack_d_pop(&w_pos, &f->s)) return false;
+    if(!stack_evm_pop(&w_pos, &f->s)) return false;
 
     word_t  w_value;
     w_value = mem_get_word(&f->m, w_pos.v[0]);
 
-    if(!stack_d_push(&f->s, &w_value)) return false;
+    if(!stack_evm_push(&f->s, &w_value)) return false;
     f->pc++;
 
     return true;
@@ -116,8 +116,8 @@ bool frame_mload(frame_p f) // TODO test
 bool frame_mstore(frame_p f)
 {
     word_t w_pos, w_value;
-    if(!stack_d_pop(&w_pos, &f->s)) return false;
-    if(!stack_d_pop(&w_value, &f->s)) return false;
+    if(!stack_evm_pop(&w_pos, &f->s)) return false;
+    if(!stack_evm_pop(&w_value, &f->s)) return false;
 
     // TODO
     mem_set_word(&f->m, w_pos.v[0], &w_value);
@@ -135,7 +135,7 @@ bool frame_push(frame_p f)
     int size = op - 0x5f;
     bytes_t b = bytes_get_bytes(&f->code, f->pc+1, size);
     word_t w = word_from_bytes(&b);
-    if(!stack_d_push(&f->s, &w)) return false;
+    if(!stack_evm_push(&f->s, &w)) return false;
     f->pc += 1 + size;
     return true;
 }

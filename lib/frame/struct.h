@@ -9,7 +9,7 @@ STRUCT(frame)
 {
     int pc;
     bytes_t code;
-    stack_d_t s;
+    stack_evm_t s;
     mem_t m;
 };
 
