@@ -2,7 +2,7 @@
 #define __WORD_H__
 
 #include "../../utils/struct.h"
-#include "../utils/types.h"
+#include "../utils/struct.h"
 
 PLACEHOLDER(word);
 

@@ -9,8 +9,9 @@
 #include <stdarg.h>
 
 void stack_l_display(stack_l_p sl);
-bool stack_l(stack_l_p sl, int n, ...);
-bool stack_l_var(stack_l_p sl, int n, va_list args);
+stack_l_p stack_l_init_immed_variadic(int n, va_list *args);
+bool stack_l_immed(stack_l_p sl, int n, ...);
+bool stack_l_immed_variadic(stack_l_p sl, int n, va_list args);
 
 #endif
 

@@ -5,12 +5,14 @@
 #include "../word/struct.h"
 
 #ifdef DEBUG
+
+#include <stdbool.h>
+
+mem_t mem_init_immed(char str[]);
+bool mem_immed(mem_t m, char str[]);
+
 #endif
 
-mem_t mem_init();
-void mem_free(mem_t m);
-
-word_t mem_get_word(mem_p m, int i);
-void mem_set_word(mem_p m, int i, word_p w);
+void mem_expand(mem_p m, int i);
 
 #endif

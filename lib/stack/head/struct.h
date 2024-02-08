@@ -4,12 +4,12 @@
 #include "header.h"
 #include "../list/header.h"
 
-STRUCT(stack)
+STRUCT(stack_evm)
 {
     stack_l_p sl;
     int count;
 };
 
-stack_t stack_initialize();
+stack_evm_t stack_init();
 
 #endif
