@@ -2,7 +2,7 @@
 #define __BYTES_STRUCT_H__
 
 #include "header.h"
-#include "../utils/types.h"
+#include "../utils/struct.h"
 
 STRUCT(bytes)
 {

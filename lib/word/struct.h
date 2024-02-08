@@ -1,8 +1,10 @@
 #ifndef __WORD_STRUCT_H__
 #define __WORD_STRUCT_H__
 
+#include <stdint.h>
+
 #include "header.h"
-#include "../utils/types.h"
+#include "../utils/struct.h"
 
 #define V_MAX 4
 
@@ -10,7 +12,7 @@ PLACEHOLDER(bytes);
 
 STRUCT(word)
 {
-    u64 v[V_MAX];
+    uint64_t v[V_MAX];
 };
 
 word_t word_from_zero();

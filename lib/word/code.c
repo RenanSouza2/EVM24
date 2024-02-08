@@ -13,7 +13,7 @@ void word_display(word_t w)
 {
     printf("0x");
     for(int i=V_MAX-1; i>=0; i--)
-        printf("%016lx", w.v[i]);
+        printf("%llx", w.v[i]);
 }
 
 void word_display_immed(word_t w)
@@ -23,7 +23,7 @@ void word_display_immed(word_t w)
     printf("\t\t");
 }
 
-bool word_immed(word_t w, u64 v3, u64 v2, u64 v1, u64 v0)
+bool word_immed(word_t w, uint64_t v3, uint64_t v2, uint64_t v1, uint64_t v0)
 {
     word_t w_exp = WORD(v3, v2, v1, v0);
     return word_eq_bool(&w, &w_exp);
@@ -64,7 +64,7 @@ bool word_eq_bool(word_p w1, word_p w2)
     return true;
 }
 
-void word_add_immed(word_p w, int i, u64 v)
+void word_add_immed(word_p w, int i, uint64_t v)
 {
     if(i >= V_MAX) return;
 
