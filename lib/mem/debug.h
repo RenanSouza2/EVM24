@@ -14,6 +14,5 @@ bool mem_immed(mem_t m, char str[]);
 #endif
 
 void mem_expand(mem_p m, int i);
-word_t mem_get_word(mem_p m, int i);
 
 #endif
