@@ -48,11 +48,32 @@ void test_frame_stop()
     assert(mem_empty());
 }
 
+void test_frame_pop()
+{
+    printf("\n\t%s\t\t", __func__);
+
+    frame_t f = frame_init_immed_setup("0x50", "0x", 2, W1(1), W1(2));
+
+    assert(frame_pop(&f) == true);
+    assert(frame_immed(f, 1, NULL, 1, W1(1)));
+
+    f.pc = 0;
+    assert(frame_pop(&f) == true);
+    assert(frame_immed(f, 1, NULL, 0));
+
+    f.pc = 0;
+    assert(frame_pop(&f) == false);
+    assert(frame_immed(f, 0, NULL, 0));
+    frame_free(f);
+
+    assert(mem_empty());
+}
+
 void test_frame_mstore()
 {
     printf("\n\t%s\t\t", __func__);
 
-    frame_t f = frame_init_immed_setup("0x51", "0x", 2, WORD1(0xff), WORD1(0x00));
+    frame_t f = frame_init_immed_setup("0x51", "0x", 2, W1(0xff), W1(0x00));
     assert(frame_mstore(&f) == true);
     assert(frame_immed(f, 1, "0x00000000000000000000000000000000000000000000000000000000000000ff", 0));
     frame_free(f);
@@ -100,6 +121,7 @@ void test_frame()
     test_frame_init();
 
     test_frame_stop();
+    test_frame_pop();
     test_frame_mstore();
     test_frame_push();
 

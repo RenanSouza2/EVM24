@@ -45,9 +45,9 @@ bool stack_l_immed_variadic(stack_l_p sl, int n, va_list args)
     for(i=0; sl && i < n; sl = sl->sl, i++)
     {
         word_t w = va_arg(args, word_t);
-        if(!word_eq_bool(&sl->w, &w))
+        if(!word(sl->w, w))
         {
-            printf("\n\n\tSTACK LIST ASSERTION ERROR 1 | WORD ASSERTION ERROR | %d\t\t", i);
+            printf("\n\tSTACK LIST ASSERTION ERROR 1 | WORD ASSERTION ERROR | %d\t\t", i);
             return false;
         }
     }

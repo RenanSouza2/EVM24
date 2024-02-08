@@ -5,6 +5,8 @@
 #include "debug.h"
 #include "../bytes/struct.h"
 
+
+
 #ifdef DEBUG
 
 #include "../../utils/clu/bin/header.h"
@@ -23,10 +25,24 @@ void word_display_immed(word_t w)
     printf("\t\t");
 }
 
+
+
+bool word(word_t w1, word_t w2)
+{
+    if(word_eq_bool(&w1, &w2))
+        return true;
+
+    printf("\n");
+    printf("\n\tword1: ");word_display(w1);
+    printf("\n\tword2: ");word_display(w2);
+    printf("\n\n\tWORD ASSERTION ERROR 1 | WORD DID NOT MATCH");
+    return false;
+}
+
 bool word_immed(word_t w, uint64_t v3, uint64_t v2, uint64_t v1, uint64_t v0)
 {
     word_t w_exp = WORD(v3, v2, v1, v0);
-    return word_eq_bool(&w, &w_exp);
+    return word(w, w_exp);
 }
 
 #endif

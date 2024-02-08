@@ -16,6 +16,7 @@ frame_t frame_init(bytes_t code);
 void frame_free(frame_t f);
 
 frame_o_t frame_stop(frame_p f);
+bool frame_pop(frame_p f);
 bool frame_mstore(frame_p f);
 bool frame_push(frame_p f);
 

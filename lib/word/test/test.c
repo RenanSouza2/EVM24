@@ -56,12 +56,21 @@ void test_word_eq_bool()
 {
     printf("\n\t%s\t\t", __func__);
     
-    word_t w = WORD(4, 3, 2, 1);
-    assert(word_immed(w, 4, 3, 2, 1) == true);
-    assert(word_immed(w, 4, 3, 2, 0) == false);
-    assert(word_immed(w, 4, 3, 0, 1) == false);
-    assert(word_immed(w, 4, 0, 2, 1) == false);
-    assert(word_immed(w, 0, 3, 2, 1) == false);
+    word_t w1 = WORD(4, 3, 2, 1);
+    word_t w2 = WORD(4, 3, 2, 1);
+    assert(word_eq_bool(&w1, &w2) == true);
+    
+    w2 = WORD(4, 3, 2, 0);
+    assert(word_eq_bool(&w1, &w2) == false);
+    
+    w2 = WORD(4, 3, 0, 1);
+    assert(word_eq_bool(&w1, &w2) == false);
+    
+    w2 = WORD(4, 0, 2, 1);
+    assert(word_eq_bool(&w1, &w2) == false);
+    
+    w2 = WORD(0, 3, 2, 1);
+    assert(word_eq_bool(&w1, &w2) == false);
 
     assert(mem_empty());
 }
