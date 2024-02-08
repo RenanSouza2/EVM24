@@ -11,7 +11,6 @@
 
 void uint64_t_display(uint64_t u)
 {
-    printf("0x");
-    for(int i=0; i<64; i++)
-        printf("%02hu", ((uchar*)&u)[i]);
+    for(int i=7; i>=0; i--)
+        printf("%02hx", ((uchar*)&u)[i]);
 }

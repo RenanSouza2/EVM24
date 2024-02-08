@@ -13,7 +13,7 @@ void word_display(word_t w)
 {
     printf("0x");
     for(int i=V_MAX-1; i>=0; i--)
-        printf("%llx", w.v[i]);
+        uint64_t_display(w.v[i]);
 }
 
 void word_display_immed(word_t w)
