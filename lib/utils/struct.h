@@ -7,6 +7,4 @@
 
 typedef unsigned char uchar;
 
-void uint64_t_display(uint64_t u);
-
 #endif

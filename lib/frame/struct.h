@@ -8,6 +8,7 @@
 STRUCT(frame)
 {
     int pc;
+    int gas;
     bytes_t code;
     stack_evm_t s;
     mem_t m;
@@ -16,6 +17,7 @@ STRUCT(frame)
 STRUCT(frame_o)
 {
     bytes_t returndata;
+    int gas;
 };
 
 #endif

@@ -10,6 +10,9 @@
 #ifdef DEBUG
 
 #include "../../utils/clu/bin/header.h"
+#include "../utils/debug.h"
+
+
 
 void word_display(word_t w)
 {

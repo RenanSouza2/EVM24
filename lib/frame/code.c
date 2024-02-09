@@ -18,19 +18,22 @@
 #include "../bytes/debug.h"
 #include "../mem/debug.h"
 
-frame_t frame_init_immed(char str_code[])
+
+
+frame_t frame_init_immed(char str_code[], int gas)
 {
     bytes_t code = bytes_init_immed(str_code);
-    return frame_init(code);
+    return frame_init(code, gas);
 }
 
-frame_t frame_init_immed_setup(char str_code[], char str_mem[], int n, ...)
+frame_t frame_init_immed_setup(char str_code[], int gas, char str_mem[], int n, ...)
 {
     va_list args;
     va_start(args, n);
     return (frame_t)
     {
         0,
+        gas,
         bytes_init_immed(str_code),
         stack_init_immed_variadic(n, &args),
         mem_init_immed(str_mem)
@@ -67,11 +70,12 @@ bool frame_immed(frame_t f, int pc, char str_mem[], int n, ...)
 
 
 
-frame_t frame_init(bytes_t code)
+frame_t frame_init(bytes_t code, int gas)
 {
     return (frame_t)
     {
         0,
+        gas,
         code,
         stack_init(),
         mem_init(),
@@ -155,9 +159,9 @@ bool frame_push(frame_p f)
 
 #define REV(FN) if(!FN(&f)) return frame_halt(&f)
 
-frame_o_t frame_execute(bytes_t code)
+frame_o_t frame_execute(bytes_t code, int gas)
 {
-    frame_t f = frame_init(code);
+    frame_t f = frame_init(code, gas);
 
     while(true)
     {

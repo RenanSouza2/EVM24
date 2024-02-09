@@ -11,8 +11,9 @@ void test_frame_init()
 {
     printf("\n\t%s\t\t", __func__);
 
-    frame_t f = frame_init_immed("0x");
+    frame_t f = frame_init_immed("0x", GAS_DEF);
     assert(f.pc == 0);
+    assert(f.gas == GAS_DEF);
     assert(f.code.size == 0);
     assert(f.code.v == NULL);
     assert(f.s.count == 0);
@@ -20,8 +21,9 @@ void test_frame_init()
     assert(f.m.size == 0);
     assert(f.m.v == NULL);
 
-    f = frame_init_immed("0xff");
+    f = frame_init_immed("0xff", GAS_DEF);
     assert(f.pc == 0);
+    assert(f.gas == GAS_DEF);
     assert(f.code.size == 1);
     assert(f.code.v != NULL);
     assert(f.code.v[0] == 0xff);
@@ -40,7 +42,7 @@ void test_frame_stop()
 {
     printf("\n\t%s\t\t", __func__);
 
-    frame_t f = frame_init_immed("0x");
+    frame_t f = frame_init_immed("0x", GAS_DEF);
     frame_o_t fo = frame_stop(&f);
     assert(fo.returndata.size == 0);
     assert(fo.returndata.v == NULL);
@@ -52,7 +54,7 @@ void test_frame_pop()
 {
     printf("\n\t%s\t\t", __func__);
 
-    frame_t f = frame_init_immed_setup("0x50", "0x", 2, W1(1), W1(2));
+    frame_t f = frame_init_immed_setup("0x50", GAS_DEF, "0x", 2, W1(1), W1(2));
 
     assert(frame_pop(&f) == true);
     assert(frame_immed(f, 1, NULL, 1, W1(1)));
@@ -73,7 +75,7 @@ void test_frame_mstore()
 {
     printf("\n\t%s\t\t", __func__);
 
-    frame_t f = frame_init_immed_setup("0x51", "0x", 2, W1(0xff), W1(0x00));
+    frame_t f = frame_init_immed_setup("0x51", GAS_DEF, "0x", 2, W1(0xff), W1(0x00));
     assert(frame_mstore(&f) == true);
     assert(frame_immed(f, 1, "0x00000000000000000000000000000000000000000000000000000000000000ff", 0));
     frame_free(f);
@@ -95,14 +97,14 @@ void test_frame_push()
         word_t w = word_from_zero();
         memset(w.v, 0xff, i);
         
-        frame_t f = frame_init_immed(str);
+        frame_t f = frame_init_immed(str, GAS_DEF);
         assert(frame_push(&f) == true);
         assert(frame_immed(f, i+1, "0x", 1, w));
 
         frame_free(f);
     }
 
-    frame_t f = frame_init_immed("0x5f");
+    frame_t f = frame_init_immed("0x5f", GAS_DEF);
     word_t w = word_from_zero();
     for(int i=0; i<1024; i++)
         assert(stack_evm_push(&f.s, &w) == true);
