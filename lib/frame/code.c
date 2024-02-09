@@ -20,17 +20,17 @@
 #include "../utils/debug.h"
 
 
-frame_t frame_init_immed(char str_code[], int gas)
+evm_frame_t frame_init_immed(char str_code[], int gas)
 {
-    bytes_t code = bytes_init_immed(str_code);
+    evm_bytes_t code = bytes_init_immed(str_code);
     return frame_init(code, gas);
 }
 
-frame_t frame_init_immed_setup(char str_code[], int gas, char str_mem[], int n, ...)
+evm_frame_t frame_init_immed_setup(char str_code[], int gas, char str_mem[], int n, ...)
 {
     va_list args;
     va_start(args, n);
-    return (frame_t)
+    return (evm_frame_t)
     {
         0,
         gas,
@@ -40,7 +40,7 @@ frame_t frame_init_immed_setup(char str_code[], int gas, char str_mem[], int n, 
     };
 }
 
-bool frame_immed(frame_t f, int pc, int gas, char str_mem[], int n, ...)
+bool frame_immed(evm_frame_t f, int pc, int gas, char str_mem[], int n, ...)
 {
     if(pc > IGN)
     if(f.pc != pc)
@@ -89,9 +89,9 @@ bool frame_immed(frame_t f, int pc, int gas, char str_mem[], int n, ...)
 
 
 
-frame_t frame_init(bytes_t code, int gas)
+evm_frame_t frame_init(evm_bytes_t code, int gas)
 {
-    return (frame_t)
+    return (evm_frame_t)
     {
         0,
         gas,
@@ -101,51 +101,51 @@ frame_t frame_init(bytes_t code, int gas)
     };
 }
 
-void frame_free(frame_t f)
+void frame_free(evm_frame_t f)
 {
     bytes_free(&f.code);
     stack_free(&f.s);
     mem_free(f.m);
 }
 
-uchar frame_get_op(frame_p f)
+uchar frame_get_op(evm_frame_p f)
 {
     return bytes_get_byte(&f->code, f->pc);
 }
 
 
 
-frame_o_t frame_stop(frame_p f)
+evm_frame_o_t frame_stop(evm_frame_p f)
 {
-    return (frame_o_t){bytes_init_zero()};
+    return (evm_frame_o_t){bytes_init_zero()};
 }
 
-frame_o_t frame_halt(frame_p f)
+evm_frame_o_t frame_halt(evm_frame_p f)
 {
-    return (frame_o_t){bytes_init_zero()};
+    return (evm_frame_o_t){bytes_init_zero()};
 }
 
-bool frame_pop(frame_p f)
+bool frame_pop(evm_frame_p f)
 {
-    if(!stack_evm_pop(NULL, &f->s)) return false;
+    if(!stack_pop(NULL, &f->s)) return false;
     f->pc++;
 
     GAS_CONSUME(G_base);
     return true;
 }
 
-bool frame_mload(frame_p f) // TODO test
+bool frame_mload(evm_frame_p f) // TODO test
 {
-    word_t w_pos;
-    if(!stack_evm_pop(&w_pos, &f->s)) return false;
+    evm_word_t w_pos;
+    if(!stack_pop(&w_pos, &f->s)) return false;
 
     int m_size_bef = mem_get_size(&f->m);
     int m_size_aft = mem_dry_run(&f->m, w_pos.v[0]);
     int gas_expansion = (m_size_bef == m_size_aft) ? 0 : gas_mem(m_size_aft) - gas_mem(m_size_bef);
     int gas = G_very_low + gas_expansion;
 
-    word_t  w_value;
-    stack_evm_push(&f->s, &w_value);
+    evm_word_t  w_value;
+    stack_push(&f->s, &w_value);
     w_value = mem_get_word(&f->m, w_pos.v[0]);
 
     f->pc++;
@@ -154,11 +154,11 @@ bool frame_mload(frame_p f) // TODO test
     return true;
 }
 
-bool frame_mstore(frame_p f)
+bool frame_mstore(evm_frame_p f)
 {
-    word_t w_pos, w_value;
-    if(!stack_evm_pop(&w_pos, &f->s)) return false;
-    if(!stack_evm_pop(&w_value, &f->s)) return false;
+    evm_word_t w_pos, w_value;
+    if(!stack_pop(&w_pos, &f->s)) return false;
+    if(!stack_pop(&w_value, &f->s)) return false;
 
     // TODO(?) (requires w_pos < 2 ** 32)
     mem_set_word(&f->m, w_pos.v[0], &w_value);
@@ -167,7 +167,7 @@ bool frame_mstore(frame_p f)
     return true;
 }
 
-bool frame_push(frame_p f)
+bool frame_push(evm_frame_p f)
 {
     GAS_CONSUME(G_very_low);
 
@@ -176,9 +176,9 @@ bool frame_push(frame_p f)
     assert(op <= 0x7f);
 
     int size = op - 0x5f;
-    bytes_t b = bytes_get_bytes(&f->code, f->pc+1, size);
-    word_t w = word_from_bytes(&b);
-    if(!stack_evm_push(&f->s, &w)) return false;
+    evm_bytes_t b = bytes_get_bytes(&f->code, f->pc+1, size);
+    evm_word_t w = word_from_bytes(&b);
+    if(!stack_push(&f->s, &w)) return false;
     f->pc += 1 + size;
     return true;
 }
@@ -187,9 +187,9 @@ bool frame_push(frame_p f)
 
 #define REV(FN) if(!FN(&f)) return frame_halt(&f)
 
-frame_o_t frame_execute(bytes_t code, int gas)
+evm_frame_o_t frame_execute(evm_bytes_t code, int gas)
 {
-    frame_t f = frame_init(code, gas);
+    evm_frame_t f = frame_init(code, gas);
 
     while(true)
     {

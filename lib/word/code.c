@@ -14,14 +14,14 @@
 
 
 
-void word_display(word_t w)
+void word_display(evm_word_t w)
 {
     printf("0x");
     for(int i=V_MAX-1; i>=0; i--)
         uint64_t_display(w.v[i]);
 }
 
-void word_display_immed(word_t w)
+void word_display_immed(evm_word_t w)
 {
     printf("\n\t");
     word_display(w);
@@ -30,7 +30,7 @@ void word_display_immed(word_t w)
 
 
 
-bool word(word_t w1, word_t w2)
+bool word(evm_word_t w1, evm_word_t w2)
 {
     if(word_eq_bool(&w1, &w2))
         return true;
@@ -42,9 +42,9 @@ bool word(word_t w1, word_t w2)
     return false;
 }
 
-bool word_immed(word_t w, uint64_t v3, uint64_t v2, uint64_t v1, uint64_t v0)
+bool word_immed(evm_word_t w, uint64_t v3, uint64_t v2, uint64_t v1, uint64_t v0)
 {
-    word_t w_exp = WORD(v3, v2, v1, v0);
+    evm_word_t w_exp = WORD(v3, v2, v1, v0);
     return word(w, w_exp);
 }
 
@@ -52,17 +52,17 @@ bool word_immed(word_t w, uint64_t v3, uint64_t v2, uint64_t v1, uint64_t v0)
 
 
 
-word_t word_from_zero()
+evm_word_t word_from_zero()
 {
-    return (word_t){{0, 0, 0, 0}};
+    return (evm_word_t){{0, 0, 0, 0}};
 }
 
-word_t word_from_bytes(bytes_p b)
+evm_word_t word_from_bytes(evm_bytes_p b)
 {
     int size = b->size;
     assert(size <= 32);
 
-    word_t w = word_from_zero();
+    evm_word_t w = word_from_zero();
     for(int i=0; i<size; i++)
     {
         uchar u = bytes_get_byte(b, size-1-i);
@@ -74,7 +74,7 @@ word_t word_from_bytes(bytes_p b)
 
 
 
-bool word_eq_bool(word_p w1, word_p w2)
+bool word_eq_bool(evm_word_p w1, evm_word_p w2)
 {
     for(int i=0; i<V_MAX; i++)
         if(w1->v[i] != w2->v[i])
@@ -83,7 +83,7 @@ bool word_eq_bool(word_p w1, word_p w2)
     return true;
 }
 
-void word_add_immed(word_p w, int i, uint64_t v)
+void word_add_immed(evm_word_p w, int i, uint64_t v)
 {
     if(i >= V_MAX) return;
 
@@ -92,13 +92,13 @@ void word_add_immed(word_p w, int i, uint64_t v)
         word_add_immed(w, i+1, 1);
 }
 
-uchar word_get_byte(word_p w, int i)
+uchar word_get_byte(evm_word_p w, int i)
 {
     assert(i<32);
     return ((uchar*)w->v)[i];
 }
 
-void word_set_byte(word_p w, int i, uchar u)
+void word_set_byte(evm_word_p w, int i, uchar u)
 {
     assert(i<32);
     ((uchar*)w->v)[i] = u;
@@ -106,9 +106,9 @@ void word_set_byte(word_p w, int i, uchar u)
 
 
 
-word_t word_add(word_p w1, word_p w2)
+evm_word_t word_add(evm_word_p w1, evm_word_p w2)
 {
-    word_t w = *w1;
+    evm_word_t w = *w1;
     for(int i=0; i<V_MAX; i++)
         word_add_immed(&w, i, w2->v[i]);
 

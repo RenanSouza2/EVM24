@@ -13,14 +13,14 @@ void test_mem_expand()
 
     for(int i=0; i<4; i++)
     {
-        mem_t m = mem_init();
+        evm_mem_t m = mem_init();
         mem_expand(&m, 32 * i);
         assert(m.size == 32 * i);
         mem_free(m);
 
         for(int j=1; j<32; j++)
         {
-            mem_t m = mem_init();
+            evm_mem_t m = mem_init();
             mem_expand(&m, 32 * i + j);
             assert(m.size == 32 * (i + 1));
             mem_free(m);
@@ -34,8 +34,8 @@ void test_get_word()
 {
     printf("\n\t%s\t\t", __func__);
 
-    mem_t m = mem_init();
-    word_t w = mem_get_word(&m, 0);
+    evm_mem_t m = mem_init();
+    evm_word_t w = mem_get_word(&m, 0);
     assert(m.size == 32);
     assert(w.v);
     assert(word_immed(w, 0, 0, 0, 0));

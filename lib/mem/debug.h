@@ -8,11 +8,11 @@
 
 #include <stdbool.h>
 
-mem_t mem_init_immed(char str[]);
-bool mem_immed(mem_t m, char str[]);
+evm_mem_t mem_init_immed(char str[]);
+bool mem_immed(evm_mem_t m, char str[]);
 
 #endif
 
-void mem_expand(mem_p m, int i);
+void mem_expand(evm_mem_p m, int i);
 
 #endif

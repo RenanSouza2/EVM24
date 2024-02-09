@@ -9,7 +9,7 @@
 STRUCT(stack_l)
 {
     stack_l_p sl;
-    word_t w;
+    evm_word_t w;
 };
 
 #endif

@@ -12,7 +12,7 @@ void test_word_size()
 {
     printf("\n\t%s\t\t", __func__);
     
-    assert(sizeof(word_t) == 32);
+    assert(sizeof(evm_word_t) == 32);
 
     assert(mem_empty());
 }
@@ -21,7 +21,7 @@ void test_word_from_zero()
 {
     printf("\n\t%s\t\t", __func__);
     
-    word_t w = word_from_zero();
+    evm_word_t w = word_from_zero();
     assert(word_immed(w, 0, 0, 0, 0));
 
     assert(mem_empty());
@@ -31,8 +31,8 @@ void test_word_from_bytes()
 {
     printf("\n\t%s\t\t", __func__);
     
-    bytes_t b = bytes_init_immed("0x");
-    word_t w = word_from_bytes(&b);
+    evm_bytes_t b = bytes_init_immed("0x");
+    evm_word_t w = word_from_bytes(&b);
     assert(word_immed(w, 0, 0, 0, 0));
 
     b = bytes_init_immed("0xff");
@@ -56,8 +56,8 @@ void test_word_eq_bool()
 {
     printf("\n\t%s\t\t", __func__);
     
-    word_t w1 = WORD(4, 3, 2, 1);
-    word_t w2 = WORD(4, 3, 2, 1);
+    evm_word_t w1 = WORD(4, 3, 2, 1);
+    evm_word_t w2 = WORD(4, 3, 2, 1);
     assert(word_eq_bool(&w1, &w2) == true);
     
     w2 = WORD(4, 3, 2, 0);
@@ -79,7 +79,7 @@ void test_word_add_immed()
 {
     printf("\n\t%s\t\t", __func__);
     
-    word_t w = WORD(4, 3, 2, 1);
+    evm_word_t w = WORD(4, 3, 2, 1);
     word_add_immed(&w, 0, 1);
     assert(word_immed(w, 4, 3, 2, 2) == true);
 
@@ -114,7 +114,7 @@ void test_word_set_bytes()
 {
     printf("\n\t%s\t\t", __func__);
     
-    word_t w = WORD(0, 0, 0, 0);
+    evm_word_t w = WORD(0, 0, 0, 0);
     word_set_byte(&w, 0, 0xff);
     assert(word_immed(w, 0, 0, 0, 0xff));
 
@@ -143,9 +143,9 @@ void test_word_add()
 {
     printf("\n\t%s\t\t", __func__);
     
-    word_t w1 = WORD(4, 3, 2, 1);
-    word_t w2 = WORD(1, 2, 3, 4);
-    word_t w = word_add(&w1, &w2);
+    evm_word_t w1 = WORD(4, 3, 2, 1);
+    evm_word_t w2 = WORD(1, 2, 3, 4);
+    evm_word_t w = word_add(&w1, &w2);
     assert(word_immed(w, 5, 5, 5, 5) == true);
     
     w1 = WORD(U64_MAX, U64_MAX, U64_MAX, U64_MAX);

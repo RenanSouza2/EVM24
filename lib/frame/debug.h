@@ -8,19 +8,19 @@
 
 #define GAS_DEF 100000000
 
-frame_t frame_init_immed(char str_code[], int gas);
-frame_t frame_init_immed_setup(char str_code[], int gas, char str_mem[], int n, ...);
+evm_frame_t frame_init_immed(char str_code[], int gas);
+evm_frame_t frame_init_immed_setup(char str_code[], int gas, char str_mem[], int n, ...);
 
-bool frame_immed(frame_t f, int pc, int gas, char str_mem[], int n, ...);
+bool frame_immed(evm_frame_t f, int pc, int gas, char str_mem[], int n, ...);
 
 #endif
 
-frame_t frame_init(bytes_t code, int gas);
-void frame_free(frame_t f);
+evm_frame_t frame_init(evm_bytes_t code, int gas);
+void frame_free(evm_frame_t f);
 
-frame_o_t frame_stop(frame_p f);
-bool frame_pop(frame_p f);
-bool frame_mstore(frame_p f);
-bool frame_push(frame_p f);
+evm_frame_o_t frame_stop(evm_frame_p f);
+bool frame_pop(evm_frame_p f);
+bool frame_mstore(evm_frame_p f);
+bool frame_push(evm_frame_p f);
 
 #endif

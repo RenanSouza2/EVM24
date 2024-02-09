@@ -4,9 +4,9 @@
 #include "header.h"
 #include "../bytes/struct.h"
 
-typedef bytes_t mem_t;
+typedef evm_bytes_t evm_mem_t;
 
-mem_t mem_init();
-void mem_free(mem_t m);
+evm_mem_t mem_init();
+void mem_free(evm_mem_t m);
 
 #endif

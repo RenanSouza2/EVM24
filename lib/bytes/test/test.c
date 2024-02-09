@@ -29,7 +29,7 @@ void test_bytes_init_zero()
 {
     printf("\n\t%s\t\t", __func__);
 
-    bytes_t b = bytes_init_zero();
+    evm_bytes_t b = bytes_init_zero();
     assert(b.size == 0);
     assert(b.v == NULL);
 
@@ -41,7 +41,7 @@ void test_bytes_init_immed()
     printf("\n\t%s\t\t", __func__);
 
     printf("\n\t\t%s  1\t\t", __func__);
-    bytes_t b = bytes_init_immed("0x");
+    evm_bytes_t b = bytes_init_immed("0x");
     assert(b.v == NULL);
     assert(b.size == 0);
 
@@ -119,7 +119,7 @@ void test_bytes_expand()
 {
     printf("\n\t%s\t\t", __func__);
 
-    bytes_t b = bytes_init_immed("0x");
+    evm_bytes_t b = bytes_init_immed("0x");
     bytes_expand(&b, 0);
     assert(b.size == 0);
     assert(b.v == NULL);
@@ -143,7 +143,7 @@ void test_bytes_get_byte()
 {
     printf("\n\t%s\t\t", __func__);
 
-    bytes_t b = bytes_init_immed("0x");
+    evm_bytes_t b = bytes_init_immed("0x");
     assert(bytes_get_byte(&b, 0) == 0);
 
     b = bytes_init_immed("0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f");
@@ -159,7 +159,7 @@ void test_bytes_set_byte()
 {
     printf("\n\t%s\t\t", __func__);
 
-    bytes_t b = bytes_init_immed("0x");
+    evm_bytes_t b = bytes_init_immed("0x");
     bytes_set_byte(&b, 0, 0xff);
     assert(bytes_immed(b, "0xff"));
     
@@ -178,8 +178,8 @@ void test_bytes_get_word()
     printf("\n\t%s\t\t", __func__);
 
     printf("\n\t\t%s 1\t\t", __func__);
-    bytes_t b = bytes_init_immed("0x");
-    word_t w = bytes_get_word(&b, 0);
+    evm_bytes_t b = bytes_init_immed("0x");
+    evm_word_t w = bytes_get_word(&b, 0);
     assert(word_immed(w, 0, 0, 0, 0));
     bytes_free(&b);
 
@@ -218,8 +218,8 @@ void test_bytes_set_word()
 {
     printf("\n\t%s\t\t", __func__);
 
-    bytes_t b = bytes_init_immed("0x");
-    word_t w = WORD(U64_MAX, U64_MAX, U64_MAX, U64_MAX);
+    evm_bytes_t b = bytes_init_immed("0x");
+    evm_word_t w = WORD(U64_MAX, U64_MAX, U64_MAX, U64_MAX);
     bytes_set_word(&b, 0, &w);
     assert(bytes_immed(b, "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"));
     assert(bytes_get_byte(&b, 32) == 0x00);
@@ -237,8 +237,8 @@ void test_bytes_get_bytes()
 {
     printf("\n\t%s\t\t", __func__);
 
-    bytes_t b0 = bytes_init_immed("0x0001020304");
-    bytes_t b1 = bytes_get_bytes(&b0, 0, 0);
+    evm_bytes_t b0 = bytes_init_immed("0x0001020304");
+    evm_bytes_t b1 = bytes_get_bytes(&b0, 0, 0);
     assert(bytes_immed(b1, "0x"));
 
     b1 = bytes_get_bytes(&b0, 0, 6);

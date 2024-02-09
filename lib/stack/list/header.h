@@ -6,7 +6,7 @@
 
 PLACEHOLDER(stack_l);
 
-stack_l_p stack_l_create(stack_l_p sl_next, word_p w);
+stack_l_p stack_l_create(stack_l_p sl_next, evm_word_p w);
 stack_l_p stack_l_pop(stack_l_p sl);
 void stack_l_free(stack_l_p sl);
 
