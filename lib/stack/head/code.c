@@ -5,6 +5,8 @@
 #include "debug.h"
 #include "../list/struct.h"
 
+
+
 #ifdef DEBUG
 
 #include <stdarg.h>
@@ -13,7 +15,7 @@
 #include "../../word/debug.h"
 #include "../list/debug.h"
 
-void stack_evmisplay(stack_evm_t s)
+void stack_display(stack_evm_t s)
 {
     printf("\nstack");
     printf("\n\tcount: %d", s.count);
@@ -46,13 +48,13 @@ bool stack_immed_variadic(stack_evm_t s, int n, va_list args)
 {
     if(s.count != n)
     {
-        printf("\n\tSTACK ASSERTION ERROR 1 | number of word differ %d %d\t\t", s.count, n);
+        printf("\n\n\tSTACK ASSERTION ERROR | number of word differ %d %d\t\t", s.count, n);
         return false;
     }
 
     if(!stack_l_immed_variadic(s.sl, n, args))
     {
-        printf("\n\tSTACK ASSERTION ERROR 2 | STACK LIST ASSERTION ERROR\t\t");
+        printf("\n\tSTACK ASSERTION ERROR | STACK LIST ASSERTION ERROR\t\t");
         return false;
     }
 

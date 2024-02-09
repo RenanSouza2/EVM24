@@ -65,8 +65,6 @@ void test_stack_evm_pop()
 
     assert(stack_evm_pop(&w, &s) == false);
 
-
-
     assert(mem_empty());
 }
 

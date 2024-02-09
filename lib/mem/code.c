@@ -37,11 +37,25 @@ void mem_free(mem_t m)
 
 
 
+int mem_get_size(mem_p m) // TODO: test
+{
+    return m->size >> 5;
+}
+
+int mem_dry_run(mem_p m, int i) // TODO: test
+{
+    int max = i + 0x1f;
+    int m_size = m->size;
+    return (max > m_size ? max : m_size) >> 5;
+}
+
 void mem_expand(mem_p m, int i)
 {
-    int max = (i & ~31) + 32 * ((i & 31) != 0);
+    int max = (i + 0x1f) & ~0x1f;
     bytes_expand(m, max);
 }
+
+
 
 word_t mem_get_word(mem_p m, int i)
 {
