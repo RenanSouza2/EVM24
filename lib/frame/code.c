@@ -40,18 +40,24 @@ frame_t frame_init_immed_setup(char str_code[], int gas, char str_mem[], int n, 
     };
 }
 
-bool frame_immed(frame_t f, int pc, char str_mem[], int n, ...)
+bool frame_immed(frame_t f, int pc, int gas, char str_mem[], int n, ...)
 {
     if(f.pc != pc)
     {
-        printf("\n\n\tFRAME ASSERTION ERROR 1 | PC DID NOT MATCH | %d %d\n\n", f.pc, pc);
+        printf("\n\n\tFRAME ASSERTION ERROR | PC DID NOT MATCH | %d %d\n\n", f.pc, pc);
+        return false;
+    }
+
+    if(f.gas != gas)
+    {
+        printf("\n\n\tFRAME ASSERTION ERROR | GAS DID NOT MATCH | %d %d\n\n", f.gas, gas);
         return false;
     }
 
     if(str_mem)
     if(!mem_immed(f.m, str_mem))
     {
-        printf("\n\tFRAME ASSERTION ERROR 2 | MEM ASSERTION ERROR\n\n");
+        printf("\n\tFRAME ASSERTION ERROR | MEM ASSERTION ERROR\n\n");
         return false;
     }
 
@@ -59,7 +65,7 @@ bool frame_immed(frame_t f, int pc, char str_mem[], int n, ...)
     va_start(args, n);
     if(!stack_immed_variadic(f.s, n, args))
     {
-        printf("\n\tFRAME ASSERTION ERROR 3 | MEM ASSERTION ERROR\n\n");
+        printf("\n\tFRAME ASSERTION ERROR | MEM ASSERTION ERROR\n\n");
         return false;
     }
 
@@ -67,6 +73,14 @@ bool frame_immed(frame_t f, int pc, char str_mem[], int n, ...)
 }
 
 #endif
+
+
+
+#define GAS_DEDUCE(GAS)                 \
+    {                                   \
+        if(f->gas < GAS) return false;  \
+        f->gas -= GAS;                  \
+    }
 
 
 
@@ -109,6 +123,8 @@ frame_o_t frame_halt(frame_p f)
 bool frame_pop(frame_p f)
 {
     if(!stack_evm_pop(NULL, &f->s)) return false;
+
+    GAS_DEDUCE(G_base);
 
     f->pc++;
     return true;

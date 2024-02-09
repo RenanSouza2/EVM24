@@ -57,15 +57,15 @@ void test_frame_pop()
     frame_t f = frame_init_immed_setup("0x50", GAS_DEF, "0x", 2, W1(1), W1(2));
 
     assert(frame_pop(&f) == true);
-    assert(frame_immed(f, 1, NULL, 1, W1(1)));
+    assert(frame_immed(f, 1, GAS_DEF - G_base, NULL, 1, W1(1)));
 
     f.pc = 0;
     assert(frame_pop(&f) == true);
-    assert(frame_immed(f, 1, NULL, 0));
+    assert(frame_immed(f, 1, GAS_DEF - 2 * G_base, NULL, 0));
 
     f.pc = 0;
     assert(frame_pop(&f) == false);
-    assert(frame_immed(f, 0, NULL, 0));
+    assert(frame_immed(f, 0, GAS_DEF - 2 * G_base, NULL, 0));
     frame_free(f);
 
     assert(mem_empty());
@@ -77,7 +77,7 @@ void test_frame_mstore()
 
     frame_t f = frame_init_immed_setup("0x51", GAS_DEF, "0x", 2, W1(0xff), W1(0x00));
     assert(frame_mstore(&f) == true);
-    assert(frame_immed(f, 1, "0x00000000000000000000000000000000000000000000000000000000000000ff", 0));
+    assert(frame_immed(f, 1, GAS_DEF, "0x00000000000000000000000000000000000000000000000000000000000000ff", 0));
     frame_free(f);
 
     assert(mem_empty());
@@ -99,7 +99,7 @@ void test_frame_push()
         
         frame_t f = frame_init_immed(str, GAS_DEF);
         assert(frame_push(&f) == true);
-        assert(frame_immed(f, i+1, "0x", 1, w));
+        assert(frame_immed(f, i+1, GAS_DEF, "0x", 1, w));
 
         frame_free(f);
     }

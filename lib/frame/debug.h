@@ -2,6 +2,7 @@
 #define __FRAME_DEBUG_H__
 
 #include "struct.h"
+#include "../gas/header.h"
 
 #ifdef DEBUG
 
@@ -10,7 +11,7 @@
 frame_t frame_init_immed(char str_code[], int gas);
 frame_t frame_init_immed_setup(char str_code[], int gas, char str_mem[], int n, ...);
 
-bool frame_immed(frame_t f, int pc, char str_mem[], int n, ...);
+bool frame_immed(frame_t f, int pc, int gas, char str_mem[], int n, ...);
 
 #endif
 
