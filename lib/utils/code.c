@@ -29,7 +29,7 @@ bool uint64(uint64_t i1, uint64_t i2)
     printf("\n\t\t0x");uint64_display(i1);
     printf("\n\t\t0x");uint64_display(i2);
     printf("\n");
-    printf("\n\t\tUINT64 ASSERTION ERROR ");
+    printf("\n\t\tUINT64 ASSERTION ERROR\t\t");
     return false;
 }
 

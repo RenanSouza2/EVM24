@@ -67,17 +67,19 @@ bool bytes(evm_bytes_t b, evm_bytes_t b_exp)
 {
     if(b.size != b_exp.size) 
     {
-        printf("\n\n\tBYTES ASSETION ERROR 1 | DIFFERENT LENGTH | %d %d\n\n", b.size, b_exp.size);
+        printf("\n\n\tBYTES ASSERTION ERROR | DIFFERENT LENGTH | %d %d\t\t", b.size, b_exp.size);
         bytes_free(&b_exp);
         return false;
     }
     for(int i=0; i<b.size; i++)
+    {
         if(b.v[i] != b_exp.v[i])
         {
-            printf("\n\n\tBYTES ASSETION ERROR 2 | BYTE %d | %02x %02x\n\n", i, b.v[i], b_exp.v[i]);
+            printf("\n\n\tBYTES ASSERTION ERROR | BYTE %d | %02x %02x\t\t", i, b.v[i], b_exp.v[i]);
             bytes_free(&b_exp);
             return false;
         }
+    }
 
     bytes_free(&b_exp);
     return true;

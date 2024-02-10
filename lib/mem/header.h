@@ -10,5 +10,6 @@ int mem_dry_run(evm_mem_p m, int i);
 
 evm_word_t mem_get_word(evm_mem_p m, int i);
 void mem_set_word(evm_mem_p m, int i, evm_word_p w);
+void mem_set_byte(evm_mem_p m, int i, uchar u);
 
 #endif

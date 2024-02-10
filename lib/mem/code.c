@@ -19,7 +19,10 @@ evm_mem_t mem_init_immed(char str[])
 bool mem_immed(evm_mem_t m, char str[])
 {
     evm_mem_t m_exp = mem_init_immed(str);
-    return bytes(m, m_exp);
+    if(bytes(m, m_exp)) return true;
+
+    printf("\n\tMEM ASSERTTION ERROR | BYTES ASSERTTION ERROR\t\t");
+    return false;
 }
 
 #endif
@@ -38,7 +41,7 @@ void mem_free(evm_mem_t m)
 
 
 
-int mem_dry_run(evm_mem_p m, int i) // TODO: test
+int mem_dry_run(evm_mem_p m, int i)
 {
     int max = i + 0x1f;
     int m_size_aft = (max > m->size ? max : m->size) >> 5;
@@ -48,7 +51,7 @@ int mem_dry_run(evm_mem_p m, int i) // TODO: test
     return G_very_low + gas_expansion;
 }
 
-void mem_expand(evm_mem_p m, int i) // TODO test
+void mem_expand(evm_mem_p m, int i)
 {
     int max = (i + 0x1f) & ~0x1f;
     bytes_expand(m, max);
@@ -62,7 +65,7 @@ evm_word_t mem_get_word(evm_mem_p m, int i)
     return bytes_get_word(m, i);
 }
 
-void mem_set_word(evm_mem_p m, int i, evm_word_p w) // TODO test
+void mem_set_word(evm_mem_p m, int i, evm_word_p w)
 {
     mem_expand(m, i+32);
     bytes_set_word(m, i, w);

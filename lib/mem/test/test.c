@@ -9,7 +9,7 @@ void test_mem_dry_run()
 {
     printf("\n\t%s\t\t", __func__);
     
-    evm_mem_t m = mem_init_immed("0x");
+    evm_mem_t m = mem_init();
     assert(int_test(mem_dry_run(&m,   0),  3));
     assert(int_test(mem_dry_run(&m,   1),  6));
     assert(int_test(mem_dry_run(&m,  31),  6));
@@ -42,7 +42,6 @@ void test_mem_expand()
 {
     printf("\n\t%s\t\t", __func__);
     
-
     for(int i=0; i<4; i++)
     {
         evm_mem_t m = mem_init();
@@ -64,7 +63,7 @@ void test_mem_expand()
 
 
 
-void test_get_word()
+void test_mem_get_word()
 {
     printf("\n\t%s\t\t", __func__);
 
@@ -99,6 +98,43 @@ void test_get_word()
     assert(mem_empty());
 }
 
+void test_mem_set_word()
+{
+    printf("\n\t%s\t\t", __func__);
+
+    evm_mem_t m = mem_init();
+    evm_word_t w = WORD(0x0001020304050607, 0x08090a0b0c0d0e0f, 0x1011121314151617, 0x18191a1b1c1d1e1f);
+    mem_set_word(&m, 0, &w);
+    assert(mem_immed(m, "0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"));
+
+    mem_set_word(&m, 16, &w);
+    assert(mem_immed(m, "0x000102030405060708090a0b0c0d0e0f000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f00000000000000000000000000000000"));
+    mem_free(m);
+
+    assert(mem_empty());
+}
+
+void test_mem_set_byte()
+{
+    printf("\n\t%s\t\t", __func__);
+
+    evm_mem_t m = mem_init();
+    mem_set_byte(&m, 0, 0xff);
+    assert(mem_immed(m, "0xff00000000000000000000000000000000000000000000000000000000000000"));
+
+    mem_set_byte(&m, 2, 0xee);
+    assert(mem_immed(m, "0xff00ee0000000000000000000000000000000000000000000000000000000000"));
+
+    mem_set_byte(&m, 31, 0xdd);
+    assert(mem_immed(m, "0xff00ee00000000000000000000000000000000000000000000000000000000dd"));
+
+    mem_set_byte(&m, 32, 0xcc);
+    assert(mem_immed(m, "0xff00ee00000000000000000000000000000000000000000000000000000000ddcc00000000000000000000000000000000000000000000000000000000000000"));
+    mem_free(m);
+
+    assert(mem_empty());
+}
+
 
 
 void test_mem()
@@ -108,7 +144,9 @@ void test_mem()
     test_mem_dry_run();
     test_mem_expand();
 
-    test_get_word();
+    test_mem_get_word();
+    test_mem_set_word();
+    test_mem_set_byte();
 
     assert(mem_empty());
 }
