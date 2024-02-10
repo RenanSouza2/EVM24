@@ -83,8 +83,8 @@ bool frame_test_immed(evm_frame_t f, int pc, int gas, int n_mem, ...) {
 
 
 
-#define GAS_VERIFY(GAS) if(f->gas < GAS) return false
-
+#define GAS_VERIFY_DEPRECATED(GAS) if(f->gas < GAS) return false // TODO delete
+#define GAS_VERIFY(GAS, CODE) if(f->gas < GAS) return CODE
 #define GAS_CONSUME(GAS) f->gas -= GAS;
 
 
@@ -127,70 +127,57 @@ evm_frame_o_t frame_halt(evm_frame_p f)
 
 
 
-bool frame_pop(evm_frame_p f)
+int frame_pop(evm_frame_p f)
 {
-    GAS_VERIFY(G_base);
+    GAS_VERIFY(G_base, 1);
 
-    if(!stack_pop(NULL, &f->s)) return false;
+    if(!stack_pop(NULL, &f->s)) return 2;
     f->pc++;
 
     GAS_CONSUME(G_base);
-    return true;
+    return 0;
 }
 
-bool frame_mload(evm_frame_p f)
+int frame_mload(evm_frame_p f)
 {
     evm_word_t w_pos;
-    if(!stack_pop(&w_pos, &f->s)) return false;
-
-    if(!word_is_uint_64(&w_pos)) return false;
+    if(!stack_pop(&w_pos, &f->s)) return 1;
+    if(!word_is_uint_64(&w_pos)) return 2;
 
     int gas = mem_dry_run(&f->m, w_pos.v[0] + 32);
-    GAS_VERIFY(gas);
+    GAS_VERIFY(gas, 3);
     GAS_CONSUME(gas);
 
     evm_word_t w_value = mem_get_word(&f->m, w_pos.v[0]);
     assert(stack_push(&f->s, &w_value));
     f->pc++;
 
-    return true;
+    return 0;
 }
 
-bool frame_mstore(evm_frame_p f) // TODO gas
+int frame_mstore(evm_frame_p f) // TODO gas
 {
     evm_word_t w_pos, w_value;
-    if(!stack_pop(&w_pos, &f->s)) 
-    {
-        error_log("FRAME MSTORE | FIRST STACK ITEM");
-        return false;
-    };
-    if(!word_is_uint_64(&w_pos)) 
-    {
-        error_log("FRAME MSTORE | WORD TOO LARGE");
-        return false;
-    }
+    if(!stack_pop(&w_pos, &f->s))   return 1;
+    if(!word_is_uint_64(&w_pos))    return 2;
 
-    if(!stack_pop(&w_value, &f->s))
-    {
-        error_log("FRAME MSTORE | SECOND STACK ITEM");
-        return false;
-    };
+    if(!stack_pop(&w_value, &f->s)) return 3;
 
     int gas = mem_dry_run(&f->m, w_pos.v[0]+32);
-    GAS_VERIFY(gas);
+    GAS_VERIFY(gas, 4);
     GAS_CONSUME(gas);
 
     mem_set_word(&f->m, w_pos.v[0], &w_value);
     f->pc++;
     
-    return true;
+    return 0;
 }
 
 
 
-bool frame_push(evm_frame_p f)
+int frame_push(evm_frame_p f)
 {
-    GAS_VERIFY(G_very_low);
+    GAS_VERIFY(G_very_low, 1);
 
     uchar op = frame_get_op(f);
     assert(0x59 <= op);
@@ -199,34 +186,32 @@ bool frame_push(evm_frame_p f)
     int size = op - 0x5f;
     evm_bytes_t b = bytes_get_bytes(&f->code, f->pc+1, size);
     evm_word_t w = word_init_bytes(&b);
-    if(!stack_push(&f->s, &w)) return false;
+    if(!stack_push(&f->s, &w)) return 2;
     f->pc += 1 + size;
 
     GAS_CONSUME(G_very_low);
-    return true;
+    return 0;
 }
 
 
 
-#define REV(FN) if(!FN(&f)) return frame_halt(&f)
+#define REV(FN) if(FN(&f)) return frame_halt(&f)
 
 evm_frame_o_t frame_execute(evm_bytes_t code, int gas)
 {
     evm_frame_t f = frame_init(code, gas);
 
     while(true)
+    switch (frame_get_op(&f))
     {
-        switch (frame_get_op(&f))
-        {
-            case STOP: return frame_stop(&f);
+        case STOP: return frame_stop(&f);
 
-            case POP    : REV(frame_pop);
-            case MLOAD  : REV(frame_mload);
-            case MSTORE : REV(frame_mstore);
+        case POP    : REV(frame_pop);
+        case MLOAD  : REV(frame_mload);
+        case MSTORE : REV(frame_mstore);
 
-            case PUSH0 ... PUSH32: REV(frame_push);
+        case PUSH0 ... PUSH32: REV(frame_push);
 
-            default: assert(false);
-        }
+        default: assert(false);
     }
 }

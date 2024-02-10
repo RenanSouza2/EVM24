@@ -58,22 +58,22 @@ void test_frame_pop()
     printf("\n\t%s\t\t", __func__);
 
     evm_frame_t f = frame_init_immed_setup("0x50", GAS_DEF, 0, 2, W1(1), W1(2));
-    assert(frame_pop(&f) == true);
+    _assert(frame_pop(&f), 0);
     assert(frame_test_immed(f, 1, GAS_DEF - G_base, IGN, 1, W1(1)));
     frame_free(f);
 
     f = frame_init_immed_setup("0x50", GAS_DEF, 0, 1, W1(1));
-    assert(frame_pop(&f) == true);
+    _assert(frame_pop(&f), 0);
     assert(frame_test_immed(f, 1, GAS_DEF - G_base, IGN, 0));
     frame_free(f);
 
     f = frame_init_immed_setup("0x50", GAS_DEF, 0, 0);
-    assert(frame_pop(&f) == false);
+    _assert(frame_pop(&f), 2);
     assert(frame_test_immed(f, IGN, GAS_DEF, IGN, IGN));
     frame_free(f);
 
     f = frame_init_immed_setup("0x50", 1, 0, 2, W1(1), W1(2));
-    assert(frame_pop(&f) == false);
+    _assert(frame_pop(&f), 1);
     assert(frame_test_immed(f, IGN, 1, IGN, IGN));
     frame_free(f);
 
@@ -85,22 +85,22 @@ void test_frame_mload()
     printf("\n\t%s\t\t", __func__);
 
     evm_frame_t f = frame_init_immed_setup("0x51", GAS_DEF, 0, 1, W1(0x00));
-    assert(frame_mload(&f) == true);
+    _assert(frame_mload(&f), 0);
     assert(frame_test_immed(f, 1, GAS_DEF - 6, 1, W1(0x00), 1, W1(0x00)));
     frame_free(f);
 
     f = frame_init_immed_setup("0x51", GAS_DEF, 1, W1(0x00), 1, W1(0x00));
-    assert(frame_mload(&f) == true);
+    _assert(frame_mload(&f), 0);
     assert(frame_test_immed(f, 1, GAS_DEF - 3, 1, W1(0x00), 1, W1(0x00)));
     frame_free(f);
 
     f = frame_init_immed_setup("0x51", GAS_DEF, 1, W1(0xff), 1, W1(0x00));
-    assert(frame_mload(&f) == true);
+    _assert(frame_mload(&f), 0);
     assert(frame_test_immed(f, 1, GAS_DEF - 3, 1, W1(0xff), 1, W1(0xff)));
     frame_free(f);
 
     f = frame_init_immed_setup("0x51", GAS_DEF, 1, W1(0xff), 1, W1(0x10));
-    assert(frame_mload(&f) == true);
+    _assert(frame_mload(&f), 0);
     assert(frame_test_immed(f, 1, GAS_DEF - 6, 
         2, W1(0xff), W1(0x00),
         1, WORD(0, 0xff, 0, 0)
@@ -108,23 +108,23 @@ void test_frame_mload()
     frame_free(f);
 
     f = frame_init_immed_setup("0x51", GAS_DEF, 0, 0);
-    assert(frame_mload(&f) == false);
+    _assert(frame_mload(&f), 1);
+    assert(frame_test_immed(f, IGN, GAS_DEF, IGN, IGN));
+    frame_free(f);
+
+    f = frame_init_immed_setup("0x51", GAS_DEF, 1, W1(0x00), 1, WORD(0, 0, 1, 0));
+    _assert(frame_mload(&f), 2);
     assert(frame_test_immed(f, IGN, GAS_DEF, IGN, IGN));
     frame_free(f);
 
     f = frame_init_immed_setup("0x51", 4, 0, 1, W1(0x00));
-    assert(frame_mload(&f) == false);
+    _assert(frame_mload(&f), 3);
     assert(frame_test_immed(f, IGN, 4, IGN, IGN));
     frame_free(f);
 
     f = frame_init_immed_setup("0x51", 1, 1, W1(0x00), 1, W1(0x00));
-    assert(frame_mload(&f) == false);
+    _assert(frame_mload(&f), 3);
     assert(frame_test_immed(f, IGN, 1, IGN, IGN));
-    frame_free(f);
-
-    f = frame_init_immed_setup("0x51", GAS_DEF, 1, W1(0x00), 1, WORD(0, 0, 1, 0));
-    assert(frame_mload(&f) == false);
-    assert(frame_test_immed(f, IGN, GAS_DEF, IGN, IGN));
     frame_free(f);
 
     assert(mem_empty());
@@ -135,32 +135,32 @@ void test_frame_mstore()
     printf("\n\t%s\t\t", __func__);
 
     evm_frame_t f = frame_init_immed_setup("0x51", GAS_DEF, 0, 2, W1(0xff), W1(0x00));
-    assert(frame_mstore(&f) == true);
+    _assert(frame_mstore(&f), 0);
     assert(frame_test_immed(f, 1, GAS_DEF - 6, 1, W1(0xff), 0));
     frame_free(f);
 
     f = frame_init_immed_setup("0x51", GAS_DEF, 0, 0);
-    assert(frame_mstore(&f) == false);
+    _assert(frame_mstore(&f), 1);
     assert(frame_test_immed(f, IGN, GAS_DEF, IGN, IGN));
     frame_free(f);
 
     f = frame_init_immed_setup("0x51", GAS_DEF, 0, 2, W1(0), WORD(0, 0, 1, 0));
-    assert(frame_mstore(&f) == false);
+    _assert(frame_mstore(&f), 2);
     assert(frame_test_immed(f, IGN, GAS_DEF, IGN, IGN));
     frame_free(f);
 
     f = frame_init_immed_setup("0x51", GAS_DEF, 0, 1, W1(0));
-    assert(frame_mstore(&f) == false);
+    _assert(frame_mstore(&f), 3);
     assert(frame_test_immed(f, IGN, GAS_DEF, IGN, IGN));
     frame_free(f);
 
-    f = frame_init_immed_setup("0x51", 5, 0, 1, W1(0), 2, W1(0xff), W1(0x00));
-    assert(frame_mstore(&f) == false);
+    f = frame_init_immed_setup("0x51", 5, 0, 2, W1(0xff), W1(0x00));
+    _assert(frame_mstore(&f), 4);
     assert(frame_test_immed(f, IGN, 5, IGN, IGN));
     frame_free(f);
 
     f = frame_init_immed_setup("0x51", 5, 1, W1(0), 2, W1(0xff), W1(0x00));
-    assert(frame_mstore(&f) == true);
+    _assert(frame_mstore(&f), 0);
     assert(frame_test_immed(f, IGN, 2, IGN, IGN));
     frame_free(f);
 
@@ -168,7 +168,7 @@ void test_frame_mstore()
     evm_word_t w = word_init();
     for(int i=0; i<1024; i++)
         assert(stack_push(&f.s, &w));
-    assert(frame_mstore(&f) == true);
+    _assert(frame_mstore(&f), 0);
     assert(frame_test_immed(f, IGN, GAS_DEF - 6, IGN, IGN));
     frame_free(f);
 
@@ -192,7 +192,7 @@ void test_frame_push()
         memset(w.v, 0xff, i);
         
         evm_frame_t f = frame_init_immed(str, GAS_DEF);
-        assert(frame_push(&f) == true);
+        _assert(frame_push(&f), 0);
         assert(frame_test_immed(f, i+1, GAS_DEF - G_very_low, IGN, 1, w));
 
         frame_free(f);
@@ -201,13 +201,13 @@ void test_frame_push()
     evm_frame_t f = frame_init_immed("0x5f", GAS_DEF);
     evm_word_t w = word_init();
     for(int i=0; i<1024; i++)
-        assert(stack_push(&f.s, &w) == true);
-    assert(frame_push(&f) == false);
+        assert(stack_push(&f.s, &w));
+    _assert(frame_push(&f), 2);
     assert(frame_test_immed(f, IGN, GAS_DEF, IGN, IGN));
     frame_free(f);
 
     f = frame_init_immed("0x5f", 0);
-    assert(frame_push(&f) == false);
+    _assert(frame_push(&f), 1);
     assert(frame_test_immed(f, IGN, 0, IGN, IGN));
     frame_free(f);
 
