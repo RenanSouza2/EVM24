@@ -3,6 +3,8 @@
 
 #include "debug.h"
 
+
+
 #ifdef DEBUG
 
 #include "../../utils/clu/bin/header.h"
@@ -16,10 +18,10 @@ evm_mem_t mem_init_immed(char str[])
     return m;
 }
 
-bool mem_immed(evm_mem_t m, char str[])
+bool mem_test_immed(evm_mem_t m, char str[])
 {
     evm_mem_t m_exp = mem_init_immed(str);
-    if(bytes(m, m_exp)) return true;
+    if(bytes_test(m, m_exp)) return true;
 
     printf("\n\tMEM ASSERTTION ERROR | BYTES ASSERTTION ERROR\t\t");
     return false;

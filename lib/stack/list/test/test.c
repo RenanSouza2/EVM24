@@ -14,7 +14,7 @@ void test_stack_list_create()
     evm_word_t w = WORD(4, 3, 2, 1);
     stack_l_p sl = stack_l_create((stack_l_p)1, &w);
     assert(sl->sl == (stack_l_p)1);
-    assert(word_immed(w, 4, 3, 2, 1));
+    assert(word_test_immed(w, 4, 3, 2, 1));
     free(sl);
 
     sl = stack_l_create(NULL, &w);

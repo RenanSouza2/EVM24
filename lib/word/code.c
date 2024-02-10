@@ -30,10 +30,9 @@ void word_display_immed(evm_word_t w)
 
 
 
-bool word(evm_word_t w1, evm_word_t w2)
+bool word_test(evm_word_t w1, evm_word_t w2)
 {
-    if(word_eq_bool(&w1, &w2))
-        return true;
+    if(word_eq_bool(&w1, &w2)) return true;
 
     printf("\n");
     printf("\n\tword1: ");word_display(w1);
@@ -42,10 +41,10 @@ bool word(evm_word_t w1, evm_word_t w2)
     return false;
 }
 
-bool word_immed(evm_word_t w, uint64_t v3, uint64_t v2, uint64_t v1, uint64_t v0)
+bool word_test_immed(evm_word_t w, uint64_t v3, uint64_t v2, uint64_t v1, uint64_t v0)
 {
     evm_word_t w_exp = WORD(v3, v2, v1, v0);
-    return word(w, w_exp);
+    return word_test(w, w_exp);
 }
 
 #endif

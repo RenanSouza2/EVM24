@@ -161,13 +161,13 @@ void test_bytes_set_byte()
 
     evm_bytes_t b = bytes_init_immed("0x");
     bytes_set_byte(&b, 0, 0xff);
-    assert(bytes_immed(b, "0xff"));
+    assert(bytes_test_immed(b, "0xff"));
     
     bytes_set_byte(&b, 2, 0xff);
-    assert(bytes_immed(b, "0xff00ff"));
+    assert(bytes_test_immed(b, "0xff00ff"));
 
     bytes_set_byte(&b, 0, 0xfe);
-    assert(bytes_immed(b, "0xfe00ff"));
+    assert(bytes_test_immed(b, "0xfe00ff"));
     bytes_free(&b);
 
     assert(mem_empty());
@@ -180,35 +180,35 @@ void test_bytes_get_word()
     printf("\n\t\t%s 1\t\t", __func__);
     evm_bytes_t b = bytes_init_immed("0x");
     evm_word_t w = bytes_get_word(&b, 0);
-    assert(word_immed(w, 0, 0, 0, 0));
+    assert(word_test_immed(w, 0, 0, 0, 0));
     bytes_free(&b);
 
     printf("\n\t\t%s 2\t\t", __func__);
     b = bytes_init_immed("0xff");
     w = bytes_get_word(&b, 0);
-    assert(word_immed(w, U64_FF, 0, 0, 0));
+    assert(word_test_immed(w, U64_FF, 0, 0, 0));
 
     printf("\n\t\t%s 3\t\t", __func__);
     w = bytes_get_word(&b, 1);
-    assert(word_immed(w, 0, 0, 0, 0));
+    assert(word_test_immed(w, 0, 0, 0, 0));
     bytes_free(&b);
 
     printf("\n\t\t%s 4\t\t", __func__);
     b = bytes_init_immed("0x00000000000000000000000000000000000000000000000000000000000000ff");
     w = bytes_get_word(&b, 0);
-    assert(word_immed(w, 0, 0, 0, 0xff));
+    assert(word_test_immed(w, 0, 0, 0, 0xff));
 
     printf("\n\t\t%s 5\t\t", __func__);
     w = bytes_get_word(&b, 1);
-    assert(word_immed(w, 0, 0, 0, 0xff00));
+    assert(word_test_immed(w, 0, 0, 0, 0xff00));
 
     printf("\n\t\t%s 6\t\t", __func__);
     w = bytes_get_word(&b, 31);
-    assert(word_immed(w, U64_FF, 0, 0, 0));
+    assert(word_test_immed(w, U64_FF, 0, 0, 0));
 
     printf("\n\t\t%s 7\t\t", __func__);
     w = bytes_get_word(&b, 32);
-    assert(word_immed(w, 0, 0, 0, 0));
+    assert(word_test_immed(w, 0, 0, 0, 0));
     bytes_free(&b);
 
     assert(mem_empty());
@@ -221,12 +221,12 @@ void test_bytes_set_word()
     evm_bytes_t b = bytes_init_immed("0x");
     evm_word_t w = WORD(U64_MAX, U64_MAX, U64_MAX, U64_MAX);
     bytes_set_word(&b, 0, &w);
-    assert(bytes_immed(b, "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"));
+    assert(bytes_test_immed(b, "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"));
     assert(bytes_get_byte(&b, 32) == 0x00);
 
     w = WORD(0xeeeeeeeeeeeeeeee, 0xeeeeeeeeeeeeeeee, 0xeeeeeeeeeeeeeeee, 0xeeeeeeeeeeeeeeee);
     bytes_set_word(&b, 1, &w);
-    assert(bytes_immed(b, "0xffeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"));
+    assert(bytes_test_immed(b, "0xffeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"));
     assert(bytes_get_byte(&b, 33) == 0x00);
     bytes_free(&b);
 
@@ -239,14 +239,14 @@ void test_bytes_get_bytes()
 
     evm_bytes_t b0 = bytes_init_immed("0x0001020304");
     evm_bytes_t b1 = bytes_get_bytes(&b0, 0, 0);
-    assert(bytes_immed(b1, "0x"));
+    assert(bytes_test_immed(b1, "0x"));
 
     b1 = bytes_get_bytes(&b0, 0, 6);
-    assert(bytes_immed(b1, "0x000102030400"));
+    assert(bytes_test_immed(b1, "0x000102030400"));
     bytes_free(&b1);
 
     b1 = bytes_get_bytes(&b0, 2, 2);
-    assert(bytes_immed(b1, "0x0203"));
+    assert(bytes_test_immed(b1, "0x0203"));
     bytes_free(&b0);
     bytes_free(&b1);
 

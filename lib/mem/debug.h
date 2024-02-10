@@ -9,7 +9,7 @@
 #include <stdbool.h>
 
 evm_mem_t mem_init_immed(char str[]);
-bool mem_immed(evm_mem_t m, char str[]);
+bool mem_test_immed(evm_mem_t m, char str[]);
 
 #endif
 

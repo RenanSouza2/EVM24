@@ -71,28 +71,28 @@ void test_mem_get_word()
     evm_word_t w = mem_get_word(&m, 0);
     assert(m.size == 32);
     assert(w.v);
-    assert(word_immed(w, 0, 0, 0, 0));
+    assert(word_test_immed(w, 0, 0, 0, 0));
     
     w = mem_get_word(&m, 0);
     assert(m.size == 32);
     assert(w.v);
-    assert(word_immed(w, 0, 0, 0, 0));
+    assert(word_test_immed(w, 0, 0, 0, 0));
     
     bytes_set_byte(&m, 31, 0xff);
     w = mem_get_word(&m, 0);
     assert(m.size == 32);
     assert(w.v);
-    assert(word_immed(w, 0, 0, 0, 0xff));
+    assert(word_test_immed(w, 0, 0, 0, 0xff));
     
     w = mem_get_word(&m, 31);
     assert(m.size == 64);
     assert(w.v);
-    assert(word_immed(w, U64_FF, 0, 0, 0));
+    assert(word_test_immed(w, U64_FF, 0, 0, 0));
     
     w = mem_get_word(&m, 32);
     assert(m.size == 64);
     assert(w.v);
-    assert(word_immed(w, 0, 0, 0, 0));
+    assert(word_test_immed(w, 0, 0, 0, 0));
     mem_free(m);
     
     assert(mem_empty());
@@ -105,10 +105,10 @@ void test_mem_set_word()
     evm_mem_t m = mem_init();
     evm_word_t w = WORD(0x0001020304050607, 0x08090a0b0c0d0e0f, 0x1011121314151617, 0x18191a1b1c1d1e1f);
     mem_set_word(&m, 0, &w);
-    assert(mem_immed(m, "0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"));
+    assert(mem_test_immed(m, "0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"));
 
     mem_set_word(&m, 16, &w);
-    assert(mem_immed(m, "0x000102030405060708090a0b0c0d0e0f000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f00000000000000000000000000000000"));
+    assert(mem_test_immed(m, "0x000102030405060708090a0b0c0d0e0f000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f00000000000000000000000000000000"));
     mem_free(m);
 
     assert(mem_empty());
@@ -120,16 +120,16 @@ void test_mem_set_byte()
 
     evm_mem_t m = mem_init();
     mem_set_byte(&m, 0, 0xff);
-    assert(mem_immed(m, "0xff00000000000000000000000000000000000000000000000000000000000000"));
+    assert(mem_test_immed(m, "0xff00000000000000000000000000000000000000000000000000000000000000"));
 
     mem_set_byte(&m, 2, 0xee);
-    assert(mem_immed(m, "0xff00ee0000000000000000000000000000000000000000000000000000000000"));
+    assert(mem_test_immed(m, "0xff00ee0000000000000000000000000000000000000000000000000000000000"));
 
     mem_set_byte(&m, 31, 0xdd);
-    assert(mem_immed(m, "0xff00ee00000000000000000000000000000000000000000000000000000000dd"));
+    assert(mem_test_immed(m, "0xff00ee00000000000000000000000000000000000000000000000000000000dd"));
 
     mem_set_byte(&m, 32, 0xcc);
-    assert(mem_immed(m, "0xff00ee00000000000000000000000000000000000000000000000000000000ddcc00000000000000000000000000000000000000000000000000000000000000"));
+    assert(mem_test_immed(m, "0xff00ee00000000000000000000000000000000000000000000000000000000ddcc00000000000000000000000000000000000000000000000000000000000000"));
     mem_free(m);
 
     assert(mem_empty());

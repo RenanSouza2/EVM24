@@ -5,6 +5,8 @@
 
 #include "debug.h"
 
+
+
 #ifdef DEBUG
 
 #include "../../utils/clu/bin/header.h"
@@ -57,13 +59,13 @@ evm_bytes_t bytes_init_immed(char str[])
     return (evm_bytes_t){b, size};
 }
 
-bool bytes_immed(evm_bytes_t b, char str[])
+bool bytes_test_immed(evm_bytes_t b, char str[])
 {
     evm_bytes_t b_exp = bytes_init_immed(str);
-    return bytes(b, b_exp);
+    return bytes_test(b, b_exp);
 }
 
-bool bytes(evm_bytes_t b, evm_bytes_t b_exp)
+bool bytes_test(evm_bytes_t b, evm_bytes_t b_exp)
 {
     if(b.size != b_exp.size) 
     {

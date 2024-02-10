@@ -57,22 +57,22 @@ void test_frame_pop()
 
     evm_frame_t f = frame_init_immed_setup("0x50", GAS_DEF, "0x", 2, W1(1), W1(2));
     assert(frame_pop(&f) == true);
-    assert(frame_immed(f, 1, GAS_DEF - G_base, IGN_PTR, 1, W1(1)));
+    assert(frame_test_immed(f, 1, GAS_DEF - G_base, IGN_PTR, 1, W1(1)));
     frame_free(f);
 
     f = frame_init_immed_setup("0x50", GAS_DEF, "0x", 1, W1(1));
     assert(frame_pop(&f) == true);
-    assert(frame_immed(f, 1, GAS_DEF - G_base, IGN_PTR, 0));
+    assert(frame_test_immed(f, 1, GAS_DEF - G_base, IGN_PTR, 0));
     frame_free(f);
 
     f = frame_init_immed_setup("0x50", GAS_DEF, "0x", 0);
     assert(frame_pop(&f) == false);
-    assert(frame_immed(f, IGN, GAS_DEF, IGN_PTR, 0));
+    assert(frame_test_immed(f, IGN, GAS_DEF, IGN_PTR, 0));
     frame_free(f);
 
     f = frame_init_immed_setup("0x50", 1, "0x", 2, W1(1), W1(2));
     assert(frame_pop(&f) == false);
-    assert(frame_immed(f, IGN, 1, IGN_PTR, IGN));
+    assert(frame_test_immed(f, IGN, 1, IGN_PTR, IGN));
     frame_free(f);
 
     assert(mem_empty());
@@ -84,7 +84,7 @@ void test_frame_mstore()
 
     evm_frame_t f = frame_init_immed_setup("0x51", GAS_DEF, "0x", 2, W1(0xff), W1(0x00));
     assert(frame_mstore(&f) == true);
-    assert(frame_immed(f, 1, GAS_DEF, "0x00000000000000000000000000000000000000000000000000000000000000ff", 0));
+    assert(frame_test_immed(f, 1, GAS_DEF, "0x00000000000000000000000000000000000000000000000000000000000000ff", 0));
     frame_free(f);
 
     assert(mem_empty());
@@ -106,7 +106,7 @@ void test_frame_push()
         
         evm_frame_t f = frame_init_immed(str, GAS_DEF);
         assert(frame_push(&f) == true);
-        assert(frame_immed(f, i+1, GAS_DEF - G_very_low, "0x", 1, w));
+        assert(frame_test_immed(f, i+1, GAS_DEF - G_very_low, "0x", 1, w));
 
         frame_free(f);
     }
@@ -116,12 +116,12 @@ void test_frame_push()
     for(int i=0; i<1024; i++)
         assert(stack_push(&f.s, &w) == true);
     assert(frame_push(&f) == false);
-    assert(frame_immed(f, -1, GAS_DEF - G_very_low, NULL, -1));
+    assert(frame_test_immed(f, -1, GAS_DEF - G_very_low, NULL, -1));
     frame_free(f);
 
     f = frame_init_immed("0x5f", 0);
     assert(frame_push(&f) == false);
-    assert(frame_immed(f, -1, 0, NULL, 0));
+    assert(frame_test_immed(f, -1, 0, NULL, 0));
     frame_free(f);
 
     assert(mem_empty());

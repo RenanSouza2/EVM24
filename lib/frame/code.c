@@ -40,7 +40,7 @@ evm_frame_t frame_init_immed_setup(char str_code[], int gas, char str_mem[], int
     };
 }
 
-bool frame_immed(evm_frame_t f, int pc, int gas, char str_mem[], int n, ...)
+bool frame_test_immed(evm_frame_t f, int pc, int gas, char str_mem[], int n, ...)
 {
     if(pc > IGN)
     if(f.pc != pc)
@@ -57,7 +57,7 @@ bool frame_immed(evm_frame_t f, int pc, int gas, char str_mem[], int n, ...)
     }
 
     if(NOT_IGNORE(str_mem))
-    if(!mem_immed(f.m, str_mem))
+    if(!mem_test_immed(f.m, str_mem))
     {
         printf("\n\tFRAME ASSERTION ERROR | MEM ASSERTION ERROR\n\n");
         return false;
@@ -67,7 +67,7 @@ bool frame_immed(evm_frame_t f, int pc, int gas, char str_mem[], int n, ...)
     {
         va_list args;
         va_start(args, n);
-        if(!stack_immed_variadic(f.s, n, args))
+        if(!stack_test_variadic(f.s, n, args))
         {
             printf("\n\tFRAME ASSERTION ERROR | MEM ASSERTION ERROR\n\n");
             return false;
@@ -78,6 +78,7 @@ bool frame_immed(evm_frame_t f, int pc, int gas, char str_mem[], int n, ...)
 }
 
 #endif
+
 
 
 #define GAS_VERIFY(GAS) if(f->gas < GAS) return false

@@ -4,6 +4,8 @@
 
 #include "debug.h"
 
+
+
 #ifdef DEBUG
 
 #include <stdarg.h>
@@ -32,20 +34,20 @@ stack_l_p stack_l_init_immed_variadic(int n, va_list *args)
     return sl;
 }
 
-bool stack_l_immed(stack_l_p sl, int n, ...)
+bool stack_l_test_immed(stack_l_p sl, int n, ...)
 {
     va_list args;
     va_start(args, n);
-    return stack_l_immed_variadic(sl, n, args);
+    return stack_l_test_variadic(sl, n, args);
 }
 
-bool stack_l_immed_variadic(stack_l_p sl, int n, va_list args)
+bool stack_l_test_variadic(stack_l_p sl, int n, va_list args)
 {
     int i;
     for(i=0; sl && i < n; sl = sl->sl, i++)
     {
         evm_word_t w = va_arg(args, evm_word_t);
-        if(!word(sl->w, w))
+        if(!word_test(sl->w, w))
         {
             printf("\n\tSTACK LIST ASSERTION ERROR 1 | WORD ASSERTION ERROR | %d\t\t", i);
             return false;
@@ -68,6 +70,8 @@ bool stack_l_immed_variadic(stack_l_p sl, int n, va_list args)
 }
 
 #endif
+
+
 
 stack_l_p stack_l_create(stack_l_p sl_next, evm_word_p w)
 {

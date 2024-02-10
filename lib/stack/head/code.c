@@ -37,14 +37,16 @@ evm_stack_t stack_init_immed_variadic(int n, va_list *args)
     return (evm_stack_t){sl, n};
 }
 
-bool stack_immed(evm_stack_t s, int n, ...)
+
+
+bool stack_test_immed(evm_stack_t s, int n, ...)
 {
     va_list args;
     va_start(args, n);
-    return stack_immed_variadic(s, n, args);
+    return stack_test_variadic(s, n, args);
 }
 
-bool stack_immed_variadic(evm_stack_t s, int n, va_list args)
+bool stack_test_variadic(evm_stack_t s, int n, va_list args)
 {
     if(s.count != n)
     {
@@ -52,7 +54,7 @@ bool stack_immed_variadic(evm_stack_t s, int n, va_list args)
         return false;
     }
 
-    if(!stack_l_immed_variadic(s.sl, n, args))
+    if(!stack_l_test_variadic(s.sl, n, args))
     {
         printf("\n\tSTACK ASSERTION ERROR | STACK LIST ASSERTION ERROR\t\t");
         return false;
@@ -60,6 +62,8 @@ bool stack_immed_variadic(evm_stack_t s, int n, va_list args)
 
     return true;
 }
+
+
 
 bool stack_evm_push_immed(evm_stack_p s, evm_word_t w)
 {

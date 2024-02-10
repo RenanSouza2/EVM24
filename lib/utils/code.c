@@ -13,6 +13,8 @@ void uint64_display(uint64_t u)
         printf("%02hx", ((uchar*)&u)[i]);
 }
 
+
+
 bool int_test(int i1, int i2)
 {
     if(i1 == i2) return true;
@@ -21,7 +23,7 @@ bool int_test(int i1, int i2)
     return false;
 }
 
-bool uint64(uint64_t i1, uint64_t i2)
+bool uint64_test(uint64_t i1, uint64_t i2)
 {
     if(i1 == i2) return true;
 
