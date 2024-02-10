@@ -18,7 +18,7 @@ void word_display(evm_word_t w)
 {
     printf("0x");
     for(int i=V_MAX-1; i>=0; i--)
-        uint64_t_display(w.v[i]);
+        uint64_display(w.v[i]);
 }
 
 void word_display_immed(evm_word_t w)

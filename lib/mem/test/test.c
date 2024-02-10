@@ -5,6 +5,38 @@
 #include "../../utils/debug.h"
 
 
+void test_mem_dry_run()
+{
+    printf("\n\t%s\t\t", __func__);
+    
+    evm_mem_t m = mem_init_immed("0x");
+    assert(int_test(mem_dry_run(&m,   0),  3));
+    assert(int_test(mem_dry_run(&m,   1),  6));
+    assert(int_test(mem_dry_run(&m,  31),  6));
+    assert(int_test(mem_dry_run(&m,  32),  6));
+    assert(int_test(mem_dry_run(&m,  64),  9));
+    assert(int_test(mem_dry_run(&m,  96), 12));
+    assert(int_test(mem_dry_run(&m, 704), 69));
+    assert(int_test(mem_dry_run(&m, 705), 73));
+
+    m.size = 64;
+    assert(int_test(mem_dry_run(&m,   0),  3));
+    assert(int_test(mem_dry_run(&m,   1),  3));
+    assert(int_test(mem_dry_run(&m,  31),  3));
+    assert(int_test(mem_dry_run(&m,  32),  3));
+    assert(int_test(mem_dry_run(&m,  64),  3));
+    assert(int_test(mem_dry_run(&m,  96),  6));
+    assert(int_test(mem_dry_run(&m, 704), 63));
+    assert(int_test(mem_dry_run(&m, 705), 67));
+
+    m.size = 736;
+    assert(int_test(mem_dry_run(&m,    0),  3));
+    assert(int_test(mem_dry_run(&m,  736),  3));
+    assert(int_test(mem_dry_run(&m,  768),  6));
+    assert(int_test(mem_dry_run(&m, 1024), 31));
+
+    assert(mem_empty());
+}
 
 void test_mem_expand()
 {
@@ -29,6 +61,8 @@ void test_mem_expand()
 
     assert(mem_empty());
 }
+
+
 
 void test_get_word()
 {
@@ -71,7 +105,9 @@ void test_mem()
 {
     printf("\n%s\t\t", __func__);
 
+    test_mem_dry_run();
     test_mem_expand();
+
     test_get_word();
 
     assert(mem_empty());

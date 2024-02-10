@@ -6,7 +6,6 @@
 
 typedef evm_bytes_p evm_mem_p;
 
-int mem_get_size(evm_mem_p m);
 int mem_dry_run(evm_mem_p m, int i);
 
 evm_word_t mem_get_word(evm_mem_p m, int i);

@@ -80,8 +80,9 @@ bool frame_immed(evm_frame_t f, int pc, int gas, char str_mem[], int n, ...)
 #endif
 
 
+#define GAS_VERIFY(GAS) if(f->gas < GAS) return false
 
-#define GAS_CONSUME(GAS)                 \
+#define GAS_CONSUME(GAS)                \
     {                                   \
         if(f->gas < GAS) return false;  \
         f->gas -= GAS;                  \
@@ -139,18 +140,17 @@ bool frame_mload(evm_frame_p f) // TODO test
     evm_word_t w_pos;
     if(!stack_pop(&w_pos, &f->s)) return false;
 
-    int m_size_bef = mem_get_size(&f->m);
-    int m_size_aft = mem_dry_run(&f->m, w_pos.v[0]);
-    int gas_expansion = (m_size_bef == m_size_aft) ? 0 : gas_mem(m_size_aft) - gas_mem(m_size_bef);
-    int gas = G_very_low + gas_expansion;
+    for(int i=1; i<V_MAX; i++)
+        if(w_pos.v[i])
+            return false;
 
-    evm_word_t  w_value;
-    stack_push(&f->s, &w_value);
-    w_value = mem_get_word(&f->m, w_pos.v[0]);
+    int gas = mem_dry_run(&f->m, w_pos.v[0]);
+    GAS_CONSUME(gas);
 
+    evm_word_t w_value = mem_get_word(&f->m, w_pos.v[0]);
+    assert(stack_push(&f->s, &w_value));
     f->pc++;
 
-    GAS_CONSUME(gas);
     return true;
 }
 
