@@ -6,9 +6,9 @@
 
 #define S_MAX 1024
 
-STRUCT(stack_l)
+STRUCT(evm_stack_l)
 {
-    stack_l_p sl;
+    evm_stack_l_p sl;
     evm_word_t w;
 };
 

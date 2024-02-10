@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "debug.h"
+#include "../gas/header.h"
 
 
 
@@ -9,7 +10,6 @@
 
 #include "../../utils/clu/bin/header.h"
 #include "../bytes/debug.h"
-#include "../gas/header.h"
 #include "../utils/debug.h"
 
 

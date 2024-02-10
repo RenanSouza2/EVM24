@@ -6,7 +6,7 @@
 
 STRUCT(evm_stack)
 {
-    stack_l_p sl;
+    evm_stack_l_p sl;
     int count;
 };
 

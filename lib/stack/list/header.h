@@ -4,10 +4,10 @@
 #include "../../../utils/struct.h"
 #include "../../word/header.h"
 
-PLACEHOLDER(stack_l);
+PLACEHOLDER(evm_stack_l);
 
-stack_l_p stack_l_create(stack_l_p sl_next, evm_word_p w);
-stack_l_p stack_l_pop(stack_l_p sl);
-void stack_l_free(stack_l_p sl);
+evm_stack_l_p stack_l_create(evm_stack_l_p sl_next, evm_word_p w);
+evm_stack_l_p stack_l_pop(evm_stack_l_p sl);
+void stack_l_free(evm_stack_l_p sl);
 
 #endif

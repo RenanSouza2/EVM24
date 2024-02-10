@@ -27,7 +27,7 @@ void stack_display(evm_stack_t s)
 
 evm_stack_t stack_init_immed_variadic(int n, va_list *args)
 {
-    stack_l_p sl = stack_l_init_immed_variadic(n, args);
+    evm_stack_l_p sl = stack_l_init_immed_variadic(n, args);
     return (evm_stack_t){sl, n};
 }
 

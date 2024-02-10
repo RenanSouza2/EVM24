@@ -15,7 +15,7 @@
 
 
 
-void stack_l_display(stack_l_p sl)
+void stack_l_display(evm_stack_l_p sl)
 {
     for(int i=0; sl; i++, sl = sl->sl)
     {
@@ -27,9 +27,9 @@ void stack_l_display(stack_l_p sl)
 
 
 
-stack_l_p stack_l_init_immed_variadic(int n, va_list *args)
+evm_stack_l_p stack_l_init_immed_variadic(int n, va_list *args)
 {
-    stack_l_p sl = NULL;
+    evm_stack_l_p sl = NULL;
     for(int i=0; i<n; i++)
     {
         evm_word_t w = va_arg(*args, evm_word_t);
@@ -40,14 +40,14 @@ stack_l_p stack_l_init_immed_variadic(int n, va_list *args)
 
 
 
-bool stack_l_test_immed(stack_l_p sl, int n, ...)
+bool stack_l_test_immed(evm_stack_l_p sl, int n, ...)
 {
     va_list args;
     va_start(args, n);
     return stack_l_test_variadic(sl, n, &args);
 }
 
-bool stack_l_test_variadic(stack_l_p sl, int n, va_list *args)
+bool stack_l_test_variadic(evm_stack_l_p sl, int n, va_list *args)
 {
     int i;
     for(i=0; sl && i < n; sl = sl->sl, i++)
@@ -79,24 +79,24 @@ bool stack_l_test_variadic(stack_l_p sl, int n, va_list *args)
 
 
 
-stack_l_p stack_l_create(stack_l_p sl_next, evm_word_p w)
+evm_stack_l_p stack_l_create(evm_stack_l_p sl_next, evm_word_p w)
 {
-    stack_l_p sl = malloc(sizeof(stack_l_t));
+    evm_stack_l_p sl = malloc(sizeof(evm_stack_l_t));
     assert(sl);
 
-    *sl = (stack_l_t){sl_next, *w};
+    *sl = (evm_stack_l_t){sl_next, *w};
     return sl;
 }
 
-stack_l_p stack_l_pop(stack_l_p sl)
+evm_stack_l_p stack_l_pop(evm_stack_l_p sl)
 {
     assert(sl);
-    stack_l_p sl_next = sl->sl;
+    evm_stack_l_p sl_next = sl->sl;
     free(sl);
     return sl_next;
 }
 
-void stack_l_free(stack_l_p sl)
+void stack_l_free(evm_stack_l_p sl)
 {
     while(sl) sl = stack_l_pop(sl);
 }
