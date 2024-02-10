@@ -1,8 +1,6 @@
 #ifndef __WORD_DEBUG_H__
 #define __WORD_DEBUG_H__
 
-#include <stdbool.h>
-
 #include "struct.h"
 
 #ifdef DEBUG

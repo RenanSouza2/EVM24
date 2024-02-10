@@ -45,17 +45,17 @@ bool word_test(evm_word_t w1, evm_word_t w2)
 
 
 
-evm_word_t word_from_zero()
+evm_word_t word_init()
 {
     return (evm_word_t){{0, 0, 0, 0}};
 }
 
-evm_word_t word_from_bytes(evm_bytes_p b)
+evm_word_t word_init_bytes(evm_bytes_p b)
 {
     int size = b->size;
     assert(size <= 32);
 
-    evm_word_t w = word_from_zero();
+    evm_word_t w = word_init();
     for(int i=0; i<size; i++)
     {
         uchar u = bytes_get_byte(b, size-1-i);
@@ -63,6 +63,15 @@ evm_word_t word_from_bytes(evm_bytes_p b)
     }
     bytes_free(b);
     return w;
+}
+
+bool word_is_uint_64(evm_word_p w)
+{
+    for(int i=1; i<V_MAX; i++)
+        if(w->v[i])
+            return false;
+
+    return true;
 }
 
 

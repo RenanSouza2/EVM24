@@ -4,6 +4,8 @@
 
 #include "debug.h"
 
+
+
 #ifdef DEBUG
 
 #include "../../utils/clu/bin/header.h"
@@ -45,8 +47,6 @@ bool uint64_test(uint64_t i1, uint64_t i2)
 }
 
 #endif
-
-
 
 void error_log(char str[])
 {

@@ -129,7 +129,7 @@ void bytes_set_byte(evm_bytes_p b, int i, uchar u)
 
 evm_word_t bytes_get_word(evm_bytes_p b, int i)
 {
-    evm_word_t w = word_from_zero();
+    evm_word_t w = word_init();
     for(int _i = 0; _i < 32; _i++)
     {
         uchar u = bytes_get_byte(b, i+_i);

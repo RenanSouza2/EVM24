@@ -138,14 +138,12 @@ bool frame_pop(evm_frame_p f)
     return true;
 }
 
-bool frame_mload(evm_frame_p f) // TODO test
+bool frame_mload(evm_frame_p f)
 {
     evm_word_t w_pos;
     if(!stack_pop(&w_pos, &f->s)) return false;
 
-    for(int i=1; i<V_MAX; i++)
-        if(w_pos.v[i])
-            return false;
+    if(!word_is_uint_64(&w_pos)) return false;
 
     int gas = mem_dry_run(&f->m, w_pos.v[0] + 32);
     GAS_VERIFY(gas);
@@ -166,13 +164,22 @@ bool frame_mstore(evm_frame_p f) // TODO gas
         error_log("FRAME MSTORE | FIRST STACK ITEM");
         return false;
     };
+    if(!word_is_uint_64(&w_pos)) 
+    {
+        error_log("FRAME MSTORE | WORD TOO LARGE");
+        return false;
+    }
+
     if(!stack_pop(&w_value, &f->s))
     {
         error_log("FRAME MSTORE | SECOND STACK ITEM");
         return false;
     };
 
-    // TODO(?) (requires w_pos < 2 ** 32)
+    int gas = mem_dry_run(&f->m, w_pos.v[0]+32);
+    GAS_VERIFY(gas);
+    GAS_CONSUME(gas);
+
     mem_set_word(&f->m, w_pos.v[0], &w_value);
     f->pc++;
     
@@ -191,7 +198,7 @@ bool frame_push(evm_frame_p f)
 
     int size = op - 0x5f;
     evm_bytes_t b = bytes_get_bytes(&f->code, f->pc+1, size);
-    evm_word_t w = word_from_bytes(&b);
+    evm_word_t w = word_init_bytes(&b);
     if(!stack_push(&f->s, &w)) return false;
     f->pc += 1 + size;
 

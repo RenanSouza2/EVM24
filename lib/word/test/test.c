@@ -17,35 +17,54 @@ void test_word_size()
     assert(mem_empty());
 }
 
-void test_word_from_zero()
+void test_word_init()
 {
     printf("\n\t%s\t\t", __func__);
     
-    evm_word_t w = word_from_zero();
+    evm_word_t w = word_init();
     assert(word_test(w, WORD(0, 0, 0, 0)));
 
     assert(mem_empty());
 }
 
-void test_word_from_bytes()
+void test_word_init_bytes()
 {
     printf("\n\t%s\t\t", __func__);
     
     evm_bytes_t b = bytes_init_immed("0x");
-    evm_word_t w = word_from_bytes(&b);
+    evm_word_t w = word_init_bytes(&b);
     assert(word_test(w, WORD(0, 0, 0, 0)));
 
     b = bytes_init_immed("0xff");
-    w = word_from_bytes(&b);
+    w = word_init_bytes(&b);
     assert(word_test(w, WORD(0, 0, 0, 0xff)));
 
     b = bytes_init_immed("0xffee");
-    w = word_from_bytes(&b);
+    w = word_init_bytes(&b);
     assert(word_test(w, WORD(0, 0, 0, 0xffee)));
 
     b = bytes_init_immed("0xff0000000000000000");
-    w = word_from_bytes(&b);
+    w = word_init_bytes(&b);
     assert(word_test(w, WORD(0, 0, 0xff, 0)));
+
+    assert(mem_empty());
+}
+
+void test_word_is_uint_64()
+{
+    printf("\n\t%s\t\t", __func__);
+    
+    evm_word_t w = word_init();
+    assert(word_is_uint_64(&w) == true);
+
+    w = W1(U64_MAX);
+    assert(word_is_uint_64(&w) == true);
+
+    w = WORD(0, 0, 1, 0);
+    assert(word_is_uint_64(&w) == false);
+
+    w = WORD(U64_MAX, U64_MAX, U64_MAX, U64_MAX);
+    assert(word_is_uint_64(&w) == false);
 
     assert(mem_empty());
 }
@@ -168,8 +187,8 @@ void test_word()
     printf("\n%s\t\t", __func__);
 
     test_word_size();
-    test_word_from_zero();
-    test_word_from_bytes();
+    test_word_init();
+    test_word_init_bytes();
 
     test_word_eq_bool();
     test_word_add_immed();
