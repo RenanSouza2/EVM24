@@ -10,6 +10,7 @@
 #ifdef DEBUG
 
 #include "../../utils/clu/bin/header.h"
+#include "../utils/debug.h"
 
 uchar cton(uchar c)
 {
@@ -67,17 +68,18 @@ bool bytes_test_immed(evm_bytes_t b, char str[])
 
 bool bytes_test(evm_bytes_t b, evm_bytes_t b_exp)
 {
-    if(b.size != b_exp.size) 
+    if(!int_test(b.size, b_exp.size)) 
     {
-        printf("\n\n\tBYTES ASSERTION ERROR | DIFFERENT LENGTH | %d %d\t\t", b.size, b_exp.size);
+        printf("\n\n\tBYTES ASSERTION ERROR | LENGTH\t\t");
         bytes_free(&b_exp);
         return false;
     }
+
     for(int i=0; i<b.size; i++)
     {
-        if(b.v[i] != b_exp.v[i])
+        if(!uchar_test(b.v[i], b_exp.v[i]))
         {
-            printf("\n\n\tBYTES ASSERTION ERROR | BYTE %d | %02x %02x\t\t", i, b.v[i], b_exp.v[i]);
+            printf("\n\n\tBYTES ASSERTION ERROR | BYTE | %d\t\t", i);
             bytes_free(&b_exp);
             return false;
         }

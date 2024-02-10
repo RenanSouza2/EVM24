@@ -15,6 +15,14 @@ void uint64_display(uint64_t u)
 
 
 
+bool uchar_test(uchar u1, uchar u2)
+{
+    if(u1 == u2) return true;
+
+    printf("\n\n\t\tUCHAR ASSERTION ERROR | %d %d\t\t", u1, u2);
+    return false;
+}
+
 bool int_test(int i1, int i2)
 {
     if(i1 == i2) return true;

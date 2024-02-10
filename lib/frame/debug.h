@@ -9,9 +9,9 @@
 #define GAS_DEF 100000000
 
 evm_frame_t frame_init_immed(char str_code[], int gas);
-evm_frame_t frame_init_immed_setup(char str_code[], int gas, char str_mem[], int n, ...);
+evm_frame_t frame_init_immed_setup(char str_code[], int gas, int n_mem, ...);
 
-bool frame_test_immed(evm_frame_t f, int pc, int gas, char str_mem[], int n, ...);
+bool frame_test_immed(evm_frame_t f, int pc, int gas, int n_mem, ...);
 
 #endif
 

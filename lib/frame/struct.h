@@ -10,8 +10,8 @@ STRUCT(evm_frame)
     int pc;
     int gas;
     evm_bytes_t code;
-    evm_stack_t s;
     evm_mem_t m;
+    evm_stack_t s;
 };
 
 STRUCT(evm_frame_o)

@@ -5,6 +5,7 @@
 #include "../../utils/debug.h"
 
 
+
 void test_mem_dry_run()
 {
     printf("\n\t%s\t\t", __func__);
@@ -105,10 +106,13 @@ void test_mem_set_word()
     evm_mem_t m = mem_init();
     evm_word_t w = WORD(0x0001020304050607, 0x08090a0b0c0d0e0f, 0x1011121314151617, 0x18191a1b1c1d1e1f);
     mem_set_word(&m, 0, &w);
-    assert(mem_test_immed(m, "0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"));
+    assert(mem_test_immed(m, 1, w));
 
     mem_set_word(&m, 16, &w);
-    assert(mem_test_immed(m, "0x000102030405060708090a0b0c0d0e0f000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f00000000000000000000000000000000"));
+    assert(mem_test_immed(m, 2,
+        WORD(0x0001020304050607, 0x08090a0b0c0d0e0f, 0x0001020304050607, 0x08090a0b0c0d0e0f),
+        WORD(0x1011121314151617, 0x18191a1b1c1d1e1f, 0, 0)
+    ));
     mem_free(m);
 
     assert(mem_empty());
@@ -120,16 +124,19 @@ void test_mem_set_byte()
 
     evm_mem_t m = mem_init();
     mem_set_byte(&m, 0, 0xff);
-    assert(mem_test_immed(m, "0xff00000000000000000000000000000000000000000000000000000000000000"));
+    assert(mem_test_immed(m, 1, WORD(U64_FF, 0, 0, 0)));
 
     mem_set_byte(&m, 2, 0xee);
-    assert(mem_test_immed(m, "0xff00ee0000000000000000000000000000000000000000000000000000000000"));
+    assert(mem_test_immed(m, 1, WORD(0xff00ee0000000000, 0, 0, 0)));
 
     mem_set_byte(&m, 31, 0xdd);
-    assert(mem_test_immed(m, "0xff00ee00000000000000000000000000000000000000000000000000000000dd"));
+    assert(mem_test_immed(m, 1, WORD(0xff00ee0000000000, 0, 0, 0xdd)));
 
     mem_set_byte(&m, 32, 0xcc);
-    assert(mem_test_immed(m, "0xff00ee00000000000000000000000000000000000000000000000000000000ddcc00000000000000000000000000000000000000000000000000000000000000"));
+    assert(mem_test_immed(m, 2, 
+        WORD(0xff00ee0000000000, 0, 0, 0xdd),
+        WORD(0xcc00000000000000, 0, 0, 0)
+    ));
     mem_free(m);
 
     assert(mem_empty());

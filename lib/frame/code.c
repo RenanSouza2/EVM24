@@ -26,22 +26,24 @@ evm_frame_t frame_init_immed(char str_code[], int gas)
     return frame_init(code, gas);
 }
 
-evm_frame_t frame_init_immed_setup(char str_code[], int gas, char str_mem[], int n, ...)
+evm_frame_t frame_init_immed_setup(char str_code[], int gas, int n_mem, ...)
 {
     va_list args;
-    va_start(args, n);
+    va_start(args, n_mem);
     return (evm_frame_t)
     {
         0,
         gas,
         bytes_init_immed(str_code),
-        stack_init_immed_variadic(n, &args),
-        mem_init_immed(str_mem)
+        mem_init_immed_variadic(n_mem, &args),
+        stack_init_immed_variadic(va_arg(args, int), &args)
     };
 }
 
-bool frame_test_immed(evm_frame_t f, int pc, int gas, char str_mem[], int n, ...)
-{
+bool frame_test_immed(evm_frame_t f, int pc, int gas, int n_mem, ...) {
+    va_list args;
+    va_start(args, n_mem);
+
     if(pc > IGN)
     if(f.pc != pc)
     {
@@ -56,22 +58,19 @@ bool frame_test_immed(evm_frame_t f, int pc, int gas, char str_mem[], int n, ...
         return false;
     }
 
-    if(NOT_IGNORE(str_mem))
-    if(!mem_test_immed(f.m, str_mem))
+    if(n_mem > IGN)
+    if(!mem_test_variadic(f.m, n_mem, &args))
     {
-        printf("\n\tFRAME ASSERTION ERROR | MEM ASSERTION ERROR\n\n");
+        printf("\n\tFRAME ASSERTION ERROR | MEM\n\n");
         return false;
     }
 
-    if(n > IGN)
+    int n_stack = va_arg(args, int);
+    if(n_stack > IGN)
+    if(!stack_test_variadic(f.s, n_stack, &args))
     {
-        va_list args;
-        va_start(args, n);
-        if(!stack_test_variadic(f.s, n, args))
-        {
-            printf("\n\tFRAME ASSERTION ERROR | MEM ASSERTION ERROR\n\n");
-            return false;
-        }
+        printf("\n\tFRAME ASSERTION ERROR | STACK\n\n");
+        return false;
     }
 
     return true;
@@ -83,10 +82,10 @@ bool frame_test_immed(evm_frame_t f, int pc, int gas, char str_mem[], int n, ...
 
 #define GAS_VERIFY(GAS) if(f->gas < GAS) return false
 
-#define GAS_CONSUME(GAS)                \
-    {                                   \
-        if(f->gas < GAS) return false;  \
-        f->gas -= GAS;                  \
+#define GAS_CONSUME(GAS)    \
+    {                       \
+        GAS_VERIFY(GAS);    \
+        f->gas -= GAS;      \
     }
 
 
@@ -98,8 +97,8 @@ evm_frame_t frame_init(evm_bytes_t code, int gas)
         0,
         gas,
         code,
-        stack_init(),
         mem_init(),
+        stack_init(),
     };
 }
 

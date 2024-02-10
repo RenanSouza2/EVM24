@@ -37,7 +37,7 @@ bool word_test(evm_word_t w1, evm_word_t w2)
     printf("\n");
     printf("\n\tword1: ");word_display(w1);
     printf("\n\tword2: ");word_display(w2);
-    printf("\n\n\tWORD ASSERTION ERROR 1 | WORD DID NOT MATCH");
+    printf("\n\n\tWORD ASSERTION ERROR");
     return false;
 }
 

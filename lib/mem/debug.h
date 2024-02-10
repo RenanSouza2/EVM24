@@ -7,9 +7,13 @@
 #ifdef DEBUG
 
 #include <stdbool.h>
+#include <stdarg.h>
 
-evm_mem_t mem_init_immed(char str[]);
-bool mem_test_immed(evm_mem_t m, char str[]);
+evm_mem_t mem_init_immed(int n, ...);
+evm_mem_t mem_init_immed_variadic(int n, va_list *arg);
+
+bool mem_test_immed(evm_mem_t m, int n, ...);
+bool mem_test_variadic(evm_mem_t m, int n, va_list *args);
 
 #endif
 
