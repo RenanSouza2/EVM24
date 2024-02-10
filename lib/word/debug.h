@@ -14,7 +14,6 @@ void word_display(evm_word_t w);
 void word_display_immed(evm_word_t w);
 
 bool word_test(evm_word_t w1, evm_word_t w2);
-bool word_test_immed(evm_word_t w, uint64_t v3, uint64_t v2, uint64_t v1, uint64_t v0);
 
 #endif
 

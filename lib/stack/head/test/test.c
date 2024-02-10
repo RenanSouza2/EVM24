@@ -56,12 +56,12 @@ void test_stack_evm_pop()
 
     
     assert(stack_pop(&w, &s) == true);
-    assert(word_test_immed(w, 1, 2, 3, 4) == true);
-    assert(stack_test_immed(s, 1, WORD(4, 3, 2, 1)) == true);
+    assert(word_test(w, WORD(1, 2, 3, 4)));
+    assert(stack_test_immed(s, 1, WORD(4, 3, 2, 1)));
     
     assert(stack_pop(&w, &s) == true);
-    assert(word_test_immed(w, 4, 3, 2, 1) == true);
-    assert(stack_test_immed(s, 0) == true);
+    assert(word_test(w, WORD(4, 3, 2, 1)));
+    assert(stack_test_immed(s, 0));
 
     assert(stack_pop(&w, &s) == false);
 

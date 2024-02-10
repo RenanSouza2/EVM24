@@ -180,35 +180,35 @@ void test_bytes_get_word()
     printf("\n\t\t%s 1\t\t", __func__);
     evm_bytes_t b = bytes_init_immed("0x");
     evm_word_t w = bytes_get_word(&b, 0);
-    assert(word_test_immed(w, 0, 0, 0, 0));
+    assert(word_test(w, WORD(0, 0, 0, 0)));
     bytes_free(&b);
 
     printf("\n\t\t%s 2\t\t", __func__);
     b = bytes_init_immed("0xff");
     w = bytes_get_word(&b, 0);
-    assert(word_test_immed(w, U64_FF, 0, 0, 0));
+    assert(word_test(w, WORD(U64_FF, 0, 0, 0)));
 
     printf("\n\t\t%s 3\t\t", __func__);
     w = bytes_get_word(&b, 1);
-    assert(word_test_immed(w, 0, 0, 0, 0));
+    assert(word_test(w, WORD(0, 0, 0, 0)));
     bytes_free(&b);
 
     printf("\n\t\t%s 4\t\t", __func__);
     b = bytes_init_immed("0x00000000000000000000000000000000000000000000000000000000000000ff");
     w = bytes_get_word(&b, 0);
-    assert(word_test_immed(w, 0, 0, 0, 0xff));
+    assert(word_test(w, WORD(0, 0, 0, 0xff)));
 
     printf("\n\t\t%s 5\t\t", __func__);
     w = bytes_get_word(&b, 1);
-    assert(word_test_immed(w, 0, 0, 0, 0xff00));
+    assert(word_test(w, WORD(0, 0, 0, 0xff00)));
 
     printf("\n\t\t%s 6\t\t", __func__);
     w = bytes_get_word(&b, 31);
-    assert(word_test_immed(w, U64_FF, 0, 0, 0));
+    assert(word_test(w, WORD(U64_FF, 0, 0, 0)));
 
     printf("\n\t\t%s 7\t\t", __func__);
     w = bytes_get_word(&b, 32);
-    assert(word_test_immed(w, 0, 0, 0, 0));
+    assert(word_test(w, WORD(0, 0, 0, 0)));
     bytes_free(&b);
 
     assert(mem_empty());

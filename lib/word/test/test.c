@@ -22,7 +22,7 @@ void test_word_from_zero()
     printf("\n\t%s\t\t", __func__);
     
     evm_word_t w = word_from_zero();
-    assert(word_test_immed(w, 0, 0, 0, 0));
+    assert(word_test(w, WORD(0, 0, 0, 0)));
 
     assert(mem_empty());
 }
@@ -33,19 +33,19 @@ void test_word_from_bytes()
     
     evm_bytes_t b = bytes_init_immed("0x");
     evm_word_t w = word_from_bytes(&b);
-    assert(word_test_immed(w, 0, 0, 0, 0));
+    assert(word_test(w, WORD(0, 0, 0, 0)));
 
     b = bytes_init_immed("0xff");
     w = word_from_bytes(&b);
-    assert(word_test_immed(w, 0, 0, 0, 0xff));
+    assert(word_test(w, WORD(0, 0, 0, 0xff)));
 
     b = bytes_init_immed("0xffee");
     w = word_from_bytes(&b);
-    assert(word_test_immed(w, 0, 0, 0, 0xffee));
+    assert(word_test(w, WORD(0, 0, 0, 0xffee)));
 
     b = bytes_init_immed("0xff0000000000000000");
     w = word_from_bytes(&b);
-    assert(word_test_immed(w, 0, 0, 0xff, 0));
+    assert(word_test(w, WORD(0, 0, 0xff, 0)));
 
     assert(mem_empty());
 }
@@ -81,31 +81,31 @@ void test_word_add_immed()
     
     evm_word_t w = WORD(4, 3, 2, 1);
     word_add_immed(&w, 0, 1);
-    assert(word_test_immed(w, 4, 3, 2, 2) == true);
+    assert(word_test(w, WORD(4, 3, 2, 2)));
 
     w = WORD(4, 3, 2, 1);
     word_add_immed(&w, 1, 1);
-    assert(word_test_immed(w, 4, 3, 3, 1) == true);
+    assert(word_test(w, WORD(4, 3, 3, 1)));
     
     w = WORD(4, 3, 2, 1);
     word_add_immed(&w, 2, 1);
-    assert(word_test_immed(w, 4, 4, 2, 1) == true);
+    assert(word_test(w, WORD(4, 4, 2, 1)));
     
     w = WORD(4, 3, 2, 1);
     word_add_immed(&w, 3, 1);
-    assert(word_test_immed(w, 5, 3, 2, 1) == true);
+    assert(word_test(w, WORD(5, 3, 2, 1)));
     
     w = WORD(4, 3, 2, 1);
     word_add_immed(&w, 4, 1);
-    assert(word_test_immed(w, 4, 3, 2, 1) == true);
+    assert(word_test(w, WORD(4, 3, 2, 1)));
 
     w = WORD(0, 0, 0, U64_MAX);
     word_add_immed(&w, 0, 1);
-    assert(word_test_immed(w, 0, 0, 1, 0) == true);
+    assert(word_test(w, WORD(0, 0, 1, 0)));
 
     w = WORD(U64_MAX, U64_MAX, U64_MAX, U64_MAX);
     word_add_immed(&w, 0, 1);
-    assert(word_test_immed(w, 0, 0, 0, 0) == true);
+    assert(word_test(w, WORD(0, 0, 0, 0)));
 
     assert(mem_empty());
 }
@@ -116,23 +116,23 @@ void test_word_set_bytes()
     
     evm_word_t w = WORD(0, 0, 0, 0);
     word_set_byte(&w, 0, 0xff);
-    assert(word_test_immed(w, 0, 0, 0, 0xff));
+    assert(word_test(w, WORD(0, 0, 0, 0xff)));
 
     w = WORD(0, 0, 0, 0);
     word_set_byte(&w, 1, 0xff);
-    assert(word_test_immed(w, 0, 0, 0, 0xff00));
+    assert(word_test(w, WORD(0, 0, 0, 0xff00)));
 
     w = WORD(0, 0, 0, 0);
     word_set_byte(&w, 7, 0xff);
-    assert(word_test_immed(w, 0, 0, 0, U64_FF));
+    assert(word_test(w, WORD(0, 0, 0, U64_FF)));
 
     w = WORD(0, 0, 0, 0);
     word_set_byte(&w, 8, 0xff);
-    assert(word_test_immed(w, 0, 0, 0xff, 0));
+    assert(word_test(w, WORD(0, 0, 0xff, 0)));
 
     w = WORD(0, 0, 0, 0);
     word_set_byte(&w, 31, 0xff);
-    assert(word_test_immed(w, U64_FF, 0, 0, 0));
+    assert(word_test(w, WORD(U64_FF, 0, 0, 0)));
 
     assert(mem_empty());
 }
@@ -146,17 +146,17 @@ void test_word_add()
     evm_word_t w1 = WORD(4, 3, 2, 1);
     evm_word_t w2 = WORD(1, 2, 3, 4);
     evm_word_t w = word_add(&w1, &w2);
-    assert(word_test_immed(w, 5, 5, 5, 5) == true);
+    assert(word_test(w, WORD(5, 5, 5, 5)));
     
     w1 = WORD(U64_MAX, U64_MAX, U64_MAX, U64_MAX);
     w2 = WORD(0, 0, 1, 0);
     w = word_add(&w1, &w2);
-    assert(word_test_immed(w, 0, 0, 0, U64_MAX) == true);
+    assert(word_test(w, WORD(0, 0, 0, U64_MAX)));
     
     w1 = WORD(U64_MAX, U64_MAX, U64_MAX, U64_MAX);
     w2 = WORD(U64_MAX, U64_MAX, U64_MAX, U64_MAX);
     w = word_add(&w1, &w2);
-    assert(word_test_immed(w, U64_MAX, U64_MAX, U64_MAX, U64_MAX - 1) == true);
+    assert(word_test(w, WORD(U64_MAX, U64_MAX, U64_MAX, U64_MAX - 1)));
 
     assert(mem_empty());
 }

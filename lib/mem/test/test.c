@@ -71,28 +71,28 @@ void test_mem_get_word()
     evm_word_t w = mem_get_word(&m, 0);
     assert(m.size == 32);
     assert(w.v);
-    assert(word_test_immed(w, 0, 0, 0, 0));
+    assert(word_test(w, WORD(0, 0, 0, 0)));
     
     w = mem_get_word(&m, 0);
     assert(m.size == 32);
     assert(w.v);
-    assert(word_test_immed(w, 0, 0, 0, 0));
+    assert(word_test(w, WORD(0, 0, 0, 0)));
     
     bytes_set_byte(&m, 31, 0xff);
     w = mem_get_word(&m, 0);
     assert(m.size == 32);
     assert(w.v);
-    assert(word_test_immed(w, 0, 0, 0, 0xff));
+    assert(word_test(w, WORD(0, 0, 0, 0xff)));
     
     w = mem_get_word(&m, 31);
     assert(m.size == 64);
     assert(w.v);
-    assert(word_test_immed(w, U64_FF, 0, 0, 0));
+    assert(word_test(w, WORD(U64_FF, 0, 0, 0)));
     
     w = mem_get_word(&m, 32);
     assert(m.size == 64);
     assert(w.v);
-    assert(word_test_immed(w, 0, 0, 0, 0));
+    assert(word_test(w, WORD(0, 0, 0, 0)));
     mem_free(m);
     
     assert(mem_empty());

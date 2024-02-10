@@ -41,12 +41,6 @@ bool word_test(evm_word_t w1, evm_word_t w2)
     return false;
 }
 
-bool word_test_immed(evm_word_t w, uint64_t v3, uint64_t v2, uint64_t v1, uint64_t v0)
-{
-    evm_word_t w_exp = WORD(v3, v2, v1, v0);
-    return word_test(w, w_exp);
-}
-
 #endif
 
 
