@@ -5,15 +5,18 @@
 #include "debug.h"
 #include "../list/struct.h"
 
+
+
 #ifdef DEBUG
 
 #include <stdarg.h>
 
 #include "../../../utils/clu/bin/header.h"
 #include "../../word/debug.h"
+#include "../../utils/debug.h"
 #include "../list/debug.h"
 
-void stack_evmisplay(stack_evm_t s)
+void stack_display(evm_stack_t s)
 {
     printf("\nstack");
     printf("\n\tcount: %d", s.count);
@@ -22,77 +25,74 @@ void stack_evmisplay(stack_evm_t s)
     printf("\n");
 }
 
-stack_evm_t stack_init_immed(int n, ...)
+evm_stack_t stack_init_immed_variadic(int n, va_list *args)
+{
+    evm_stack_l_p sl = stack_l_init_immed_variadic(n, args);
+    return (evm_stack_t){sl, n};
+}
+
+
+
+bool stack_test_immed(evm_stack_t s, int n, ...)
 {
     va_list args;
     va_start(args, n);
-    return stack_init_immed_variadic(n, &args);
+    return stack_test_variadic(s, n, &args);
 }
 
-stack_evm_t stack_init_immed_variadic(int n, va_list *args)
+bool stack_test_variadic(evm_stack_t s, int n, va_list *args)
 {
-    stack_l_p sl = stack_l_init_immed_variadic(n, args);
-    return (stack_evm_t){sl, n};
-}
-
-bool stack_immed(stack_evm_t s, int n, ...)
-{
-    va_list args;
-    va_start(args, n);
-    return stack_immed_variadic(s, n, args);
-}
-
-bool stack_immed_variadic(stack_evm_t s, int n, va_list args)
-{
-    if(s.count != n)
+    if(!int_test(s.count, n))
     {
-        printf("\n\tSTACK ASSERTION ERROR 1 | number of word differ %d %d\t\t", s.count, n);
+        printf("\n\n\tSTACK ASSERTION ERROR | COUNT\t\t");
         return false;
     }
 
-    if(!stack_l_immed_variadic(s.sl, n, args))
+    if(!stack_l_test_variadic(s.sl, n, args))
     {
-        printf("\n\tSTACK ASSERTION ERROR 2 | STACK LIST ASSERTION ERROR\t\t");
+        printf("\n\tSTACK ASSERTION ERROR | STACK LIST\t\t");
         return false;
     }
 
     return true;
 }
 
-bool stack_evm_push_immed(stack_evm_p s, word_t w)
+
+
+int stack_push_immed(evm_stack_p s, evm_word_t w)
 {
-    return stack_evm_push(s, &w);
+    return stack_push(s, &w);
 }
 
 #endif
 
 
 
-stack_evm_t stack_init()
+evm_stack_t stack_init()
 {
-    return (stack_evm_t){NULL, 0};
+    return (evm_stack_t){NULL, 0};
 }
 
-void stack_free(stack_evm_p s)
+void stack_free(evm_stack_p s)
 {
     stack_l_free(s->sl);
 }
 
-bool stack_evm_push(stack_evm_p s, word_p w)
+int stack_push(evm_stack_p s, evm_word_p w)
 {
-    if(s->count == 1024) return false;
+    if(s->count == 1024) return 1;
 
     s->count++;
     s->sl = stack_l_create(s->sl, w);
-    return true;
+    return 0;
 }
 
-bool stack_evm_pop(word_p w, stack_evm_p s)
+int stack_pop(evm_word_p w, evm_stack_p s)
 {
-    if(s->count == 0) return false;
+    if(s->count == 0) return 1;
 
     if(w) *w = s->sl->w;
     s->count--;
     s->sl = stack_l_pop(s->sl);
-    return true;
+    return 0;
 }

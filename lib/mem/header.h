@@ -4,9 +4,12 @@
 #include "../../utils/struct.h"
 #include "../bytes/header.h"
 
-typedef bytes_p mem_p;
+typedef evm_bytes_p evm_mem_p;
 
-word_t mem_get_word(mem_p m, int i);
-void mem_set_word(mem_p m, int i, word_p w);
+int mem_dry_run(evm_mem_p m, int i);
+
+evm_word_t mem_get_word(evm_mem_p m, int i);
+void mem_set_word(evm_mem_p m, int i, evm_word_p w);
+void mem_set_byte(evm_mem_p m, int i, uchar u);
 
 #endif

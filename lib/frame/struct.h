@@ -5,17 +5,19 @@
 #include "../stack/head/struct.h"
 #include "../mem/struct.h"
 
-STRUCT(frame)
+STRUCT(evm_frame)
 {
     int pc;
-    bytes_t code;
-    stack_evm_t s;
-    mem_t m;
+    int gas;
+    evm_bytes_t code;
+    evm_mem_t m;
+    evm_stack_t s;
 };
 
-STRUCT(frame_o)
+STRUCT(evm_frame_o)
 {
-    bytes_t returndata;
+    evm_bytes_t returndata;
+    int gas;
 };
 
 #endif

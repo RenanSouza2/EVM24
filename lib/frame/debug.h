@@ -2,22 +2,39 @@
 #define __FRAME_DEBUG_H__
 
 #include "struct.h"
+#include "../gas/header.h"
 
 #ifdef DEBUG
 
-frame_t frame_init_immed(char str_code[]);
-frame_t frame_init_immed_setup(char str_code[], char str_mem[], int n, ...);
+#define GAS_DEF 100000000
 
-bool frame_immed(frame_t f, int pc, char str_mem[], int n, ...);
+evm_frame_t frame_init_immed(char str_code[], int gas);
+evm_frame_t frame_init_immed_setup(char str_code[], int gas, int n_mem, ...);
+
+bool frame_test_immed(evm_frame_t f, int pc, int gas, int n_mem, ...);
 
 #endif
 
-frame_t frame_init(bytes_t code);
-void frame_free(frame_t f);
+#define STOP 0x00
 
-frame_o_t frame_stop(frame_p f);
-bool frame_pop(frame_p f);
-bool frame_mstore(frame_p f);
-bool frame_push(frame_p f);
+#define POP         0x50
+#define MLOAD       0x51
+#define MSTORE      0x52
+#define MSTORE8     0x53
+
+#define PUSH0   0x5f
+#define PUSH32  0x7f
+
+evm_frame_t frame_init(evm_bytes_t code, int gas);
+void frame_free(evm_frame_t f);
+
+evm_frame_o_t frame_stop(evm_frame_p f);
+
+int frame_pop(evm_frame_p f);
+int frame_mload(evm_frame_p f);
+int frame_mstore(evm_frame_p f);
+int frame_mstore8(evm_frame_p f);
+
+int frame_push(evm_frame_p f);
 
 #endif

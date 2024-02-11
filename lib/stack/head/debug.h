@@ -7,12 +7,14 @@
 
 #include "../../word/struct.h"
 
-void stack_evmisplay(stack_evm_t s);
-stack_evm_t stack_init_immed_variadic(int n, va_list *args);
-stack_evm_t stack_init_immed(int n, ...);
-bool stack_immed(stack_evm_t s, int n, ...);
-bool stack_immed_variadic(stack_evm_t s, int n, va_list args);
-bool stack_evm_push_immed(stack_evm_p s, word_t w);
+void stack_display(evm_stack_t s);
+
+evm_stack_t stack_init_immed_variadic(int n, va_list *args);
+
+bool stack_test_immed(evm_stack_t s, int n, ...);
+bool stack_test_variadic(evm_stack_t s, int n, va_list *args);
+
+int stack_push_immed(evm_stack_p s, evm_word_t w);
 
 #endif
 
