@@ -143,10 +143,8 @@ int frame_mload(evm_frame_p f)
 {
     evm_word_t w_pos;
     if(stack_pop(&w_pos, &f->s)) return 1;
-    if(!word_is_uint_64(&w_pos)) return 2;
-
-    uint64_t gas = mem_dry_run(&f->m, w_pos.v[0] + 32);
-    GAS_VERIFY(gas, 3);
+    uint64_t gas = mem_dry_run(&f->m, w_pos, 32, G_very_low);
+    GAS_VERIFY(gas, 2);
     GAS_CONSUME(gas);
 
     evm_word_t w_value = mem_get_word(&f->m, w_pos.v[0]);
@@ -159,17 +157,14 @@ int frame_mload(evm_frame_p f)
 int frame_mstore(evm_frame_p f)
 {
     evm_word_t w_pos, w_value;
-    if(stack_pop(&w_pos, &f->s))   return 1;
-    if(!word_is_uint_64(&w_pos))   return 2;
-    uint64_t pos = w_pos.v[0];
-
+    if(stack_pop(&w_pos, &f->s)) return 1;
+    uint64_t gas = mem_dry_run(&f->m, w_pos, 32, G_very_low);
+    GAS_VERIFY(gas, 2);
+    
     if(stack_pop(&w_value, &f->s)) return 3;
-
-    uint64_t gas = mem_dry_run(&f->m, pos+32);
-    GAS_VERIFY(gas, 4);
     GAS_CONSUME(gas);
 
-    mem_set_word(&f->m, pos, &w_value);
+    mem_set_word(&f->m, w_pos.v[0], &w_value);
     f->pc++;
     
     return 0;
@@ -179,17 +174,14 @@ int frame_mstore8(evm_frame_p f)
 {
     evm_word_t w_pos, w_value;
     if(stack_pop(&w_pos, &f->s))   return 1;
-    if(!word_is_uint_64(&w_pos))   return 2;
-    uint64_t pos = w_pos.v[0];
+    uint64_t gas = mem_dry_run(&f->m, w_pos, 1, G_very_low);
+    GAS_VERIFY(gas, 2);
 
     if(stack_pop(&w_value, &f->s)) return 3;
-    uchar u = word_get_byte(&w_value, 0);
-
-    uint64_t gas = mem_dry_run(&f->m, pos+1);
-    GAS_VERIFY(gas, 4);
     GAS_CONSUME(gas);
-
-    mem_set_byte(&f->m, pos, u);
+    
+    uchar u = word_get_byte(&w_value, 0);
+    mem_set_byte(&f->m, w_pos.v[0], u);
     f->pc++;
     
     return 0;
@@ -224,11 +216,8 @@ evm_frame_o_t frame_return(evm_frame_p f)
     
     evm_word_t w_size;
     if(stack_pop(&w_size, &f->s)) return frame_halt(f);
-
-    evm_word_t w_end = word_add(&w_ptr, &w_size);
-    if(word_is_uint_64(&w_end)) return frame_halt(f);
-
-    uint64_t gas = mem_dry_run(&f->m, w_end.v[0]);
+    if(!word_is_uint64(&w_size)) return frame_halt(f);
+    uint64_t gas = mem_dry_run(&f->m, w_ptr, w_size.v[0], G_very_low);
     GAS_VERIFY(gas, frame_halt(f));
     GAS_CONSUME(gas);
 
@@ -253,6 +242,8 @@ evm_frame_o_t frame_execute(evm_bytes_t code, uint64_t gas)
         case MSTORE : REV(frame_mstore);
 
         case PUSH0 ... PUSH32: REV(frame_push);
+
+        case RETURN: return frame_return(&f);
 
         default: assert(false);
     }

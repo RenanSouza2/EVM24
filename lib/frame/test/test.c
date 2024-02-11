@@ -85,47 +85,31 @@ void test_frame_mload()
 {
     printf("\n\t%s\t\t", __func__);
 
-    evm_frame_t f = frame_init_immed_setup("0x51", GAS_DEF, 0, 1, W1(0x00));
+    // common case
+    evm_frame_t f = frame_init_immed_setup("0x51", GAS_DEF, 1, W1(0xff), 1, W1(0x00));
     _assert(frame_mload(&f), 0);
-    assert(frame_test_immed(f, 1, GAS_DEF - 6, 1, W1(0x00), 1, W1(0x00)));
+    assert(frame_test_immed(f, 1, GAS_DEF - 6, 1, W1(0xff), 1, W1(0xff)));
     frame_free(f);
 
-    f = frame_init_immed_setup("0x51", GAS_DEF, 1, W1(0x00), 1, W1(0x00));
-    _assert(frame_mload(&f), 0);
-    assert(frame_test_immed(f, 1, GAS_DEF - 3, 1, W1(0x00), 1, W1(0x00)));
+    // no items in stack
+    f = frame_init_immed_setup("0x51", GAS_DEF, 1, W1(0xff), 0);
+    _assert(frame_mload(&f), 1);
+    assert(frame_test_immed(f, IGN, GAS_DEF, 1, W1(0xff), 0));
     frame_free(f);
 
-    f = frame_init_immed_setup("0x51", GAS_DEF, 1, W1(0xff), 1, W1(0x00));
-    _assert(frame_mload(&f), 0);
-    assert(frame_test_immed(f, 1, GAS_DEF - 3, 1, W1(0xff), 1, W1(0xff)));
+    // no gas
+    f = frame_init_immed_setup("0x51", 0, 1, W1(0xff), 1, W1(0x00));
+    _assert(frame_mload(&f), 2);
+    assert(frame_test_immed(f, IGN, 0, 1, W1(0xff), 1, W1(0xff)));
     frame_free(f);
 
+    // split in middle
     f = frame_init_immed_setup("0x51", GAS_DEF, 1, W1(0xff), 1, W1(0x10));
     _assert(frame_mload(&f), 0);
     assert(frame_test_immed(f, 1, GAS_DEF - 6, 
         2, W1(0xff), W1(0x00),
         1, WORD(0, 0xff, 0, 0)
     ));
-    frame_free(f);
-
-    f = frame_init_immed_setup("0x51", GAS_DEF, 0, 0);
-    _assert(frame_mload(&f), 1);
-    assert(frame_test_immed(f, IGN, GAS_DEF, IGN, IGN));
-    frame_free(f);
-
-    f = frame_init_immed_setup("0x51", GAS_DEF, 1, W1(0x00), 1, WORD(0, 0, 1, 0));
-    _assert(frame_mload(&f), 2);
-    assert(frame_test_immed(f, IGN, GAS_DEF, IGN, IGN));
-    frame_free(f);
-
-    f = frame_init_immed_setup("0x51", 4, 0, 1, W1(0x00));
-    _assert(frame_mload(&f), 3);
-    assert(frame_test_immed(f, IGN, 4, IGN, IGN));
-    frame_free(f);
-
-    f = frame_init_immed_setup("0x51", 1, 1, W1(0x00), 1, W1(0x00));
-    _assert(frame_mload(&f), 3);
-    assert(frame_test_immed(f, IGN, 1, IGN, IGN));
     frame_free(f);
 
     assert(mem_empty());
@@ -135,7 +119,7 @@ void test_frame_mstore()
 {
     printf("\n\t%s\t\t", __func__);
 
-    // canonical case
+    // common case
     evm_frame_t f = frame_init_immed_setup("0x52", GAS_DEF, 0, 2, W1(0xff), W1(0x00));
     _assert(frame_mstore(&f), 0);
     assert(frame_test_immed(f, 1, GAS_DEF - 6, 1, W1(0xff), 0));
@@ -153,16 +137,16 @@ void test_frame_mstore()
     assert(frame_test_immed(f, IGN, GAS_DEF, 0, IGN));
     frame_free(f);
 
+    // gas
+    f = frame_init_immed_setup("0x52", 5, 0, 2, W1(0xff), W1(0x00));
+    _assert(frame_mstore(&f), 2);
+    assert(frame_test_immed(f, IGN, 5, 0, IGN));
+    frame_free(f);
+
     // one element in stack
     f = frame_init_immed_setup("0x52", GAS_DEF, 0, 1, W1(0));
     _assert(frame_mstore(&f), 3);
     assert(frame_test_immed(f, IGN, GAS_DEF, 0, IGN));
-    frame_free(f);
-
-    // gas
-    f = frame_init_immed_setup("0x52", 5, 0, 2, W1(0xff), W1(0x10));
-    _assert(frame_mstore(&f), 4);
-    assert(frame_test_immed(f, IGN, 5, 0, IGN));
     frame_free(f);
 
     // stack full
@@ -180,42 +164,42 @@ void test_frame_mstore8()
 {
     printf("\n\t%s\t\t", __func__);
 
-    // canonical case
-    evm_frame_t f = frame_init_immed_setup("0x53", GAS_DEF, 0, 2, WORD(U64_MAX, U64_MAX, U64_MAX, U64_MAX), W1(0x00));
+    // common case
+    evm_frame_t f = frame_init_immed_setup("0x52", GAS_DEF, 0, 2, W1(U64_MAX), W1(0x00));
     _assert(frame_mstore8(&f), 0);
-    assert(frame_test_immed(f, 1, GAS_DEF - 6, 1, WORD(U64_FF, 0, 0, 0), 0));
+    assert(frame_test_immed(f, 1, GAS_DEF - 6, 1, W1(0xff), 0));
     frame_free(f);
 
     // zero elements in stack
-    f = frame_init_immed_setup("0x53", GAS_DEF, 0, 0);
+    f = frame_init_immed_setup("0x52", GAS_DEF, 0, 0);
     _assert(frame_mstore8(&f), 1);
     assert(frame_test_immed(f, IGN, GAS_DEF, 0, IGN));
     frame_free(f);
 
     // position too high, 64bits
-    f = frame_init_immed_setup("0x53", GAS_DEF, 0, 2, W1(0), WORD(0, 0, 1, 0));
+    f = frame_init_immed_setup("0x52", GAS_DEF, 0, 2, W1(0), WORD(0, 0, 1, 0));
     _assert(frame_mstore8(&f), 2);
     assert(frame_test_immed(f, IGN, GAS_DEF, 0, IGN));
     frame_free(f);
 
+    // gas
+    f = frame_init_immed_setup("0x52", 5, 0, 2, W1(0xff), W1(0x00));
+    _assert(frame_mstore8(&f), 2);
+    assert(frame_test_immed(f, IGN, 5, 0, IGN));
+    frame_free(f);
+
     // one element in stack
-    f = frame_init_immed_setup("0x53", GAS_DEF, 0, 1, W1(0));
+    f = frame_init_immed_setup("0x52", GAS_DEF, 0, 1, W1(0));
     _assert(frame_mstore8(&f), 3);
     assert(frame_test_immed(f, IGN, GAS_DEF, 0, IGN));
     frame_free(f);
 
-    // gas
-    f = frame_init_immed_setup("0x53", 5, 0, 2, W1(0xff), W1(0x10));
-    _assert(frame_mstore8(&f), 4);
-    assert(frame_test_immed(f, IGN, 5, 0, IGN));
-    frame_free(f);
-
     // stack full
-    f = frame_init_immed_setup("0x53", GAS_DEF, 0, 0);
+    f = frame_init_immed_setup("0x52", GAS_DEF, 0, 0);
     for(int i=0; i<1024; i++)
         assert(!stack_push_immed(&f.s, W1(i)));
     _assert(frame_mstore8(&f), 0);
-    assert(frame_test_immed(f, IGN, GAS_DEF - 101, IGN, IGN));
+    assert(frame_test_immed(f, IGN, GAS_DEF - 104, IGN, IGN));
     frame_free(f);
 
     assert(mem_empty());

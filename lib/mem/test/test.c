@@ -11,32 +11,39 @@ void test_mem_dry_run()
     printf("\n\t%s\t\t", __func__);
     
     evm_mem_t m = mem_init();
-    _assert(mem_dry_run(&m,   0),  3);
-    _assert(mem_dry_run(&m,   1),  6);
-    _assert(mem_dry_run(&m,  31),  6);
-    _assert(mem_dry_run(&m,  32),  6);
-    _assert(mem_dry_run(&m,  64),  9);
-    _assert(mem_dry_run(&m,  96), 12);
-    _assert(mem_dry_run(&m, 704), 69);
-    _assert(mem_dry_run(&m, 705), 73);
+    assert_64(mem_dry_run(&m, W1(  0), 0, 3),  3);
+    assert_64(mem_dry_run(&m, W1(  1), 0, 3),  6);
+    assert_64(mem_dry_run(&m, W1( 31), 0, 3),  6);
+    assert_64(mem_dry_run(&m, W1( 32), 0, 3),  6);
+    assert_64(mem_dry_run(&m, W1( 64), 0, 3),  9);
+    assert_64(mem_dry_run(&m, W1( 96), 0, 3), 12);
+    assert_64(mem_dry_run(&m, W1(704), 0, 3), 69);
+    assert_64(mem_dry_run(&m, W1(705), 0, 3), 73);
 
     m.size = 64;
-    _assert(mem_dry_run(&m,   0),  3);
-    _assert(mem_dry_run(&m,   1),  3);
-    _assert(mem_dry_run(&m,  31),  3);
-    _assert(mem_dry_run(&m,  32),  3);
-    _assert(mem_dry_run(&m,  64),  3);
-    _assert(mem_dry_run(&m,  96),  6);
-    _assert(mem_dry_run(&m, 704), 63);
-    _assert(mem_dry_run(&m, 705), 67);
+    assert_64(mem_dry_run(&m, W1(  0), 0, 3),  3);
+    assert_64(mem_dry_run(&m, W1(  1), 0, 3),  3);
+    assert_64(mem_dry_run(&m, W1( 31), 0, 3),  3);
+    assert_64(mem_dry_run(&m, W1( 32), 0, 3),  3);
+    assert_64(mem_dry_run(&m, W1( 64), 0, 3),  3);
+    assert_64(mem_dry_run(&m, W1( 96), 0, 3),  6);
+    assert_64(mem_dry_run(&m, W1(704), 0, 3), 63);
+    assert_64(mem_dry_run(&m, W1(705), 0, 3), 67);
 
     m.size = 736;
-    _assert(mem_dry_run(&m,    0),  3);
-    _assert(mem_dry_run(&m,  736),  3);
-    _assert(mem_dry_run(&m,  768),  6);
-    _assert(mem_dry_run(&m, 1024), 31);
+    assert_64(mem_dry_run(&m, W1(   0), 0, 3),  3);
+    assert_64(mem_dry_run(&m, W1( 736), 0, 3),  3);
+    assert_64(mem_dry_run(&m, W1( 768), 0, 3),  6);
+    assert_64(mem_dry_run(&m, W1(1024), 0, 3), 31);
 
-    assert(mem_empty());
+    assert_64(mem_dry_run(&m, W1(U64_MAX), 0, 3), U64_MAX);
+    assert_64(mem_dry_run(&m, W1(U64_MAX), 1, 3), U64_MAX);
+    assert_64(mem_dry_run(&m, W1(0xffffffffffff), 0, 3), U64_MAX);
+    assert_64(mem_dry_run(&m,   WORD(0, 0, 1, 0), 0, 3), U64_MAX);
+    
+    assert_64(mem_dry_run(&m, W1(1024), 0, U64_MAX), U64_MAX);
+
+    assert(mem_empty()); 
 }
 
 void test_mem_expand()

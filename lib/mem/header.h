@@ -6,7 +6,7 @@
 
 typedef evm_bytes_p evm_mem_p;
 
-int mem_dry_run(evm_mem_p m, uint64_t pos);
+uint64_t mem_dry_run(evm_mem_p m, evm_word_t w_pos, uint64_t size, uint64_t gas_base);
 
 evm_word_t mem_get_word(evm_mem_p m, uint64_t pos);
 evm_bytes_t mem_get_bytes(evm_mem_p m, uint64_t pos, uint64_t size);

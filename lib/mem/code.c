@@ -74,14 +74,25 @@ void mem_free(evm_mem_t m)
 
 
 
-int mem_dry_run(evm_mem_p m, uint64_t i)
+uint64_t mem_dry_run(evm_mem_p m, evm_word_t w_pos, uint64_t size, uint64_t gas_base)
 {
-    int max = i + 0x1f;
-    int m_size_aft = (max > m->size ? max : m->size) >> 5;
+    word_add_uint64(&w_pos, 0, size);
+    word_add_uint64(&w_pos, 0, 0x1f);
+    if(!word_is_uint64(&w_pos)) return UINT64_MAX;
 
-    int m_size_bef = m->size >> 5;
-    int gas_expansion = (m_size_bef == m_size_aft) ? 0 : gas_mem(m_size_aft) - gas_mem(m_size_bef);
-    return G_very_low + gas_expansion;
+    uint64_t max = w_pos.v[0];
+    uint64_t m_size_aft = (max > m->size ? max : m->size) >> 5;
+    uint64_t m_size_bef = m->size >> 5;
+    if(m_size_bef == m_size_aft) return gas_base;
+
+    uint64_t gas_after = gas_mem(m_size_aft);
+    if(gas_after == UINT64_MAX) return UINT64_MAX;
+
+    uint64_t gas_expansion = gas_after - gas_mem(m_size_bef);
+    if(!gas_base) return gas_expansion;
+    
+    uint64_t gas = gas_expansion + gas_base;
+    return (gas < gas_expansion) ? UINT64_MAX : gas;
 }
 
 void mem_expand(evm_mem_p m, uint64_t i)

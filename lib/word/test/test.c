@@ -31,19 +31,19 @@ void test_word_init_uint_64()
 {
     printf("\n\t%s\t\t", __func__);
     
-    evm_word_t w = word_init_uint_64(0);
+    evm_word_t w = word_init_uint64(0);
     assert(word_test(w, W1(0)));
     
-    w = word_init_uint_64(1);
+    w = word_init_uint64(1);
     assert(word_test(w, W1(1)));
     
-    w = word_init_uint_64(0xff);
+    w = word_init_uint64(0xff);
     assert(word_test(w, W1(0xff)));
     
-    w = word_init_uint_64(U64_FF);
+    w = word_init_uint64(U64_FF);
     assert(word_test(w, W1(U64_FF)));
     
-    w = word_init_uint_64(U64_MAX);
+    w = word_init_uint64(U64_MAX);
     assert(word_test(w, W1(U64_MAX)));
 
     assert(mem_empty());
@@ -79,16 +79,16 @@ void test_word_is_uint_64()
     printf("\n\t%s\t\t", __func__);
     
     evm_word_t w = word_init();
-    assert(word_is_uint_64(&w) == true);
+    assert(word_is_uint64(&w) == true);
 
     w = W1(U64_MAX);
-    assert(word_is_uint_64(&w) == true);
+    assert(word_is_uint64(&w) == true);
 
     w = WORD(0, 0, 1, 0);
-    assert(word_is_uint_64(&w) == false);
+    assert(word_is_uint64(&w) == false);
 
     w = WORD(U64_MAX, U64_MAX, U64_MAX, U64_MAX);
-    assert(word_is_uint_64(&w) == false);
+    assert(word_is_uint64(&w) == false);
 
     assert(mem_empty());
 }
@@ -116,36 +116,40 @@ void test_word_eq_bool()
     assert(mem_empty());
 }
 
-void test_word_add_immed()
+void test_word_add_uint64()
 {
     printf("\n\t%s\t\t", __func__);
     
     evm_word_t w = WORD(4, 3, 2, 1);
-    word_add_immed(&w, 0, 1);
+    word_add_uint64(&w, 0, 1);
     assert(word_test(w, WORD(4, 3, 2, 2)));
 
     w = WORD(4, 3, 2, 1);
-    word_add_immed(&w, 1, 1);
+    word_add_uint64(&w, 1, 1);
     assert(word_test(w, WORD(4, 3, 3, 1)));
     
     w = WORD(4, 3, 2, 1);
-    word_add_immed(&w, 2, 1);
+    word_add_uint64(&w, 2, 1);
     assert(word_test(w, WORD(4, 4, 2, 1)));
     
     w = WORD(4, 3, 2, 1);
-    word_add_immed(&w, 3, 1);
+    word_add_uint64(&w, 3, 1);
     assert(word_test(w, WORD(5, 3, 2, 1)));
     
     w = WORD(4, 3, 2, 1);
-    word_add_immed(&w, 4, 1);
+    word_add_uint64(&w, 4, 1);
     assert(word_test(w, WORD(4, 3, 2, 1)));
 
+    w = W1(0xffffffffff);
+    word_add_uint64(&w, 0, 0x1f);
+    assert(word_test(w, W1(0x1000000001e)));
+
     w = W1(U64_MAX);
-    word_add_immed(&w, 0, 1);
+    word_add_uint64(&w, 0, 1);
     assert(word_test(w, WORD(0, 0, 1, 0)));
 
     w = WORD(U64_MAX, U64_MAX, U64_MAX, U64_MAX);
-    word_add_immed(&w, 0, 1);
+    word_add_uint64(&w, 0, 1);
     assert(word_test(w, W1(0)));
 
     assert(mem_empty());
@@ -215,7 +219,7 @@ void test_word()
 
     test_word_is_uint_64();
     test_word_eq_bool();
-    test_word_add_immed();
+    test_word_add_uint64();
     test_word_set_bytes();
 
     test_word_add();

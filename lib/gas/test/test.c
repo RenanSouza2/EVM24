@@ -6,13 +6,14 @@
 
 void test_gas_mem()
 {
-    printf("\n%s\t\t", __func__);
+    printf("\n\t%s\t\t", __func__);
 
     assert_64(gas_mem( 0),  0);
     assert_64(gas_mem( 1),  3);
     assert_64(gas_mem(22), 66);
     assert_64(gas_mem(23), 70);
     assert_64(gas_mem(32), 98);
+    assert_64(gas_mem(0xffffffffff), U64_MAX);
     assert_64(gas_mem(U64_MAX), U64_MAX);
 
     assert(mem_empty());
