@@ -12,6 +12,8 @@
 #include "../../utils/clu/bin/header.h"
 #include "../utils/debug.h"
 
+
+
 uchar cton(uchar c)
 {
     switch (c)
@@ -25,19 +27,19 @@ uchar cton(uchar c)
 
 void bytes_display(evm_bytes_t b)
 {
-    printf("\n\nbytes (%d):", b.size);
+    printf("\n\nbytes (%llu):", b.size);
     printf("\n");
-    for(int i=0; i< b.size >> 5; i++)
+    for(uint64_t i=0; i< b.size >> 5; i++)
     {
         printf("\n\t0x");
-        for(int j=0; j<32; j++)
+        for(uint64_t j=0; j<32; j++)
             printf("%02x", b.v[(i << 5) + j]);
     }
     if(b.size % 32)
     {
-        int i= b.size & ~31;
+        uint64_t i = b.size & ~31;
         printf("\n\t0x");
-        for(int j=i; j<b.size; j++)
+        for(uint64_t j=i; j<b.size; j++)
             printf("%02x", b.v[j]);
     }
     printf("\n");
@@ -45,16 +47,16 @@ void bytes_display(evm_bytes_t b)
 
 evm_bytes_t bytes_init_immed(char str[])
 {
-    int len = strlen(str);
+    uint64_t len = strlen(str);
     assert(len > 1);
     assert(str[0] == '0');
     assert(str[1] == 'x');
 
     if(len == 2) return (evm_bytes_t){NULL, 0};
 
-    int size = len / 2 - 1;
+    uint64_t size = len / 2 - 1;
     uchar *b = malloc(size);
-    for(int i=0; i<size; i++)
+    for(uint64_t i=0; i<size; i++)
         b[i] = (cton(str[2 * i + 2]) << 4) | cton(str[2 * i + 3]);
 
     return (evm_bytes_t){b, size};
@@ -75,11 +77,11 @@ bool bytes_test(evm_bytes_t b, evm_bytes_t b_exp)
         return false;
     }
 
-    for(int i=0; i<b.size; i++)
+    for(uint64_t i=0; i<b.size; i++)
     {
         if(!uchar_test(b.v[i], b_exp.v[i]))
         {
-            printf("\n\tBYTES ASSERTION ERROR | BYTE | %d\t\t", i);
+            printf("\n\tBYTES ASSERTION ERROR | BYTE | %lld\t\t", i);
             bytes_free(&b_exp);
             return false;
         }
@@ -105,32 +107,32 @@ void bytes_free(evm_bytes_p b)
 
 
 
-uchar bytes_get_byte(evm_bytes_p b, int i)
+uchar bytes_get_byte(evm_bytes_p b, uint64_t i)
 {
     assert(i >= 0);
     return i < b->size ? b->v[i] : 0;
 }
 
-void bytes_expand(evm_bytes_p b, int size)
+void bytes_expand(evm_bytes_p b, uint64_t size)
 {
     if(size <= b->size) return;
 
-    int size_prev = b->size;
+    uint64_t size_prev = b->size;
     b->size = size;
     b->v = realloc(b->v, size);
     memset(&b->v[size_prev], 0, size - size_prev);
 }
 
-void bytes_set_byte(evm_bytes_p b, int i, uchar u)
+void bytes_set_byte(evm_bytes_p b, uint64_t i, uchar u)
 {
     bytes_expand(b, i+1);
     b->v[i] = u;
 }
 
-evm_word_t bytes_get_word(evm_bytes_p b, int i)
+evm_word_t bytes_get_word(evm_bytes_p b, uint64_t i)
 {
     evm_word_t w = word_init();
-    for(int _i = 0; _i < 32; _i++)
+    for(int _i=0; _i<32; _i++)
     {
         uchar u = bytes_get_byte(b, i+_i);
         word_set_byte(&w, 31-_i, u);
@@ -138,20 +140,20 @@ evm_word_t bytes_get_word(evm_bytes_p b, int i)
     return w;
 }
 
-void bytes_set_word(evm_bytes_p b, int i, evm_word_p w)
+void bytes_set_word(evm_bytes_p b, uint64_t i, evm_word_p w)
 {
     bytes_expand(b, i+32);
-    for(int _i=0; _i < 32; _i++)
+    for(int _i=0; _i<32; _i++)
         b->v[i + _i] = word_get_byte(w, 31-_i);
 }
 
-evm_bytes_t bytes_get_bytes(evm_bytes_p b, int i, int size)
+evm_bytes_t bytes_get_bytes(evm_bytes_p b, uint64_t i, uint64_t size)
 {
     if(size == 0) return (evm_bytes_t){NULL, 0};
     
     uchar *v = calloc(size, 1);
     assert(v);
-    for(int _i = 0; _i < size; _i++)
+    for(uint64_t _i = 0; _i < size; _i++)
         v[_i] = bytes_get_byte(b, i+_i);
     
     return (evm_bytes_t){v, size};

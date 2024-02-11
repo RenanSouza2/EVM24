@@ -16,6 +16,6 @@ bool mem_test_variadic(evm_mem_t m, int n, va_list *args);
 
 #endif
 
-void mem_expand(evm_mem_p m, int i);
+void mem_expand(evm_mem_p m, uint64_t pos);
 
 #endif

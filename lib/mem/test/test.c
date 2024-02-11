@@ -11,30 +11,30 @@ void test_mem_dry_run()
     printf("\n\t%s\t\t", __func__);
     
     evm_mem_t m = mem_init();
-    assert(int_test(mem_dry_run(&m,   0),  3));
-    assert(int_test(mem_dry_run(&m,   1),  6));
-    assert(int_test(mem_dry_run(&m,  31),  6));
-    assert(int_test(mem_dry_run(&m,  32),  6));
-    assert(int_test(mem_dry_run(&m,  64),  9));
-    assert(int_test(mem_dry_run(&m,  96), 12));
-    assert(int_test(mem_dry_run(&m, 704), 69));
-    assert(int_test(mem_dry_run(&m, 705), 73));
+    _assert(mem_dry_run(&m,   0),  3);
+    _assert(mem_dry_run(&m,   1),  6);
+    _assert(mem_dry_run(&m,  31),  6);
+    _assert(mem_dry_run(&m,  32),  6);
+    _assert(mem_dry_run(&m,  64),  9);
+    _assert(mem_dry_run(&m,  96), 12);
+    _assert(mem_dry_run(&m, 704), 69);
+    _assert(mem_dry_run(&m, 705), 73);
 
     m.size = 64;
-    assert(int_test(mem_dry_run(&m,   0),  3));
-    assert(int_test(mem_dry_run(&m,   1),  3));
-    assert(int_test(mem_dry_run(&m,  31),  3));
-    assert(int_test(mem_dry_run(&m,  32),  3));
-    assert(int_test(mem_dry_run(&m,  64),  3));
-    assert(int_test(mem_dry_run(&m,  96),  6));
-    assert(int_test(mem_dry_run(&m, 704), 63));
-    assert(int_test(mem_dry_run(&m, 705), 67));
+    _assert(mem_dry_run(&m,   0),  3);
+    _assert(mem_dry_run(&m,   1),  3);
+    _assert(mem_dry_run(&m,  31),  3);
+    _assert(mem_dry_run(&m,  32),  3);
+    _assert(mem_dry_run(&m,  64),  3);
+    _assert(mem_dry_run(&m,  96),  6);
+    _assert(mem_dry_run(&m, 704), 63);
+    _assert(mem_dry_run(&m, 705), 67);
 
     m.size = 736;
-    assert(int_test(mem_dry_run(&m,    0),  3));
-    assert(int_test(mem_dry_run(&m,  736),  3));
-    assert(int_test(mem_dry_run(&m,  768),  6));
-    assert(int_test(mem_dry_run(&m, 1024), 31));
+    _assert(mem_dry_run(&m,    0),  3);
+    _assert(mem_dry_run(&m,  736),  3);
+    _assert(mem_dry_run(&m,  768),  6);
+    _assert(mem_dry_run(&m, 1024), 31);
 
     assert(mem_empty());
 }

@@ -7,10 +7,10 @@
 STRUCT(evm_bytes)
 {
     uchar *v;
-    int size;
+    uint64_t size;
 };
 
 evm_bytes_t bytes_init_zero();
-evm_bytes_t bytes_get_bytes(evm_bytes_p b, int i, int size);
+evm_bytes_t bytes_get_bytes(evm_bytes_p b, uint64_t i, uint64_t size);
 
 #endif

@@ -8,10 +8,10 @@
 
 #define GAS_DEF 100000000
 
-evm_frame_t frame_init_immed(char str_code[], int gas);
-evm_frame_t frame_init_immed_setup(char str_code[], int gas, int n_mem, ...);
+evm_frame_t frame_init_immed(char str_code[], uint64_t gas);
+evm_frame_t frame_init_immed_setup(char str_code[], uint64_t gas, uint64_t n_mem, ...);
 
-bool frame_test_immed(evm_frame_t f, int pc, int gas, int n_mem, ...);
+bool frame_test_immed(evm_frame_t f, uint64_t pc, uint64_t gas, uint64_t n_mem, ...);
 
 #endif
 
@@ -25,7 +25,9 @@ bool frame_test_immed(evm_frame_t f, int pc, int gas, int n_mem, ...);
 #define PUSH0   0x5f
 #define PUSH32  0x7f
 
-evm_frame_t frame_init(evm_bytes_t code, int gas);
+#define RETURN  0xf3
+
+evm_frame_t frame_init(evm_bytes_t code, uint64_t gas);
 void frame_free(evm_frame_t f);
 
 evm_frame_o_t frame_stop(evm_frame_p f);

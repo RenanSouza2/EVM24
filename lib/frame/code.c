@@ -18,13 +18,13 @@
 #include "../utils/debug.h"
 
 
-evm_frame_t frame_init_immed(char str_code[], int gas)
+evm_frame_t frame_init_immed(char str_code[], uint64_t gas)
 {
     evm_bytes_t code = bytes_init_immed(str_code);
     return frame_init(code, gas);
 }
 
-evm_frame_t frame_init_immed_setup(char str_code[], int gas, int n_mem, ...)
+evm_frame_t frame_init_immed_setup(char str_code[], uint64_t gas, uint64_t n_mem, ...)
 {
     va_list args;
     va_start(args, n_mem);
@@ -34,13 +34,13 @@ evm_frame_t frame_init_immed_setup(char str_code[], int gas, int n_mem, ...)
         gas,
         bytes_init_immed(str_code),
         mem_init_immed_variadic(n_mem, &args),
-        stack_init_immed_variadic(va_arg(args, int), &args)
+        stack_init_immed_variadic(va_arg(args, uint64_t), &args)
     };
 }
 
 
 
-bool frame_test_immed(evm_frame_t f, int pc, int gas, int n_mem, ...) {
+bool frame_test_immed(evm_frame_t f, uint64_t pc, uint64_t gas, uint64_t n_mem, ...) {
     va_list args;
     va_start(args, n_mem);
 
@@ -65,7 +65,7 @@ bool frame_test_immed(evm_frame_t f, int pc, int gas, int n_mem, ...) {
         return false;
     }
 
-    int n_stack = va_arg(args, int);
+    uint64_t n_stack = va_arg(args, uint64_t);
     if(n_stack > IGN)
     if(!stack_test_variadic(f.s, n_stack, &args))
     {
@@ -85,7 +85,7 @@ bool frame_test_immed(evm_frame_t f, int pc, int gas, int n_mem, ...) {
 
 
 
-evm_frame_t frame_init(evm_bytes_t code, int gas)
+evm_frame_t frame_init(evm_bytes_t code, uint64_t gas)
 {
     return (evm_frame_t)
     {
@@ -111,14 +111,19 @@ uchar frame_get_op(evm_frame_p f)
 
 
 
+evm_frame_o_t frame_returndata(evm_frame_p f, evm_bytes_t b)
+{
+    return (evm_frame_o_t){b, f->gas};
+}
+
 evm_frame_o_t frame_stop(evm_frame_p f)
 {
-    return (evm_frame_o_t){bytes_init_zero()};
+    return frame_returndata(f, bytes_init_zero());
 }
 
 evm_frame_o_t frame_halt(evm_frame_p f)
 {
-    return (evm_frame_o_t){bytes_init_zero()};
+    return frame_returndata(f, bytes_init_zero());
 }
 
 
@@ -140,7 +145,7 @@ int frame_mload(evm_frame_p f)
     if(stack_pop(&w_pos, &f->s)) return 1;
     if(!word_is_uint_64(&w_pos)) return 2;
 
-    int gas = mem_dry_run(&f->m, w_pos.v[0] + 32);
+    uint64_t gas = mem_dry_run(&f->m, w_pos.v[0] + 32);
     GAS_VERIFY(gas, 3);
     GAS_CONSUME(gas);
 
@@ -160,7 +165,7 @@ int frame_mstore(evm_frame_p f)
 
     if(stack_pop(&w_value, &f->s)) return 3;
 
-    int gas = mem_dry_run(&f->m, pos+32);
+    uint64_t gas = mem_dry_run(&f->m, pos+32);
     GAS_VERIFY(gas, 4);
     GAS_CONSUME(gas);
 
@@ -180,7 +185,7 @@ int frame_mstore8(evm_frame_p f)
     if(stack_pop(&w_value, &f->s)) return 3;
     uchar u = word_get_byte(&w_value, 0);
 
-    int gas = mem_dry_run(&f->m, pos+1);
+    uint64_t gas = mem_dry_run(&f->m, pos+1);
     GAS_VERIFY(gas, 4);
     GAS_CONSUME(gas);
 
@@ -212,9 +217,29 @@ int frame_push(evm_frame_p f)
 
 
 
+evm_frame_o_t frame_return(evm_frame_p f)
+{
+    evm_word_t w_ptr;
+    if(stack_pop(&w_ptr, &f->s)) return frame_halt(f);
+    
+    evm_word_t w_size;
+    if(stack_pop(&w_size, &f->s)) return frame_halt(f);
+
+    evm_word_t w_end = word_add(&w_ptr, &w_size);
+    if(word_is_uint_64(&w_end)) return frame_halt(f);
+
+    uint64_t gas = mem_dry_run(&f->m, w_end.v[0]);
+    GAS_VERIFY(gas, frame_halt(f));
+    GAS_CONSUME(gas);
+
+    return frame_returndata(f, mem_get_bytes(&f->m, w_ptr.v[0], w_size.v[0]));
+}
+
+
+
 #define REV(FN) if(FN(&f)) return frame_halt(&f)
 
-evm_frame_o_t frame_execute(evm_bytes_t code, int gas)
+evm_frame_o_t frame_execute(evm_bytes_t code, uint64_t gas)
 {
     evm_frame_t f = frame_init(code, gas);
 

@@ -6,5 +6,6 @@
 #include "header.h"
 
 typedef unsigned char uchar;
+typedef __uint128_t uint128_t;
 
 #endif

@@ -18,6 +18,4 @@ bool word_test(evm_word_t w1, evm_word_t w2);
 bool word_eq_bool(evm_word_p w1, evm_word_p w2);
 void word_add_immed(evm_word_p w, int i, uint64_t v);
 
-evm_word_t word_add(evm_word_p w1, evm_word_p w2);
-
 #endif

@@ -30,7 +30,7 @@ void test_bytes_init_zero()
     printf("\n\t%s\t\t", __func__);
 
     evm_bytes_t b = bytes_init_zero();
-    assert(b.size == 0);
+    assert_64(b.size, 0);
     assert(b.v == NULL);
 
     assert(mem_empty());

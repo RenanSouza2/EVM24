@@ -47,12 +47,3 @@ bool uint64_test(uint64_t i1, uint64_t i2)
 }
 
 #endif
-
-void error_log(char str[])
-{
-    FILE *fp = fopen("error.log.txt", "w");
-    assert(fp);
-
-    fprintf(fp, "%s", str);
-    fclose(fp);
-}
