@@ -6,7 +6,6 @@
 
 #ifdef DEBUG
 
-#include <stdbool.h>
 #include <stdarg.h>
 
 evm_mem_t mem_init_immed(int n, ...);

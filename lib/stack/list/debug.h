@@ -5,7 +5,6 @@
 
 #ifdef DEBUG
 
-#include <stdbool.h>
 #include <stdarg.h>
 
 void stack_l_display(evm_stack_l_p sl);

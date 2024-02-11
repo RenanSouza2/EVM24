@@ -167,7 +167,7 @@ void test_frame_mstore()
     f = frame_init_immed_setup("0x51", GAS_DEF, 0, 0);
     evm_word_t w = word_init();
     for(int i=0; i<1024; i++)
-        assert(stack_push(&f.s, &w));
+        assert(!stack_push(&f.s, &w));
     _assert(frame_mstore(&f), 0);
     assert(frame_test_immed(f, IGN, GAS_DEF - 6, IGN, IGN));
     frame_free(f);
@@ -201,7 +201,7 @@ void test_frame_push()
     evm_frame_t f = frame_init_immed("0x5f", GAS_DEF);
     evm_word_t w = word_init();
     for(int i=0; i<1024; i++)
-        assert(stack_push(&f.s, &w));
+        assert(!stack_push(&f.s, &w));
     _assert(frame_push(&f), 2);
     assert(frame_test_immed(f, IGN, GAS_DEF, IGN, IGN));
     frame_free(f);

@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <assert.h>
 
 #include "debug.h"
@@ -11,8 +10,6 @@
 
 
 #ifdef DEBUG
-
-#include <stdarg.h>
 
 #include "../../utils/clu/bin/header.h"
 #include "../stack/head/debug.h"
@@ -131,7 +128,7 @@ int frame_pop(evm_frame_p f)
 {
     GAS_VERIFY(G_base, 1);
 
-    if(!stack_pop(NULL, &f->s)) return 2;
+    if(stack_pop(NULL, &f->s)) return 2;
     f->pc++;
 
     GAS_CONSUME(G_base);
@@ -141,7 +138,7 @@ int frame_pop(evm_frame_p f)
 int frame_mload(evm_frame_p f)
 {
     evm_word_t w_pos;
-    if(!stack_pop(&w_pos, &f->s)) return 1;
+    if(stack_pop(&w_pos, &f->s)) return 1;
     if(!word_is_uint_64(&w_pos)) return 2;
 
     int gas = mem_dry_run(&f->m, w_pos.v[0] + 32);
@@ -149,7 +146,7 @@ int frame_mload(evm_frame_p f)
     GAS_CONSUME(gas);
 
     evm_word_t w_value = mem_get_word(&f->m, w_pos.v[0]);
-    assert(stack_push(&f->s, &w_value));
+    assert(!stack_push(&f->s, &w_value));
     f->pc++;
 
     return 0;
@@ -158,10 +155,10 @@ int frame_mload(evm_frame_p f)
 int frame_mstore(evm_frame_p f) // TODO gas
 {
     evm_word_t w_pos, w_value;
-    if(!stack_pop(&w_pos, &f->s))   return 1;
+    if(stack_pop(&w_pos, &f->s))   return 1;
     if(!word_is_uint_64(&w_pos))    return 2;
 
-    if(!stack_pop(&w_value, &f->s)) return 3;
+    if(stack_pop(&w_value, &f->s)) return 3;
 
     int gas = mem_dry_run(&f->m, w_pos.v[0]+32);
     GAS_VERIFY(gas, 4);
@@ -186,7 +183,7 @@ int frame_push(evm_frame_p f)
     int size = op - 0x5f;
     evm_bytes_t b = bytes_get_bytes(&f->code, f->pc+1, size);
     evm_word_t w = word_init_bytes(&b);
-    if(!stack_push(&f->s, &w)) return 2;
+    if(stack_push(&f->s, &w)) return 2;
     f->pc += 1 + size;
 
     GAS_CONSUME(G_very_low);

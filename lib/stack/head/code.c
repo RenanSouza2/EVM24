@@ -59,7 +59,7 @@ bool stack_test_variadic(evm_stack_t s, int n, va_list *args)
 
 
 
-bool stack_evm_push_immed(evm_stack_p s, evm_word_t w)
+int stack_evm_push_immed(evm_stack_p s, evm_word_t w)
 {
     return stack_push(s, &w);
 }
@@ -78,21 +78,21 @@ void stack_free(evm_stack_p s)
     stack_l_free(s->sl);
 }
 
-bool stack_push(evm_stack_p s, evm_word_p w)
+int stack_push(evm_stack_p s, evm_word_p w)
 {
-    if(s->count == 1024) return false;
+    if(s->count == 1024) return 1;
 
     s->count++;
     s->sl = stack_l_create(s->sl, w);
-    return true;
+    return 0;
 }
 
-bool stack_pop(evm_word_p w, evm_stack_p s)
+int stack_pop(evm_word_p w, evm_stack_p s)
 {
-    if(s->count == 0) return false;
+    if(s->count == 0) return 1;
 
     if(w) *w = s->sl->w;
     s->count--;
     s->sl = stack_l_pop(s->sl);
-    return true;
+    return 0;
 }
