@@ -80,7 +80,6 @@ bool frame_test_immed(evm_frame_t f, int pc, int gas, int n_mem, ...) {
 
 
 
-#define GAS_VERIFY_DEPRECATED(GAS) if(f->gas < GAS) return false // TODO delete
 #define GAS_VERIFY(GAS, CODE) if(f->gas < GAS) return CODE
 #define GAS_CONSUME(GAS) f->gas -= GAS;
 
@@ -152,7 +151,7 @@ int frame_mload(evm_frame_p f)
     return 0;
 }
 
-int frame_mstore(evm_frame_p f) // TODO gas
+int frame_mstore(evm_frame_p f)
 {
     evm_word_t w_pos, w_value;
     if(stack_pop(&w_pos, &f->s))   return 1;
