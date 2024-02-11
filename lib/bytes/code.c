@@ -79,7 +79,7 @@ bool bytes_test(evm_bytes_t b, evm_bytes_t b_exp)
     {
         if(!uchar_test(b.v[i], b_exp.v[i]))
         {
-            printf("\n\n\tBYTES ASSERTION ERROR | BYTE | %d\t\t", i);
+            printf("\n\tBYTES ASSERTION ERROR | BYTE | %d\t\t", i);
             bytes_free(&b_exp);
             return false;
         }

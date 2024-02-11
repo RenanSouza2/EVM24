@@ -59,7 +59,7 @@ bool stack_test_variadic(evm_stack_t s, int n, va_list *args)
 
 
 
-int stack_evm_push_immed(evm_stack_p s, evm_word_t w)
+int stack_push_immed(evm_stack_p s, evm_word_t w)
 {
     return stack_push(s, &w);
 }

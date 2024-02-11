@@ -52,8 +52,8 @@ void test_stack_evm_pop()
     evm_word_t w = WORD(0, 0, 0, 0);
     evm_stack_t s = stack_init();
 
-    assert(!stack_evm_push_immed(&s, WORD(4, 3, 2, 1)));
-    assert(!stack_evm_push_immed(&s, WORD(1, 2, 3, 4)));
+    assert(!stack_push_immed(&s, WORD(4, 3, 2, 1)));
+    assert(!stack_push_immed(&s, WORD(1, 2, 3, 4)));
 
     
     _assert(stack_pop(&w, &s), 0);

@@ -50,6 +50,11 @@ evm_word_t word_init()
     return (evm_word_t){{0, 0, 0, 0}};
 }
 
+evm_word_t word_init_uint_64(uint64_t i)
+{
+    return (evm_word_t){{i, 0, 0, 0}};
+}
+
 evm_word_t word_init_bytes(evm_bytes_p b)
 {
     int size = b->size;

@@ -61,7 +61,7 @@ bool frame_test_immed(evm_frame_t f, int pc, int gas, int n_mem, ...) {
     if(n_mem > IGN)
     if(!mem_test_variadic(f.m, n_mem, &args))
     {
-        printf("\n\tFRAME ASSERTION ERROR | MEM\n\n");
+        printf("\n\tFRAME ASSERTION ERROR | MEM\t\t");
         return false;
     }
 
@@ -155,15 +155,36 @@ int frame_mstore(evm_frame_p f)
 {
     evm_word_t w_pos, w_value;
     if(stack_pop(&w_pos, &f->s))   return 1;
-    if(!word_is_uint_64(&w_pos))    return 2;
+    if(!word_is_uint_64(&w_pos))   return 2;
+    uint64_t pos = w_pos.v[0];
 
     if(stack_pop(&w_value, &f->s)) return 3;
 
-    int gas = mem_dry_run(&f->m, w_pos.v[0]+32);
+    int gas = mem_dry_run(&f->m, pos+32);
     GAS_VERIFY(gas, 4);
     GAS_CONSUME(gas);
 
-    mem_set_word(&f->m, w_pos.v[0], &w_value);
+    mem_set_word(&f->m, pos, &w_value);
+    f->pc++;
+    
+    return 0;
+}
+
+int frame_mstore8(evm_frame_p f)
+{
+    evm_word_t w_pos, w_value;
+    if(stack_pop(&w_pos, &f->s))   return 1;
+    if(!word_is_uint_64(&w_pos))   return 2;
+    uint64_t pos = w_pos.v[0];
+
+    if(stack_pop(&w_value, &f->s)) return 3;
+    uchar u = word_get_byte(&w_value, 0);
+
+    int gas = mem_dry_run(&f->m, pos+1);
+    GAS_VERIFY(gas, 4);
+    GAS_CONSUME(gas);
+
+    mem_set_byte(&f->m, pos, u);
     f->pc++;
     
     return 0;
