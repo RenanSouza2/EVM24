@@ -25,11 +25,11 @@ void test_bytes_cton()
     assert(mem_empty());
 }
 
-void test_bytes_init_zero()
+void test_bytes_init()
 {
     printf("\n\t%s\t\t", __func__);
 
-    evm_bytes_t b = bytes_init_zero();
+    evm_bytes_t b = bytes_init();
     assert_64(b.size, 0);
     assert(b.v == NULL);
 
@@ -260,7 +260,7 @@ void test_bytes()
     printf("\n%s\t\t", __func__);
 
     test_bytes_cton();
-    test_bytes_init_zero();
+    test_bytes_init();
     test_bytes_init_immed();
 
     test_bytes_expand();

@@ -76,6 +76,8 @@ void mem_free(evm_mem_t m)
 
 uint64_t mem_dry_run(evm_mem_p m, evm_word_t w_pos, uint64_t size)
 {
+    if(!size) return 0;
+
     word_add_uint64(&w_pos, 0, size);
     word_add_uint64(&w_pos, 0, 0x1f);
     if(!word_is_uint64(&w_pos)) return UINT64_MAX;
@@ -105,8 +107,10 @@ evm_word_t mem_get_word(evm_mem_p m, uint64_t pos)
     return bytes_get_word(m, pos);
 }
 
-evm_bytes_t mem_get_bytes(evm_mem_p m, uint64_t pos, uint64_t size)
+evm_bytes_t mem_get_bytes(evm_mem_p m, uint64_t pos, uint64_t size) // TODO test
 {
+    if(!size) return bytes_init();
+
     mem_expand(m, pos+size);
     return bytes_get_bytes(m, pos, size);
 }

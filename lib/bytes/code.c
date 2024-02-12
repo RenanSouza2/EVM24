@@ -95,7 +95,7 @@ bool bytes_test(evm_bytes_t b, evm_bytes_t b_exp)
 
 
 
-evm_bytes_t bytes_init_zero()
+evm_bytes_t bytes_init()
 {
     return (evm_bytes_t){NULL, 0};
 }

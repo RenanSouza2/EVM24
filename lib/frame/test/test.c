@@ -281,17 +281,52 @@ void test_frame_return()
     frame_free(f);
     frame_o_free(fo);
 
-    // TODO tests
-
     // stack 0 elements
+    f = frame_init_immed_setup("0xf3", GAS_DEF, 
+        1, WORD(0x0001020304050607, 0x08090a0b0c0d0e0f, 0x1011121314151617, 0x18191a1b1c1d1e1f), 
+        1, W1(0x20)
+    );
+    fo = frame_return(&f);
+    _assert(frame_o_test_immed(fo, GAS_DEF, "0x"));
+    frame_free(f);
+    frame_o_free(fo);
 
     // stack 1 element
+    f = frame_init_immed_setup("0xf3", GAS_DEF, 1, WORD(0x0001020304050607, 0x08090a0b0c0d0e0f, 0x1011121314151617, 0x18191a1b1c1d1e1f), 0);
+    fo = frame_return(&f);
+    _assert(frame_o_test_immed(fo, GAS_DEF, "0x"));
+    frame_free(f);
+    frame_o_free(fo);
 
     // mem expand too much
+    f = frame_init_immed_setup("0xf3", GAS_DEF, 
+        1, WORD(0x0001020304050607, 0x08090a0b0c0d0e0f, 0x1011121314151617, 0x18191a1b1c1d1e1f),
+        2, W1(0x20), W1(U64_MAX)
+    );
+    fo = frame_return(&f);
+    _assert(frame_o_test_immed(fo, GAS_DEF, "0x"));
+    frame_free(f);
+    frame_o_free(fo);
 
-    // mem expand infinite
+    // return 0
+    f = frame_init_immed_setup("0xf3", GAS_DEF, 
+        1, WORD(0x0001020304050607, 0x08090a0b0c0d0e0f, 0x1011121314151617, 0x18191a1b1c1d1e1f),
+        2, W1(0x00), W1(0x00)
+    );
+    fo = frame_return(&f);
+    _assert(frame_o_test_immed(fo, GAS_DEF, "0x"));
+    frame_free(f);
+    frame_o_free(fo);
 
-    // normal, return 0
+    // reaturn 0 from far
+    f = frame_init_immed_setup("0xf3", GAS_DEF, 
+        1, WORD(0x0001020304050607, 0x08090a0b0c0d0e0f, 0x1011121314151617, 0x18191a1b1c1d1e1f),
+        2, W1(0x00), W1(U64_MAX)
+    );
+    fo = frame_return(&f);
+    _assert(frame_o_test_immed(fo, GAS_DEF, "0x"));
+    frame_free(f);
+    frame_o_free(fo);
 
     _assert(mem_empty());
 }

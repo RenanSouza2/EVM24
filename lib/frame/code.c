@@ -141,12 +141,12 @@ evm_frame_o_t frame_returndata(evm_frame_p f, evm_bytes_t b)
 
 evm_frame_o_t frame_stop(evm_frame_p f)
 {
-    return frame_returndata(f, bytes_init_zero());
+    return frame_returndata(f, bytes_init());
 }
 
 evm_frame_o_t frame_halt(evm_frame_p f)
 {
-    return frame_returndata(f, bytes_init_zero());
+    return frame_returndata(f, bytes_init());
 }
 
 
