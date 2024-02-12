@@ -105,14 +105,6 @@ void bytes_free(evm_bytes_p b)
     if(b->v) free(b->v);
 }
 
-
-
-uchar_t bytes_get_byte(evm_bytes_p b, uint64_t i)
-{
-    assert(i >= 0);
-    return i < b->size ? b->v[i] : 0;
-}
-
 void bytes_expand(evm_bytes_p b, uint64_t size)
 {
     if(size <= b->size) return;
@@ -123,38 +115,54 @@ void bytes_expand(evm_bytes_p b, uint64_t size)
     memset(&b->v[size_prev], 0, size - size_prev);
 }
 
-void bytes_set_byte(evm_bytes_p b, uint64_t i, uchar_t u)
+
+
+uchar_t bytes_get_byte(evm_bytes_p b, uint64_t pos)
 {
-    bytes_expand(b, i+1);
-    b->v[i] = u;
+    assert(pos >= 0);
+    return pos < b->size ? b->v[pos] : 0;
 }
 
-evm_word_t bytes_get_word(evm_bytes_p b, uint64_t i)
+evm_word_t bytes_get_word(evm_bytes_p b, uint64_t pos)
 {
     evm_word_t w = word_init();
-    for(int _i=0; _i<32; _i++)
+    for(int i=0; i<32; i++)
     {
-        uchar_t u = bytes_get_byte(b, i+_i);
-        word_set_byte(&w, 31-_i, u);
+        uchar_t u = bytes_get_byte(b, pos+i);
+        word_set_byte(&w, 31-i, u);
     }
     return w;
 }
 
-void bytes_set_word(evm_bytes_p b, uint64_t i, evm_word_p w)
-{
-    bytes_expand(b, i+32);
-    for(int _i=0; _i<32; _i++)
-        b->v[i + _i] = word_get_byte(w, 31-_i);
-}
-
-evm_bytes_t bytes_get_bytes(evm_bytes_p b, uint64_t i, uint64_t size)
+evm_bytes_t bytes_get_bytes(evm_bytes_p b, uint64_t pos, uint64_t size)
 {
     if(size == 0) return (evm_bytes_t){NULL, 0};
     
     uchar_t *v = calloc(size, 1);
     assert(v);
-    for(uint64_t _i = 0; _i < size; _i++)
-        v[_i] = bytes_get_byte(b, i+_i);
+    for(uint64_t i = 0; i < size; i++)
+        v[i] = bytes_get_byte(b, pos+i);
     
     return (evm_bytes_t){v, size};
+}
+
+
+
+void bytes_set_byte(evm_bytes_p b, uint64_t pos, uchar_t u)
+{
+    bytes_expand(b, pos+1);
+    b->v[pos] = u;
+}
+
+void bytes_set_word(evm_bytes_p b, uint64_t pos, evm_word_p w)
+{
+    bytes_expand(b, pos+32);
+    for(int i=0; i<32; i++)
+        b->v[pos + i] = word_get_byte(w, 31-i);
+}
+
+void bytes_set_bytes(evm_bytes_p b, uint64_t pos, evm_bytes_p b_data) // TODO test
+{
+    bytes_expand(b, pos + b_data->size);
+    memcpy(&b->v[pos], b_data->v, b_data->size);
 }

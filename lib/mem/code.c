@@ -115,6 +115,8 @@ evm_bytes_t mem_get_bytes(evm_mem_p m, uint64_t pos, uint64_t size) // TODO test
     return bytes_get_bytes(m, pos, size);
 }
 
+
+
 void mem_set_word(evm_mem_p m, uint64_t pos, evm_word_p w)
 {
     mem_expand(m, pos+32);
@@ -125,4 +127,10 @@ void mem_set_byte(evm_mem_p m, uint64_t pos, uchar_t u)
 {
     mem_expand(m, pos+1);
     bytes_set_byte(m, pos, u);
+}
+
+void mem_set_bytes(evm_mem_p m, uint64_t pos, evm_bytes_p b) // TODO test
+{
+    mem_expand(m, pos + b->size);
+    bytes_set_bytes(m, pos, b);
 }

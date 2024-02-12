@@ -8,7 +8,9 @@
 #define G_base      2
 #define G_very_low  3
 #define G_memory    3
+#define G_copy      3
 
 uint64_t gas_mem(uint64_t size);
+uint64_t gas_copy(uint64_t size);
 
 #endif

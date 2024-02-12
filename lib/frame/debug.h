@@ -19,6 +19,8 @@ bool frame_o_test_immed(evm_frame_o_t fo, bool success, uint64_t gas, char str_r
 #define STOP 0x00
 #define ADD  0x01
 
+#define CODESIZE 0x38
+
 #define POP     0x50
 #define MLOAD   0x51
 #define MSTORE  0x52

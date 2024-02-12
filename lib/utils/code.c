@@ -53,3 +53,8 @@ uint64_t uint64_add(uint64_t u1, uint64_t u2)
     uint64_t sum = u1 + u2;
     return sum < u1 ? UINT64_MAX : sum;
 }
+
+uint64_t uint128_to_uint64(uint128_t res) // TODO test
+{
+    return (res >> 64) ? UINT64_MAX : (uint64_t) res;
+}

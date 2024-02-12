@@ -8,4 +8,7 @@
 typedef unsigned char uchar_t;
 typedef __uint128_t uint128_t;
 
+uint64_t uint64_add(uint64_t u1, uint64_t u2);
+uint64_t uint128_to_uint64(uint128_t res);
+
 #endif

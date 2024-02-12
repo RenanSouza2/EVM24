@@ -6,6 +6,7 @@
 #include "../bytes/struct.h"
 #include "../mem/header.h"
 #include "../utils/header.h"
+#include "../gas/header.h"
 
 
 
@@ -151,7 +152,7 @@ evm_frame_o_t frame_halt(evm_frame_p f)
 
 
 
-int frame_add(evm_frame_p f)
+int frame_add(evm_frame_p f) // TODO test
 {
     evm_word_t w1, w2;
     if(stack_pop(&w1, &f->s)) return 1;
@@ -163,6 +164,39 @@ int frame_add(evm_frame_p f)
 
     GAS_VERIFY(G_very_low, 3);
     GAS_CONSUME(G_very_low);
+    return 0;
+}
+
+
+
+int frame_codesize(evm_frame_p f) // TODO test
+{
+    GAS_VERIFY(G_base, 1);
+    GAS_CONSUME(G_base);
+
+    evm_word_t w = word_init_uint64(f->code.size);
+    if(stack_push(&f->s, &w)) return 2;
+    return 0;
+}
+
+int frame_codecopy(evm_frame_p f) // TODO test
+{
+    evm_word_t w_mem, w_code, w_size;
+    if(stack_pop(&w_mem , &f->s)) return 1;
+    if(stack_pop(&w_code, &f->s)) return 2;
+    if(stack_pop(&w_size, &f->s)) return 3;
+    if(!word_is_uint64(&w_size))  return 4;
+
+    uint64_t size = w_size.v[0];
+    uint64_t gas_mem = mem_dry_run(&f->m, w_mem, size);
+    uint64_t gas_cpy = gas_copy(size);
+    uint64_t gas = uint64_add(gas_mem, gas_cpy);
+    GAS_VERIFY(gas, 4);
+    GAS_CONSUME(gas);
+
+    evm_bytes_t b = bytes_get_bytes(&f->code, w_code.v[0], size);
+    mem_set_bytes(&f->m, w_mem.v[0], &b);
+    bytes_free(&b);
     return 0;
 }
 
@@ -269,7 +303,7 @@ evm_frame_o_t frame_return(evm_frame_p f)
 
 
 
-#define REV(FN) if(FN(&f)) return frame_halt(&f)
+#define REV(FN) if(FN(&f)) return frame_halt(&f); break
 
 evm_frame_o_t frame_execute(evm_bytes_t code, uint64_t gas)
 {
@@ -279,6 +313,7 @@ evm_frame_o_t frame_execute(evm_bytes_t code, uint64_t gas)
     switch (frame_get_op(&f))
     {
         case STOP: return frame_stop(&f);
+        case ADD : REV(frame_add);
 
         case POP    : REV(frame_pop);
         case MLOAD  : REV(frame_mload);
