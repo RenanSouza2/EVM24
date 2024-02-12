@@ -12,7 +12,7 @@ evm_frame_t frame_init_immed(char str_code[], uint64_t gas);
 evm_frame_t frame_init_immed_setup(char str_code[], uint64_t gas, uint64_t n_mem, ...);
 
 bool frame_test_immed(evm_frame_t f, uint64_t pc, uint64_t gas, uint64_t n_mem, ...);
-bool frame_o_test_immed(evm_frame_o_t fo, uint64_t gas, char str_returndata[]);
+bool frame_o_test_immed(evm_frame_o_t fo, bool success, uint64_t gas, char str_returndata[]);
 
 #endif
 

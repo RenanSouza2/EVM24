@@ -16,6 +16,7 @@ STRUCT(evm_frame)
 
 STRUCT(evm_frame_o)
 {
+    bool success;
     uint64_t gas;
     evm_bytes_t returndata;
 };

@@ -76,8 +76,13 @@ bool frame_test_immed(evm_frame_t f, uint64_t pc, uint64_t gas, uint64_t n_mem, 
     return true;
 }
 
-bool frame_o_test_immed(evm_frame_o_t fo, uint64_t gas, char str_returndata[])
+bool frame_o_test_immed(evm_frame_o_t fo, bool success, uint64_t gas, char str_returndata[])
 {
+    if(fo.success != success) {
+        printf("\n\n\tFRAME ASSERTION ERROR | SUCCESS");
+        return false;
+    }
+
     if(!uint64_test(fo.gas, gas))
     {
         printf("\n\tFRAME OUTPUT ASSERTION ERROR | GAS\t\t");
@@ -134,19 +139,14 @@ uchar_t frame_get_op(evm_frame_p f)
 
 
 
-evm_frame_o_t frame_returndata(evm_frame_p f, evm_bytes_t b)
-{
-    return (evm_frame_o_t){f->gas, b};
-}
-
 evm_frame_o_t frame_stop(evm_frame_p f)
 {
-    return frame_returndata(f, bytes_init());
+    return (evm_frame_o_t){true, f->gas, bytes_init()};
 }
 
 evm_frame_o_t frame_halt(evm_frame_p f)
 {
-    return frame_returndata(f, bytes_init());
+    return (evm_frame_o_t){false, f->gas, bytes_init()};
 }
 
 
@@ -264,7 +264,7 @@ evm_frame_o_t frame_return(evm_frame_p f)
     GAS_VERIFY(gas, frame_halt(f));
     GAS_CONSUME(gas);
 
-    return frame_returndata(f, mem_get_bytes(&f->m, w_ptr.v[0], w_size.v[0]));
+    return (evm_frame_o_t){true, f->gas, mem_get_bytes(&f->m, w_ptr.v[0], w_size.v[0])};
 }
 
 

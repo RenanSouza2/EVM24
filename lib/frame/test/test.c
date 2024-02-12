@@ -46,8 +46,7 @@ void test_frame_stop()
 
     evm_frame_t f = frame_init_immed("0x", GAS_DEF);
     evm_frame_o_t fo = frame_stop(&f);
-    _assert(fo.returndata.size == 0);
-    _assert(fo.returndata.v == NULL);
+    _assert(frame_o_test_immed(fo, true, GAS_DEF, "0x"));
 
     _assert(mem_empty());
 }
@@ -267,7 +266,7 @@ void test_frame_return()
         2, W1(0x20), W1(0x00)
     );
     evm_frame_o_t fo = frame_return(&f);
-    _assert(frame_o_test_immed(fo, GAS_DEF, "0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"));
+    _assert(frame_o_test_immed(fo, true, GAS_DEF, "0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"));
     frame_free(f);
     frame_o_free(fo);
 
@@ -277,7 +276,7 @@ void test_frame_return()
         2, W1(0x20), W1(0x10)
     );
     fo = frame_return(&f);
-    _assert(frame_o_test_immed(fo, GAS_DEF - 3, "0x101112131415161718191a1b1c1d1e1f00000000000000000000000000000000"));
+    _assert(frame_o_test_immed(fo, true, GAS_DEF - 3, "0x101112131415161718191a1b1c1d1e1f00000000000000000000000000000000"));
     frame_free(f);
     frame_o_free(fo);
 
@@ -287,14 +286,14 @@ void test_frame_return()
         1, W1(0x20)
     );
     fo = frame_return(&f);
-    _assert(frame_o_test_immed(fo, GAS_DEF, "0x"));
+    _assert(frame_o_test_immed(fo, false, GAS_DEF, "0x"));
     frame_free(f);
     frame_o_free(fo);
 
     // stack 1 element
     f = frame_init_immed_setup("0xf3", GAS_DEF, 1, WORD(0x0001020304050607, 0x08090a0b0c0d0e0f, 0x1011121314151617, 0x18191a1b1c1d1e1f), 0);
     fo = frame_return(&f);
-    _assert(frame_o_test_immed(fo, GAS_DEF, "0x"));
+    _assert(frame_o_test_immed(fo, false, GAS_DEF, "0x"));
     frame_free(f);
     frame_o_free(fo);
 
@@ -304,7 +303,7 @@ void test_frame_return()
         2, W1(0x20), W1(U64_MAX)
     );
     fo = frame_return(&f);
-    _assert(frame_o_test_immed(fo, GAS_DEF, "0x"));
+    _assert(frame_o_test_immed(fo, false, GAS_DEF, "0x"));
     frame_free(f);
     frame_o_free(fo);
 
@@ -314,7 +313,7 @@ void test_frame_return()
         2, W1(0x00), W1(0x00)
     );
     fo = frame_return(&f);
-    _assert(frame_o_test_immed(fo, GAS_DEF, "0x"));
+    _assert(frame_o_test_immed(fo, true, GAS_DEF, "0x"));
     frame_free(f);
     frame_o_free(fo);
 
@@ -324,7 +323,7 @@ void test_frame_return()
         2, W1(0x00), W1(U64_MAX)
     );
     fo = frame_return(&f);
-    _assert(frame_o_test_immed(fo, GAS_DEF, "0x"));
+    _assert(frame_o_test_immed(fo, true, GAS_DEF, "0x"));
     frame_free(f);
     frame_o_free(fo);
 
