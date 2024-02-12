@@ -115,30 +115,6 @@ void test_bytes_init_immed()
 
 
 
-void test_bytes_expand()
-{
-    printf("\n\t%s\t\t", __func__);
-
-    evm_bytes_t b = bytes_init_immed("0x");
-    bytes_expand(&b, 0);
-    assert(b.size == 0);
-    assert(b.v == NULL);
-
-    bytes_expand(&b, 0);
-    assert(b.size == 0);
-    assert(b.v == NULL);
-    bytes_free(&b);
-
-    b = bytes_init_immed("0xff");
-    bytes_expand(&b, 2);
-    assert(b.size == 2);
-    assert(b.v[0] == 0xff);
-    assert(b.v[1] == 0x00);
-    bytes_free(&b);
-
-    assert(mem_empty());
-}
-
 void test_bytes_get_byte()
 {
     printf("\n\t%s\t\t", __func__);
@@ -150,24 +126,6 @@ void test_bytes_get_byte()
     for(int i=0; i<32; i++)
         assert(bytes_get_byte(&b, i) == i);
     assert(bytes_get_byte(&b, 64) == 0);
-    bytes_free(&b);
-
-    assert(mem_empty());
-}
-
-void test_bytes_set_byte()
-{
-    printf("\n\t%s\t\t", __func__);
-
-    evm_bytes_t b = bytes_init_immed("0x");
-    bytes_set_byte(&b, 0, 0xff);
-    assert(bytes_test_immed(b, "0xff"));
-    
-    bytes_set_byte(&b, 2, 0xff);
-    assert(bytes_test_immed(b, "0xff00ff"));
-
-    bytes_set_byte(&b, 0, 0xfe);
-    assert(bytes_test_immed(b, "0xfe00ff"));
     bytes_free(&b);
 
     assert(mem_empty());
@@ -214,25 +172,6 @@ void test_bytes_get_word()
     assert(mem_empty());
 }
 
-void test_bytes_set_word()
-{
-    printf("\n\t%s\t\t", __func__);
-
-    evm_bytes_t b = bytes_init_immed("0x");
-    evm_word_t w = WORD(U64_MAX, U64_MAX, U64_MAX, U64_MAX);
-    bytes_set_word(&b, 0, &w);
-    assert(bytes_test_immed(b, "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"));
-    assert(bytes_get_byte(&b, 32) == 0x00);
-
-    w = WORD(0xeeeeeeeeeeeeeeee, 0xeeeeeeeeeeeeeeee, 0xeeeeeeeeeeeeeeee, 0xeeeeeeeeeeeeeeee);
-    bytes_set_word(&b, 1, &w);
-    assert(bytes_test_immed(b, "0xffeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"));
-    assert(bytes_get_byte(&b, 33) == 0x00);
-    bytes_free(&b);
-
-    assert(mem_empty());
-}
-
 void test_bytes_get_bytes()
 {
     printf("\n\t%s\t\t", __func__);
@@ -263,11 +202,8 @@ void test_bytes()
     test_bytes_init();
     test_bytes_init_immed();
 
-    test_bytes_expand();
     test_bytes_get_byte();
-    test_bytes_set_byte();
     test_bytes_get_word();
-    test_bytes_set_word();
     test_bytes_get_bytes();
 
     assert(mem_empty());

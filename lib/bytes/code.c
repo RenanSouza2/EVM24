@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <assert.h>
 
 #include "debug.h"
@@ -8,6 +7,8 @@
 
 
 #ifdef DEBUG
+
+#include <string.h>
 
 #include "../../utils/clu/bin/header.h"
 #include "../utils/debug.h"
@@ -105,16 +106,6 @@ void bytes_free(evm_bytes_p b)
     if(b->v) free(b->v);
 }
 
-void bytes_expand(evm_bytes_p b, uint64_t size)
-{
-    if(size <= b->size) return;
-
-    uint64_t size_prev = b->size;
-    b->size = size;
-    b->v = realloc(b->v, size);
-    memset(&b->v[size_prev], 0, size - size_prev);
-}
-
 
 
 uchar_t bytes_get_byte(evm_bytes_p b, uint64_t pos)
@@ -144,25 +135,4 @@ evm_bytes_t bytes_get_bytes(evm_bytes_p b, uint64_t pos, uint64_t size)
         v[i] = bytes_get_byte(b, pos+i);
     
     return (evm_bytes_t){v, size};
-}
-
-
-
-void bytes_set_byte(evm_bytes_p b, uint64_t pos, uchar_t u)
-{
-    bytes_expand(b, pos+1);
-    b->v[pos] = u;
-}
-
-void bytes_set_word(evm_bytes_p b, uint64_t pos, evm_word_p w)
-{
-    bytes_expand(b, pos+32);
-    for(int i=0; i<32; i++)
-        b->v[pos + i] = word_get_byte(w, 31-i);
-}
-
-void bytes_set_bytes(evm_bytes_p b, uint64_t pos, evm_bytes_p b_data) // TODO test
-{
-    bytes_expand(b, pos + b_data->size);
-    memcpy(&b->v[pos], b_data->v, b_data->size);
 }

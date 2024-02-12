@@ -77,53 +77,28 @@ void test_mem_get_word()
 
     evm_mem_t m = mem_init();
     evm_word_t w = mem_get_word(&m, 0);
-    assert(m.size == 32);
-    assert(w.v);
-    assert(word_test(w, WORD(0, 0, 0, 0)));
+    _assert(mem_test_immed(m, 1, W1(0)));
+    _assert(word_test(w, W1(0)));
+    mem_free(m);
     
+    m = mem_init_immed(1, W1(0xff));
     w = mem_get_word(&m, 0);
-    assert(m.size == 32);
-    assert(w.v);
-    assert(word_test(w, WORD(0, 0, 0, 0)));
-    
-    bytes_set_byte(&m, 31, 0xff);
-    w = mem_get_word(&m, 0);
-    assert(m.size == 32);
-    assert(w.v);
-    assert(word_test(w, WORD(0, 0, 0, 0xff)));
+    _assert(mem_test_immed(m, 1, W1(0xff)));
+    _assert(word_test(w, W1(0xff)));
     
     w = mem_get_word(&m, 31);
-    assert(m.size == 64);
-    assert(w.v);
-    assert(word_test(w, WORD(U64_FF, 0, 0, 0)));
+    _assert(mem_test_immed(m, 2, W1(0xff), W1(0)));
+    _assert(word_test(w, WORD(U64_FF, 0, 0, 0)));
     
     w = mem_get_word(&m, 32);
-    assert(m.size == 64);
-    assert(w.v);
-    assert(word_test(w, WORD(0, 0, 0, 0)));
+    _assert(mem_test_immed(m, 2, W1(0xff), W1(0)));
+    _assert(word_test(w, W1(0)));
     mem_free(m);
     
     assert(mem_empty());
 }
 
-void test_mem_set_word()
-{
-    printf("\n\t%s\t\t", __func__);
 
-    evm_mem_t m = mem_init();
-    evm_word_t w = WORD(0x0001020304050607, 0x08090a0b0c0d0e0f, 0x1011121314151617, 0x18191a1b1c1d1e1f);
-    mem_set_word(&m, 0, &w);
-    assert(mem_test_immed(m, 1, w));
-
-    mem_set_word(&m, 16, &w);
-    assert(mem_test_immed(m, 2,
-        WORD(0x0001020304050607, 0x08090a0b0c0d0e0f, 0x0001020304050607, 0x08090a0b0c0d0e0f),
-        WORD(0x1011121314151617, 0x18191a1b1c1d1e1f, 0, 0)
-    ));
-    mem_free(m);
-
-    assert(mem_empty());
-}
 
 void test_mem_set_byte()
 {
@@ -149,6 +124,26 @@ void test_mem_set_byte()
     assert(mem_empty());
 }
 
+void test_mem_set_word()
+{
+    printf("\n\t%s\t\t", __func__);
+
+    evm_mem_t m = mem_init();
+    evm_word_t w = WORD(U64_MAX, U64_MAX, U64_MAX, U64_MAX);
+    mem_set_word(&m, 0, &w);
+    _assert(mem_test_immed(m, 1, WORD(U64_MAX, U64_MAX, U64_MAX, U64_MAX)));
+
+    w = WORD(0xeeeeeeeeeeeeeeee, 0xeeeeeeeeeeeeeeee, 0xeeeeeeeeeeeeeeee, 0xeeeeeeeeeeeeeeee);
+    mem_set_word(&m, 1, &w);
+    _assert(mem_test_immed(m, 2,
+        WORD(0xffeeeeeeeeeeeeee, 0xeeeeeeeeeeeeeeee, 0xeeeeeeeeeeeeeeee, 0xeeeeeeeeeeeeeeee),
+        WORD(0xee00000000000000, 0, 0, 0)
+    ));
+    mem_free(m);
+
+    assert(mem_empty());
+}
+
 
 
 void test_mem()
@@ -159,8 +154,9 @@ void test_mem()
     test_mem_expand();
 
     test_mem_get_word();
-    test_mem_set_word();
+
     test_mem_set_byte();
+    test_mem_set_word();
 
     assert(mem_empty());
 }
