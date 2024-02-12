@@ -17,7 +17,7 @@
 
 void uint64_display(uint64_t u);
 
-bool uchar_test(uchar u1, uchar u2);
+bool uchar_test(uchar_t u1, uchar_t u2);
 bool int_test(int i1, int i2);
 bool uint64_test(uint64_t i1, uint64_t i2);
 

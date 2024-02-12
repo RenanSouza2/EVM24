@@ -252,6 +252,35 @@ void test_frame_push()
 
 
 
+void test_frame_return()
+{
+    printf("\n\t%s\t\t", __func__);
+
+    // common case
+    evm_frame_t f = frame_init_immed_setup("0xf3", GAS_DEF, 
+        1, WORD(0x0001020304050607, 0x08090a0b0c0d0e0f, 0x1011121314151617, 0x18191a1b1c1d1e1f),
+        2, W1(0x20), W1(0x00)
+    );
+    evm_frame_o_t fo = frame_return(&f);
+    assert(frame_o_test_immed(fo, GAS_DEF, "0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"));
+    frame_free(f);
+    frame_o_free(fo);
+
+    // common case expansion
+    f = frame_init_immed_setup("0xf3", GAS_DEF, 
+        1, WORD(0x0001020304050607, 0x08090a0b0c0d0e0f, 0x1011121314151617, 0x18191a1b1c1d1e1f),
+        2, W1(0x20), W1(0x10)
+    );
+    fo = frame_return(&f);
+    assert(frame_o_test_immed(fo, GAS_DEF - 3, "0x101112131415161718191a1b1c1d1e1f00000000000000000000000000000000"));
+    frame_free(f);
+    frame_o_free(fo);
+
+    assert(mem_empty());
+}
+
+
+
 void test_frame()
 {
     printf("\n%s\t\t", __func__);
@@ -266,6 +295,8 @@ void test_frame()
     test_frame_mstore8();
 
     test_frame_push();
+
+    test_frame_return();
 
     assert(mem_empty());
 }

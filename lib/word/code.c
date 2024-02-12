@@ -63,7 +63,7 @@ evm_word_t word_init_bytes(evm_bytes_p b)
     evm_word_t w = word_init();
     for(int i=0; i<size; i++)
     {
-        uchar u = bytes_get_byte(b, size-1-i);
+        uchar_t u = bytes_get_byte(b, size-1-i);
         word_set_byte(&w, i, u);
     }
     bytes_free(b);
@@ -98,16 +98,16 @@ void word_add_uint64(evm_word_p w, int i, uint64_t v)
     if(res < v) word_add_uint64(w, i+1, 1);
 }
 
-uchar word_get_byte(evm_word_p w, int i)
+uchar_t word_get_byte(evm_word_p w, int i)
 {
     assert(i<32);
-    return ((uchar*)w->v)[i];
+    return ((uchar_t*)w->v)[i];
 }
 
-void word_set_byte(evm_word_p w, int i, uchar u)
+void word_set_byte(evm_word_p w, int i, uchar_t u)
 {
     assert(i<32);
-    ((uchar*)w->v)[i] = u;
+    ((uchar_t*)w->v)[i] = u;
 }
 
 

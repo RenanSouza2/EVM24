@@ -11,37 +11,35 @@ void test_mem_dry_run()
     printf("\n\t%s\t\t", __func__);
     
     evm_mem_t m = mem_init();
-    assert_64(mem_dry_run(&m, W1(  0), 0, 3),  3);
-    assert_64(mem_dry_run(&m, W1(  1), 0, 3),  6);
-    assert_64(mem_dry_run(&m, W1( 31), 0, 3),  6);
-    assert_64(mem_dry_run(&m, W1( 32), 0, 3),  6);
-    assert_64(mem_dry_run(&m, W1( 64), 0, 3),  9);
-    assert_64(mem_dry_run(&m, W1( 96), 0, 3), 12);
-    assert_64(mem_dry_run(&m, W1(704), 0, 3), 69);
-    assert_64(mem_dry_run(&m, W1(705), 0, 3), 73);
+    assert_64(mem_dry_run(&m, W1(  0), 0),  0);
+    assert_64(mem_dry_run(&m, W1(  1), 0),  3);
+    assert_64(mem_dry_run(&m, W1( 31), 0),  3);
+    assert_64(mem_dry_run(&m, W1( 32), 0),  3);
+    assert_64(mem_dry_run(&m, W1( 64), 0),  6);
+    assert_64(mem_dry_run(&m, W1( 96), 0),  9);
+    assert_64(mem_dry_run(&m, W1(704), 0), 66);
+    assert_64(mem_dry_run(&m, W1(705), 0), 70);
 
     m.size = 64;
-    assert_64(mem_dry_run(&m, W1(  0), 0, 3),  3);
-    assert_64(mem_dry_run(&m, W1(  1), 0, 3),  3);
-    assert_64(mem_dry_run(&m, W1( 31), 0, 3),  3);
-    assert_64(mem_dry_run(&m, W1( 32), 0, 3),  3);
-    assert_64(mem_dry_run(&m, W1( 64), 0, 3),  3);
-    assert_64(mem_dry_run(&m, W1( 96), 0, 3),  6);
-    assert_64(mem_dry_run(&m, W1(704), 0, 3), 63);
-    assert_64(mem_dry_run(&m, W1(705), 0, 3), 67);
+    assert_64(mem_dry_run(&m, W1(  0), 0),  0);
+    assert_64(mem_dry_run(&m, W1(  1), 0),  0);
+    assert_64(mem_dry_run(&m, W1( 31), 0),  0);
+    assert_64(mem_dry_run(&m, W1( 32), 0),  0);
+    assert_64(mem_dry_run(&m, W1( 64), 0),  0);
+    assert_64(mem_dry_run(&m, W1( 96), 0),  3);
+    assert_64(mem_dry_run(&m, W1(704), 0), 60);
+    assert_64(mem_dry_run(&m, W1(705), 0), 64);
 
     m.size = 736;
-    assert_64(mem_dry_run(&m, W1(   0), 0, 3),  3);
-    assert_64(mem_dry_run(&m, W1( 736), 0, 3),  3);
-    assert_64(mem_dry_run(&m, W1( 768), 0, 3),  6);
-    assert_64(mem_dry_run(&m, W1(1024), 0, 3), 31);
+    assert_64(mem_dry_run(&m, W1(   0), 0),  0);
+    assert_64(mem_dry_run(&m, W1( 736), 0),  0);
+    assert_64(mem_dry_run(&m, W1( 768), 0),  3);
+    assert_64(mem_dry_run(&m, W1(1024), 0), 28);
 
-    assert_64(mem_dry_run(&m, W1(U64_MAX), 0, 3), U64_MAX);
-    assert_64(mem_dry_run(&m, W1(U64_MAX), 1, 3), U64_MAX);
-    assert_64(mem_dry_run(&m, W1(0xffffffffffff), 0, 3), U64_MAX);
-    assert_64(mem_dry_run(&m,   WORD(0, 0, 1, 0), 0, 3), U64_MAX);
-    
-    assert_64(mem_dry_run(&m, W1(1024), 0, U64_MAX), U64_MAX);
+    assert_64(mem_dry_run(&m, W1(U64_MAX), 0), U64_MAX);
+    assert_64(mem_dry_run(&m, W1(U64_MAX), 1), U64_MAX);
+    assert_64(mem_dry_run(&m, W1(0xffffffffffff), 0), U64_MAX);
+    assert_64(mem_dry_run(&m,   WORD(0, 0, 1, 0), 0), U64_MAX);
 
     assert(mem_empty()); 
 }

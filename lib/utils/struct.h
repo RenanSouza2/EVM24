@@ -5,7 +5,7 @@
 
 #include "header.h"
 
-typedef unsigned char uchar;
+typedef unsigned char uchar_t;
 typedef __uint128_t uint128_t;
 
 #endif

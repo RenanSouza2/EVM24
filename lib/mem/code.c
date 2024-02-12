@@ -74,7 +74,7 @@ void mem_free(evm_mem_t m)
 
 
 
-uint64_t mem_dry_run(evm_mem_p m, evm_word_t w_pos, uint64_t size, uint64_t gas_base)
+uint64_t mem_dry_run(evm_mem_p m, evm_word_t w_pos, uint64_t size)
 {
     word_add_uint64(&w_pos, 0, size);
     word_add_uint64(&w_pos, 0, 0x1f);
@@ -83,16 +83,12 @@ uint64_t mem_dry_run(evm_mem_p m, evm_word_t w_pos, uint64_t size, uint64_t gas_
     uint64_t max = w_pos.v[0];
     uint64_t m_size_aft = (max > m->size ? max : m->size) >> 5;
     uint64_t m_size_bef = m->size >> 5;
-    if(m_size_bef == m_size_aft) return gas_base;
+    if(m_size_bef == m_size_aft) return 0;
 
     uint64_t gas_after = gas_mem(m_size_aft);
     if(gas_after == UINT64_MAX) return UINT64_MAX;
 
-    uint64_t gas_expansion = gas_after - gas_mem(m_size_bef);
-    if(!gas_base) return gas_expansion;
-    
-    uint64_t gas = gas_expansion + gas_base;
-    return (gas < gas_expansion) ? UINT64_MAX : gas;
+    return gas_after - gas_mem(m_size_bef);;
 }
 
 void mem_expand(evm_mem_p m, uint64_t i)
@@ -121,7 +117,7 @@ void mem_set_word(evm_mem_p m, uint64_t pos, evm_word_p w)
     bytes_set_word(m, pos, w);
 }
 
-void mem_set_byte(evm_mem_p m, uint64_t pos, uchar u)
+void mem_set_byte(evm_mem_p m, uint64_t pos, uchar_t u)
 {
     mem_expand(m, pos+1);
     bytes_set_byte(m, pos, u);

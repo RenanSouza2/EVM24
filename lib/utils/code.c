@@ -13,12 +13,12 @@
 void uint64_display(uint64_t u)
 {
     for(int i=7; i>=0; i--)
-        printf("%02hx", ((uchar*)&u)[i]);
+        printf("%02hx", ((uchar_t*)&u)[i]);
 }
 
 
 
-bool uchar_test(uchar u1, uchar u2)
+bool uchar_test(uchar_t u1, uchar_t u2)
 {
     if(u1 == u2) return true;
 
@@ -47,3 +47,9 @@ bool uint64_test(uint64_t i1, uint64_t i2)
 }
 
 #endif
+
+uint64_t uint64_add(uint64_t u1, uint64_t u2)
+{
+    uint64_t sum = u1 + u2;
+    return sum < u1 ? UINT64_MAX : sum;
+}

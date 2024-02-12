@@ -14,7 +14,7 @@
 
 
 
-uchar cton(uchar c)
+uchar_t cton(uchar_t c)
 {
     switch (c)
     {
@@ -55,7 +55,7 @@ evm_bytes_t bytes_init_immed(char str[])
     if(len == 2) return (evm_bytes_t){NULL, 0};
 
     uint64_t size = len / 2 - 1;
-    uchar *b = malloc(size);
+    uchar_t *b = malloc(size);
     for(uint64_t i=0; i<size; i++)
         b[i] = (cton(str[2 * i + 2]) << 4) | cton(str[2 * i + 3]);
 
@@ -107,7 +107,7 @@ void bytes_free(evm_bytes_p b)
 
 
 
-uchar bytes_get_byte(evm_bytes_p b, uint64_t i)
+uchar_t bytes_get_byte(evm_bytes_p b, uint64_t i)
 {
     assert(i >= 0);
     return i < b->size ? b->v[i] : 0;
@@ -123,7 +123,7 @@ void bytes_expand(evm_bytes_p b, uint64_t size)
     memset(&b->v[size_prev], 0, size - size_prev);
 }
 
-void bytes_set_byte(evm_bytes_p b, uint64_t i, uchar u)
+void bytes_set_byte(evm_bytes_p b, uint64_t i, uchar_t u)
 {
     bytes_expand(b, i+1);
     b->v[i] = u;
@@ -134,7 +134,7 @@ evm_word_t bytes_get_word(evm_bytes_p b, uint64_t i)
     evm_word_t w = word_init();
     for(int _i=0; _i<32; _i++)
     {
-        uchar u = bytes_get_byte(b, i+_i);
+        uchar_t u = bytes_get_byte(b, i+_i);
         word_set_byte(&w, 31-_i, u);
     }
     return w;
@@ -151,7 +151,7 @@ evm_bytes_t bytes_get_bytes(evm_bytes_p b, uint64_t i, uint64_t size)
 {
     if(size == 0) return (evm_bytes_t){NULL, 0};
     
-    uchar *v = calloc(size, 1);
+    uchar_t *v = calloc(size, 1);
     assert(v);
     for(uint64_t _i = 0; _i < size; _i++)
         v[_i] = bytes_get_byte(b, i+_i);

@@ -76,6 +76,24 @@ bool frame_test_immed(evm_frame_t f, uint64_t pc, uint64_t gas, uint64_t n_mem, 
     return true;
 }
 
+bool frame_o_test_immed(evm_frame_o_t fo, uint64_t gas, char str_returndata[])
+{
+    if(!uint64_test(fo.gas, gas))
+    {
+        printf("\n\tFRAME OUTPUT ASSERTION ERROR | GAS\t\t");
+        return false;
+    }
+
+    evm_bytes_t b = bytes_init_immed(str_returndata);
+    if(!bytes_test(fo.returndata, b))
+    {
+        printf("\n\tFRAME OUTPUT ASSERTION ERROR | RETURN DATA\t\t");
+        return false;
+    }
+
+    return true;
+}
+
 #endif
 
 
@@ -104,7 +122,12 @@ void frame_free(evm_frame_t f)
     mem_free(f.m);
 }
 
-uchar frame_get_op(evm_frame_p f)
+void frame_o_free(evm_frame_o_t fo)
+{
+    bytes_free(&fo.returndata);
+}
+
+uchar_t frame_get_op(evm_frame_p f)
 {
     return bytes_get_byte(&f->code, f->pc);
 }
@@ -113,7 +136,7 @@ uchar frame_get_op(evm_frame_p f)
 
 evm_frame_o_t frame_returndata(evm_frame_p f, evm_bytes_t b)
 {
-    return (evm_frame_o_t){b, f->gas};
+    return (evm_frame_o_t){f->gas, b};
 }
 
 evm_frame_o_t frame_stop(evm_frame_p f)
@@ -143,7 +166,8 @@ int frame_mload(evm_frame_p f)
 {
     evm_word_t w_pos;
     if(stack_pop(&w_pos, &f->s)) return 1;
-    uint64_t gas = mem_dry_run(&f->m, w_pos, 32, G_very_low);
+    uint64_t gas_expand = mem_dry_run(&f->m, w_pos, 32);
+    uint64_t gas = uint64_add(G_very_low, gas_expand);
     GAS_VERIFY(gas, 2);
     GAS_CONSUME(gas);
 
@@ -158,7 +182,8 @@ int frame_mstore(evm_frame_p f)
 {
     evm_word_t w_pos, w_value;
     if(stack_pop(&w_pos, &f->s)) return 1;
-    uint64_t gas = mem_dry_run(&f->m, w_pos, 32, G_very_low);
+    uint64_t gas_expand = mem_dry_run(&f->m, w_pos, 32);
+    uint64_t gas = uint64_add(G_very_low, gas_expand);
     GAS_VERIFY(gas, 2);
     
     if(stack_pop(&w_value, &f->s)) return 3;
@@ -174,13 +199,14 @@ int frame_mstore8(evm_frame_p f)
 {
     evm_word_t w_pos, w_value;
     if(stack_pop(&w_pos, &f->s))   return 1;
-    uint64_t gas = mem_dry_run(&f->m, w_pos, 1, G_very_low);
+    uint64_t gas_expand = mem_dry_run(&f->m, w_pos, 1);
+    uint64_t gas = uint64_add(G_very_low, gas_expand);
     GAS_VERIFY(gas, 2);
 
     if(stack_pop(&w_value, &f->s)) return 3;
     GAS_CONSUME(gas);
     
-    uchar u = word_get_byte(&w_value, 0);
+    uchar_t u = word_get_byte(&w_value, 0);
     mem_set_byte(&f->m, w_pos.v[0], u);
     f->pc++;
     
@@ -193,7 +219,7 @@ int frame_push(evm_frame_p f)
 {
     GAS_VERIFY(G_very_low, 1);
 
-    uchar op = frame_get_op(f);
+    uchar_t op = frame_get_op(f);
     assert(0x59 <= op);
     assert(op <= 0x7f);
 
@@ -217,7 +243,7 @@ evm_frame_o_t frame_return(evm_frame_p f)
     evm_word_t w_size;
     if(stack_pop(&w_size, &f->s)) return frame_halt(f);
     if(!word_is_uint64(&w_size)) return frame_halt(f);
-    uint64_t gas = mem_dry_run(&f->m, w_ptr, w_size.v[0], G_very_low);
+    uint64_t gas = mem_dry_run(&f->m, w_ptr, w_size.v[0]);
     GAS_VERIFY(gas, frame_halt(f));
     GAS_CONSUME(gas);
 

@@ -6,7 +6,7 @@
 
 STRUCT(evm_bytes)
 {
-    uchar *v;
+    uchar_t *v;
     uint64_t size;
 };
 
