@@ -17,6 +17,7 @@ bool frame_o_test_immed(evm_frame_o_t fo, uint64_t gas, char str_returndata[]);
 #endif
 
 #define STOP 0x00
+#define ADD  0x01
 
 #define POP     0x50
 #define MLOAD   0x51

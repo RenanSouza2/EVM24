@@ -44,21 +44,21 @@ bool frame_test_immed(evm_frame_t f, uint64_t pc, uint64_t gas, uint64_t n_mem, 
     va_list args;
     va_start(args, n_mem);
 
-    if(pc > IGN)
+    if(pc < IGN)
     if(!int_test(f.pc, pc))
     {
         printf("\n\tFRAME ASSERTION ERROR | PC\t\t");
         return false;
     }
 
-    if(gas > IGN)
+    if(gas < IGN)
     if(!int_test(f.gas, gas))
     {
         printf("\n\tFRAME ASSERTION ERROR | GAS\t\t");
         return false;
     }
 
-    if(n_mem > IGN)
+    if(n_mem < IGN)
     if(!mem_test_variadic(f.m, n_mem, &args))
     {
         printf("\n\tFRAME ASSERTION ERROR | MEM\t\t");
@@ -66,10 +66,10 @@ bool frame_test_immed(evm_frame_t f, uint64_t pc, uint64_t gas, uint64_t n_mem, 
     }
 
     uint64_t n_stack = va_arg(args, uint64_t);
-    if(n_stack > IGN)
+    if(n_stack < IGN)
     if(!stack_test_variadic(f.s, n_stack, &args))
     {
-        printf("\n\tFRAME ASSERTION ERROR | STACK\n\n");
+        printf("\n\tFRAME ASSERTION ERROR | STACK\t\t");
         return false;
     }
 
@@ -98,8 +98,8 @@ bool frame_o_test_immed(evm_frame_o_t fo, uint64_t gas, char str_returndata[])
 
 
 
-#define GAS_VERIFY(GAS, CODE) if(f->gas < GAS) return CODE
-#define GAS_CONSUME(GAS) f->gas -= GAS;
+#define GAS_VERIFY(GAS, CODE) if(f->gas < (GAS)) return CODE
+#define GAS_CONSUME(GAS) f->gas -= (GAS);
 
 
 
@@ -147,6 +147,23 @@ evm_frame_o_t frame_stop(evm_frame_p f)
 evm_frame_o_t frame_halt(evm_frame_p f)
 {
     return frame_returndata(f, bytes_init_zero());
+}
+
+
+
+int frame_add(evm_frame_p f)
+{
+    evm_word_t w1, w2;
+    if(stack_pop(&w1, &f->s)) return 1;
+    if(stack_pop(&w2, &f->s)) return 2;
+
+    evm_word_t w = word_add(&w1, &w2);
+    assert(!stack_push(&f->s, &w));
+    f->pc++;
+
+    GAS_VERIFY(G_very_low, 3);
+    GAS_CONSUME(G_very_low);
+    return 0;
 }
 
 
@@ -217,19 +234,19 @@ int frame_mstore8(evm_frame_p f)
 
 int frame_push(evm_frame_p f)
 {
-    GAS_VERIFY(G_very_low, 1);
-
     uchar_t op = frame_get_op(f);
     assert(0x59 <= op);
     assert(op <= 0x7f);
-
     int size = op - 0x5f;
+    int gas = size ? G_very_low : G_base;
+    GAS_VERIFY(gas, 1);
+ 
     evm_bytes_t b = bytes_get_bytes(&f->code, f->pc+1, size);
     evm_word_t w = word_init_bytes(&b);
     if(stack_push(&f->s, &w)) return 2;
     f->pc += 1 + size;
 
-    GAS_CONSUME(G_very_low);
+    GAS_CONSUME(gas);
     return 0;
 }
 

@@ -44,7 +44,7 @@ bool stack_test_variadic(evm_stack_t s, int n, va_list *args)
 {
     if(!int_test(s.count, n))
     {
-        printf("\n\n\tSTACK ASSERTION ERROR | COUNT\t\t");
+        printf("\n\tSTACK ASSERTION ERROR | COUNT\t\t");
         return false;
     }
 
