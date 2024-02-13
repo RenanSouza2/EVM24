@@ -9,6 +9,7 @@
 
 evm_frame_t frame_init_immed(char str_code[], uint64_t gas);
 evm_frame_t frame_init_immed_setup(char str_code[], uint64_t gas, uint64_t n_mem, ...);
+uint64_vec_t frame_get_jumpdest_immed(char str_code[]);
 
 bool frame_test_immed(evm_frame_t f, uint64_t pc, uint64_t gas, uint64_t n_mem, ...);
 bool frame_o_test_immed(evm_frame_o_t fo, bool success, uint64_t gas, char str_returndata[]);
@@ -33,6 +34,8 @@ bool frame_o_test_immed(evm_frame_o_t fo, bool success, uint64_t gas, char str_r
 #define RETURN  0xf3
 
 evm_frame_t frame_init(evm_bytes_t code, uint64_t gas);
+uint64_vec_t frame_get_jumpdest(evm_bytes_p code);
+
 void frame_free(evm_frame_t f);
 void frame_o_free(evm_frame_o_t fo);
 
@@ -46,7 +49,5 @@ int frame_mstore8(evm_frame_p f);
 int frame_push(evm_frame_p f);
 
 evm_frame_o_t frame_return(evm_frame_p f);
-
-uint64_vec_t code_get_jumpdest(evm_bytes_p code);
 
 #endif

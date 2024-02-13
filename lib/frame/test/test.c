@@ -2,13 +2,13 @@
 
 #include "../debug.h"
 #include "../../../utils/clu/bin/header.h"
-#include "../../stack/head/debug.h"
-// #include "../../stack/list/struct.h"
+
 #include "../../bytes/debug.h"
-#include "../../word/debug.h"
-#include "../../utils/debug.h"
-#include "../../mem/debug.h"
 #include "../../gas/header.h"
+#include "../../mem/debug.h"
+#include "../../stack/head/debug.h"
+#include "../../utils/debug.h"
+#include "../../word/debug.h"
 
 
 
@@ -31,6 +31,17 @@ void test_frame_init()
     _assert(stack_test_immed(f.s, 0));
     _assert(mem_test_immed(f.m, 0));
     frame_free(f);
+
+    _assert(mem_empty());
+}
+
+void test_frame_get_jumpdest()
+{
+    printf("\n\t%s\t\t", __func__);
+
+    uint64_vec_t jumpdest = frame_get_jumpdest_immed("0x");
+    _assert(uint64_vec_test_immed(jumpdest, 0));
+    uint64_vec_free(jumpdest);
 
     _assert(mem_empty());
 }
@@ -335,6 +346,7 @@ void test_frame()
     printf("\n%s\t\t", __func__);
 
     test_frame_init();
+    test_frame_get_jumpdest();
 
     test_frame_stop();
 

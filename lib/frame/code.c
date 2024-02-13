@@ -4,7 +4,6 @@
 #include "debug.h"
 
 #include "../gas/header.h"
-#include "../vec/struct.h"
 
 
 
@@ -35,10 +34,18 @@ evm_frame_t frame_init_immed_setup(char str_code[], uint64_t gas, uint64_t n_mem
         0,
         gas,
         code,
-        code_get_jumpdest(&code),
+        frame_get_jumpdest(&code),
         mem_init_immed_variadic(n_mem, &args),
         stack_init_immed_variadic(va_arg(args, uint64_t), &args)
     };
+}
+
+uint64_vec_t frame_get_jumpdest_immed(char str_code[])
+{
+    evm_bytes_t code = bytes_init_immed(str_code);
+    uint64_vec_t jumpdest = frame_get_jumpdest(&code);
+    bytes_free(&code);
+    return jumpdest;
 }
 
 
@@ -118,45 +125,13 @@ evm_frame_t frame_init(evm_bytes_t code, uint64_t gas)
         0,
         gas,
         code,
-        code_get_jumpdest(&code),
+        frame_get_jumpdest(&code),
         mem_init(),
         stack_init(),
     };
 }
 
-void frame_free(evm_frame_t f)
-{
-    bytes_free(&f.code);
-    uint64_vec_free(f.jumpdest);
-    stack_free(&f.s);
-    mem_free(f.m);
-}
-
-void frame_o_free(evm_frame_o_t fo)
-{
-    bytes_free(&fo.returndata);
-}
-
-uchar_t frame_get_op(evm_frame_p f)
-{
-    return bytes_get_byte(&f->code, f->pc);
-}
-
-
-
-int frame_push_uint64(evm_frame_p f, uint64_t value)
-{
-    GAS_VERIFY(G_base, 1);
-    GAS_CONSUME(G_base);
-
-    evm_word_t w = word_init_uint64(value);
-    if(stack_push(&f->s, &w)) return 2;
-    f->pc++;
-
-    return 0;
-}
-
-uint64_vec_t code_get_jumpdest(evm_bytes_p code) // TODO improve test
+uint64_vec_t frame_get_jumpdest(evm_bytes_p code) // TODO improve test
 {
     uint64_t count = 0;
     for(uint64_t pc=0; pc<code->size; pc++)
@@ -168,6 +143,7 @@ uint64_vec_t code_get_jumpdest(evm_bytes_p code) // TODO improve test
             case PUSH0 ... PUSH32: pc += op - PUSH0;
         }
     }
+    if(count == 0) return uint64_vec_init(0);
 
     uint64_vec_t vec = uint64_vec_init(count);
     count = 1;
@@ -182,6 +158,42 @@ uint64_vec_t code_get_jumpdest(evm_bytes_p code) // TODO improve test
     }
     return vec;
 }
+
+
+
+void frame_free(evm_frame_t f)
+{
+    bytes_free(&f.code);
+    uint64_vec_free(f.jumpdest);
+    stack_free(&f.s);
+    mem_free(f.m);
+}
+
+void frame_o_free(evm_frame_o_t fo)
+{
+    bytes_free(&fo.returndata);
+}
+
+
+
+uchar_t frame_get_op(evm_frame_p f)
+{
+    return bytes_get_byte(&f->code, f->pc);
+}
+
+int frame_push_uint64(evm_frame_p f, uint64_t value)
+{
+    GAS_VERIFY(G_base, 1);
+    GAS_CONSUME(G_base);
+
+    evm_word_t w = word_init_uint64(value);
+    if(stack_push(&f->s, &w)) return 2;
+    f->pc++;
+
+    return 0;
+}
+
+
 
 evm_frame_o_t frame_stop(evm_frame_p f)
 {

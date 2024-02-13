@@ -10,7 +10,16 @@ typedef uchar_t * uchar_p;
 typedef __uint128_t uint128_t;
 typedef uint64_t * uint64_p;
 
+STRUCT(uint64_vec)
+{
+    uint64_t size;
+    uint64_p v;
+};
+
 uint64_t uint64_add(uint64_t u1, uint64_t u2);
 uint64_t uint128_to_uint64(uint128_t res);
+
+uint64_vec_t uint64_vec_init(uint64_t size);
+void uint64_vec_free(uint64_vec_t vec);
 
 #endif

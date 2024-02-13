@@ -4,7 +4,6 @@
 #include "header.h"
 #include "../stack/head/struct.h"
 #include "../mem/struct.h"
-#include "../vec/struct.h"
 
 STRUCT(evm_frame)
 {
