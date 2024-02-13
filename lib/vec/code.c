@@ -16,3 +16,8 @@ uint64_vec_t uint64_vec_init(uint64_t size)
 
     return (uint64_vec_t){size, v};
 }
+
+void uint64_vec_free(uint64_vec_t vec)
+{
+    if(vec.v) free(vec.v);
+}

@@ -3,9 +3,11 @@
 #include "../debug.h"
 #include "../../../utils/clu/bin/header.h"
 #include "../../stack/head/debug.h"
-#include "../../stack/list/struct.h"
+// #include "../../stack/list/struct.h"
+#include "../../bytes/debug.h"
 #include "../../word/debug.h"
 #include "../../utils/debug.h"
+#include "../../mem/debug.h"
 #include "../../gas/header.h"
 
 
@@ -15,25 +17,19 @@ void test_frame_init()
     printf("\n\t%s\t\t", __func__);
 
     evm_frame_t f = frame_init_immed("0x", GAS_DEF);
-    _assert(f.pc == 0);
-    _assert(f.gas == GAS_DEF);
-    _assert(f.code.size == 0);
-    _assert(f.code.v == NULL);
-    _assert(f.s.count == 0);
-    _assert(f.s.sl == NULL);
-    _assert(f.m.size == 0);
-    _assert(f.m.v == NULL);
+    assert_64(f.pc, 0);
+    assert_64(f.gas, GAS_DEF);
+    _assert(bytes_test_immed(f.code, "0x"));
+    _assert(stack_test_immed(f.s, 0));
+    _assert(mem_test_immed(f.m, 0));
+    frame_free(f);
 
     f = frame_init_immed("0xff", GAS_DEF);
-    _assert(f.pc == 0);
-    _assert(f.gas == GAS_DEF);
-    _assert(f.code.size == 1);
-    _assert(f.code.v != NULL);
-    _assert(f.code.v[0] == 0xff);
-    _assert(f.s.count == 0);
-    _assert(f.s.sl == NULL);
-    _assert(f.m.size == 0);
-    _assert(f.m.v == NULL);
+    assert_64(f.pc, 0);
+    assert_64(f.gas, GAS_DEF);
+    _assert(bytes_test_immed(f.code, "0xff"));
+    _assert(stack_test_immed(f.s, 0));
+    _assert(mem_test_immed(f.m, 0));
     frame_free(f);
 
     _assert(mem_empty());
@@ -48,6 +44,7 @@ void test_frame_stop()
     evm_frame_t f = frame_init_immed("0x", GAS_DEF);
     evm_frame_o_t fo = frame_stop(&f);
     _assert(frame_o_test_immed(fo, true, GAS_DEF, "0x"));
+    frame_free(f);
 
     _assert(mem_empty());
 }

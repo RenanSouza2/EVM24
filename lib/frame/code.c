@@ -26,14 +26,16 @@ evm_frame_t frame_init_immed(char str_code[], uint64_t gas)
 
 evm_frame_t frame_init_immed_setup(char str_code[], uint64_t gas, uint64_t n_mem, ...)
 {
+    evm_bytes_t code = bytes_init_immed(str_code);
+
     va_list args;
     va_start(args, n_mem);
     return (evm_frame_t)
     {
         0,
         gas,
-        bytes_init_immed(str_code),
-        NULL,
+        code,
+        code_get_jumpdest(&code),
         mem_init_immed_variadic(n_mem, &args),
         stack_init_immed_variadic(va_arg(args, uint64_t), &args)
     };
@@ -116,7 +118,7 @@ evm_frame_t frame_init(evm_bytes_t code, uint64_t gas)
         0,
         gas,
         code,
-        NULL,
+        code_get_jumpdest(&code),
         mem_init(),
         stack_init(),
     };
@@ -125,6 +127,7 @@ evm_frame_t frame_init(evm_bytes_t code, uint64_t gas)
 void frame_free(evm_frame_t f)
 {
     bytes_free(&f.code);
+    uint64_vec_free(f.jumpdest);
     stack_free(&f.s);
     mem_free(f.m);
 }
@@ -139,8 +142,13 @@ uchar_t frame_get_op(evm_frame_p f)
     return bytes_get_byte(&f->code, f->pc);
 }
 
-int frame_push_env(evm_frame_p f, uint64_t value)
+
+
+int frame_push_uint64(evm_frame_p f, uint64_t value)
 {
+    GAS_VERIFY(G_base, 1);
+    GAS_CONSUME(G_base);
+
     evm_word_t w = word_init_uint64(value);
     if(stack_push(&f->s, &w)) return 2;
     f->pc++;
@@ -239,23 +247,17 @@ int frame_codecopy(evm_frame_p f) // TODO test
 
 int frame_pc(evm_frame_p f) // TODO test
 {
-    GAS_VERIFY(G_base, 1);
-    GAS_CONSUME(G_base);
-    return frame_push_env(f, f->pc);
+    return frame_push_uint64(f, f->pc);
 }
 
 int frame_msize(evm_frame_p f) // TODO test
 {
-    GAS_VERIFY(G_base, 1);
-    GAS_CONSUME(G_base);
-    return frame_push_env(f, f->m.size);
+    return frame_push_uint64(f, f->m.size);
 }
 
 int frame_gas(evm_frame_p f) // TODO test
 {
-    GAS_VERIFY(G_base, 1);
-    GAS_CONSUME(G_base);
-    return frame_push_env(f, f->gas);
+    return frame_push_uint64(f, f->gas - G_base);
 }
 
 

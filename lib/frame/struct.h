@@ -4,18 +4,19 @@
 #include "header.h"
 #include "../stack/head/struct.h"
 #include "../mem/struct.h"
+#include "../vec/struct.h"
 
 STRUCT(evm_frame)
 {
     uint64_t pc;
     uint64_t gas;
     evm_bytes_t code;
-    uint64_p valid_jump;
+    uint64_vec_t jumpdest;
     evm_mem_t m;
     evm_stack_t s;
 };
 
-STRUCT(evm_frame_o)
+STRUCT(evm_frame_o) // cbAIH%cV45dOiIP1&uAi
 {
     bool success;
     uint64_t gas;

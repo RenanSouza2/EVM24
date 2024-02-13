@@ -13,5 +13,6 @@ STRUCT(uint64_vec)
 };
 
 uint64_vec_t uint64_vec_init(uint64_t size);
+void uint64_vec_free(uint64_vec_t vec);
 
 #endif

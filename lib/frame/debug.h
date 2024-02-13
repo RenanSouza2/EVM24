@@ -47,4 +47,6 @@ int frame_push(evm_frame_p f);
 
 evm_frame_o_t frame_return(evm_frame_p f);
 
+uint64_vec_t code_get_jumpdest(evm_bytes_p code);
+
 #endif
