@@ -3,10 +3,13 @@
 #include <assert.h>
 
 #include "debug.h"
-#include "../bytes/struct.h"
+
 #include "../mem/header.h"
 #include "../utils/header.h"
 #include "../gas/header.h"
+
+#include "../bytes/struct.h"
+#include "../vec/struct.h"
 
 
 
@@ -17,6 +20,7 @@
 #include "../bytes/debug.h"
 #include "../mem/debug.h"
 #include "../utils/debug.h"
+
 
 
 evm_frame_t frame_init_immed(char str_code[], uint64_t gas)
@@ -34,6 +38,7 @@ evm_frame_t frame_init_immed_setup(char str_code[], uint64_t gas, uint64_t n_mem
         0,
         gas,
         bytes_init_immed(str_code),
+        NULL,
         mem_init_immed_variadic(n_mem, &args),
         stack_init_immed_variadic(va_arg(args, uint64_t), &args)
     };
@@ -116,6 +121,7 @@ evm_frame_t frame_init(evm_bytes_t code, uint64_t gas)
         0,
         gas,
         code,
+        NULL,
         mem_init(),
         stack_init(),
     };
@@ -138,7 +144,41 @@ uchar_t frame_get_op(evm_frame_p f)
     return bytes_get_byte(&f->code, f->pc);
 }
 
+int frame_push_env(evm_frame_p f, uint64_t value)
+{
+    evm_word_t w = word_init_uint64(value);
+    if(stack_push(&f->s, &w)) return 2;
+    f->pc++;
 
+    return 0;
+}
+
+uint64_vec_t code_get_jumpdest(evm_bytes_p code) // TODO improve test
+{
+    uint64_t count = 0;
+    for(uint64_t pc=0; pc<code->size; pc++)
+    {
+        uchar_t op = bytes_get_byte(code, pc);
+        switch (op)
+        {
+            case JUMPDEST: count++; break;
+            case PUSH0 ... PUSH32: pc += op - PUSH0;
+        }
+    }
+
+    uint64_vec_t vec = uint64_vec_init(count);
+    count = 1;
+    for(uint64_t pc=0; pc<code->size; pc++)
+    {
+        uchar_t op = bytes_get_byte(code, pc);
+        switch (op)
+        {
+            case JUMPDEST: vec.v[count++] = pc; break;
+            case PUSH0 ... PUSH32: pc += op - PUSH0; break;
+        }
+    }
+    return vec;
+}
 
 evm_frame_o_t frame_stop(evm_frame_p f)
 {
@@ -198,6 +238,29 @@ int frame_codecopy(evm_frame_p f) // TODO test
     mem_set_bytes(&f->m, w_mem.v[0], &b);
     bytes_free(&b);
     return 0;
+}
+
+
+
+int frame_pc(evm_frame_p f) // TODO test
+{
+    GAS_VERIFY(G_base, 1);
+    GAS_CONSUME(G_base);
+    return frame_push_env(f, f->pc);
+}
+
+int frame_msize(evm_frame_p f) // TODO test
+{
+    GAS_VERIFY(G_base, 1);
+    GAS_CONSUME(G_base);
+    return frame_push_env(f, f->m.size);
+}
+
+int frame_gas(evm_frame_p f) // TODO test
+{
+    GAS_VERIFY(G_base, 1);
+    GAS_CONSUME(G_base);
+    return frame_push_env(f, f->gas);
 }
 
 

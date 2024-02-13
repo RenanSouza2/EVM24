@@ -53,14 +53,14 @@ evm_bytes_t bytes_init_immed(char str[])
     assert(str[0] == '0');
     assert(str[1] == 'x');
 
-    if(len == 2) return (evm_bytes_t){NULL, 0};
+    if(len == 2) return bytes_init();
 
     uint64_t size = len / 2 - 1;
     uchar_t *b = malloc(size);
     for(uint64_t i=0; i<size; i++)
         b[i] = (cton(str[2 * i + 2]) << 4) | cton(str[2 * i + 3]);
 
-    return (evm_bytes_t){b, size};
+    return (evm_bytes_t){size, b};
 }
 
 bool bytes_test_immed(evm_bytes_t b, char str[])
@@ -98,7 +98,7 @@ bool bytes_test(evm_bytes_t b, evm_bytes_t b_exp)
 
 evm_bytes_t bytes_init()
 {
-    return (evm_bytes_t){NULL, 0};
+    return (evm_bytes_t){0, NULL};
 }
 
 void bytes_free(evm_bytes_p b)
@@ -127,12 +127,12 @@ evm_word_t bytes_get_word(evm_bytes_p b, uint64_t pos)
 
 evm_bytes_t bytes_get_bytes(evm_bytes_p b, uint64_t pos, uint64_t size)
 {
-    if(size == 0) return (evm_bytes_t){NULL, 0};
+    if(size == 0) return bytes_init();
     
-    uchar_t *v = calloc(size, 1);
+    uchar_t *v = malloc(size);
     assert(v);
     for(uint64_t i = 0; i < size; i++)
         v[i] = bytes_get_byte(b, pos+i);
     
-    return (evm_bytes_t){v, size};
+    return (evm_bytes_t){size, v};
 }

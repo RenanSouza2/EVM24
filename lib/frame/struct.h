@@ -10,6 +10,7 @@ STRUCT(evm_frame)
     uint64_t pc;
     uint64_t gas;
     evm_bytes_t code;
+    uint64_p valid_jump;
     evm_mem_t m;
     evm_stack_t s;
 };

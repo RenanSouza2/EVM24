@@ -6,8 +6,8 @@
 
 STRUCT(evm_bytes)
 {
-    uchar_t *v;
     uint64_t size;
+    uchar_p  v;
 };
 
 evm_bytes_t bytes_init();

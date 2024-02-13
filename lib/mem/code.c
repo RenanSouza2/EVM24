@@ -68,7 +68,7 @@ bool mem_test_variadic(evm_mem_t m, uint64_t n, va_list *args)
 
 evm_mem_t mem_init()
 {
-    return (evm_mem_t){NULL, 0};
+    return bytes_init();
 }
 
 void mem_free(evm_mem_t m)
@@ -118,10 +118,14 @@ evm_word_t mem_get_word(evm_mem_p m, uint64_t pos)
 
 evm_bytes_t mem_get_bytes(evm_mem_p m, uint64_t pos, uint64_t size) // TODO test
 {
-    if(!size) return bytes_init();
+    if(size == 0) return bytes_init();
 
     mem_expand(m, pos+size);
-    return bytes_get_bytes(m, pos, size);
+    uchar_t *v = malloc(size);
+    assert(v);
+
+    memcpy(v, &m->v[pos], size);
+    return (evm_bytes_t){size, v};
 }
 
 
