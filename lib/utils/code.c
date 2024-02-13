@@ -1,7 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
-
 #include "debug.h"
 
 
@@ -9,6 +5,8 @@
 #ifdef DEBUG
 
 #include "../../utils/clu/bin/header.h"
+
+
 
 void uint64_display(uint64_t u)
 {

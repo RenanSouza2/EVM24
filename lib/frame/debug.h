@@ -2,7 +2,6 @@
 #define __FRAME_DEBUG_H__
 
 #include "struct.h"
-#include "../gas/header.h"
 
 #ifdef DEBUG
 

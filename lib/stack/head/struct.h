@@ -2,7 +2,8 @@
 #define __STACK_HEAD_STRUCT_H__
 
 #include "header.h"
-#include "../list/header.h"
+
+PLACEHOLDER(evm_stack_l);
 
 STRUCT(evm_stack)
 {

@@ -6,6 +6,7 @@
 #include "../../stack/list/struct.h"
 #include "../../word/debug.h"
 #include "../../utils/debug.h"
+#include "../../gas/header.h"
 
 
 

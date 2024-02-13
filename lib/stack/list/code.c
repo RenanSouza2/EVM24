@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 
@@ -7,8 +6,6 @@
 
 
 #ifdef DEBUG
-
-#include <stdarg.h>
 
 #include "../../../utils/clu/bin/header.h"
 #include "../../word/debug.h"
@@ -88,8 +85,10 @@ evm_stack_l_p stack_l_create(evm_stack_l_p sl_next, evm_word_p w)
     return sl;
 }
 
-evm_stack_l_p stack_l_pop(evm_stack_l_p sl)
+evm_stack_l_p stack_l_pop(evm_word_p w, evm_stack_l_p sl)
 {
+    if(w) *w = sl->w;
+
     assert(sl);
     evm_stack_l_p sl_next = sl->sl;
     free(sl);
@@ -98,5 +97,5 @@ evm_stack_l_p stack_l_pop(evm_stack_l_p sl)
 
 void stack_l_free(evm_stack_l_p sl)
 {
-    while(sl) sl = stack_l_pop(sl);
+    while(sl) sl = stack_l_pop(NULL, sl);
 }

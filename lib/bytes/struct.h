@@ -2,7 +2,6 @@
 #define __BYTES_STRUCT_H__
 
 #include "header.h"
-#include "../utils/struct.h"
 
 STRUCT(evm_bytes)
 {

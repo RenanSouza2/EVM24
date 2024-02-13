@@ -2,8 +2,8 @@
 #define __STACK_HEAD_H__
 
 #include "../../../utils/struct.h"
-#include "../../word/header.h"
 
+PLACEHOLDER(evm_word);
 PLACEHOLDER(evm_stack);
 
 void stack_free(evm_stack_p s);

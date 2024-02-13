@@ -14,7 +14,7 @@ void test_gas_mem()
     assert_64(gas_mem(23), 70);
     assert_64(gas_mem(32), 98);
     assert_64(gas_mem(0xffffffffff), U64_MAX);
-    assert_64(gas_mem(U64_MAX), U64_MAX);
+    assert_64(gas_mem(     U64_MAX), U64_MAX);
 
     assert(mem_empty());
 }

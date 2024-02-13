@@ -4,6 +4,7 @@
 #include "../debug.h"
 #include "../../../../utils/clu/bin/header.h"
 #include "../../../word/debug.h"
+#include "../../../utils/debug.h"
 
 
 
@@ -30,8 +31,15 @@ void test_stack_list_pop()
 
     evm_word_t w = WORD(4, 3, 2, 1);
     evm_stack_l_p sl = stack_l_create((evm_stack_l_p)1, &w);
-    sl = stack_l_pop(sl);
-    assert(sl == (evm_stack_l_p)1);
+    sl = stack_l_pop(NULL, sl);
+    _assert(sl == (evm_stack_l_p)1);
+
+    evm_word_t w_out;
+    w = WORD(4, 3, 2, 1);
+    sl = stack_l_create((evm_stack_l_p)1, &w);
+    sl = stack_l_pop(&w_out, sl);
+    _assert(word_test(w_out, WORD(4, 3, 2, 1)));
+    _assert(sl == (evm_stack_l_p)1);
 
     assert(mem_empty());
 }

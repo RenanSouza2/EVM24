@@ -1,14 +1,9 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <assert.h>
 
 #include "debug.h"
 
-#include "../mem/header.h"
-#include "../utils/header.h"
 #include "../gas/header.h"
-
-#include "../bytes/struct.h"
 #include "../vec/struct.h"
 
 
