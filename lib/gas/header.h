@@ -5,8 +5,10 @@
 
 #include "../../utils/struct.h"
 
+#define G_jumpdest  1
 #define G_base      2
 #define G_very_low  3
+#define G_mid       8
 #define G_memory    3
 #define G_copy      3
 

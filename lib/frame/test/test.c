@@ -43,6 +43,18 @@ void test_frame_get_jumpdest()
     _assert(uint64_vec_test_immed(jumpdest, 0));
     uint64_vec_free(jumpdest);
 
+    jumpdest = frame_get_jumpdest_immed("0x00");
+    _assert(uint64_vec_test_immed(jumpdest, 0));
+    uint64_vec_free(jumpdest);
+
+    jumpdest = frame_get_jumpdest_immed("0x5b");
+    _assert(uint64_vec_test_immed(jumpdest, 1, 0));
+    uint64_vec_free(jumpdest);
+
+    jumpdest = frame_get_jumpdest_immed("0x605b");
+    _assert(uint64_vec_test_immed(jumpdest, 0));
+    uint64_vec_free(jumpdest);
+
     _assert(mem_empty());
 }
 

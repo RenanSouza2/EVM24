@@ -2,6 +2,7 @@
 #define __UTILS_STRUCT_H__
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #include "header.h"
 
@@ -25,5 +26,6 @@ uint64_t uint128_to_uint64(uint128_t res);
 
 uint64_vec_t uint64_vec_init(uint64_t size);
 void uint64_vec_free(uint64_vec_t vec);
+bool uint64_vec_has_uint64(uint64_vec_p vec, uint64_t v);
 
 #endif

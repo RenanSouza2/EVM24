@@ -338,6 +338,35 @@ int frame_mstore8(evm_frame_p f)
 
 
 
+int frame_jump(evm_frame_p f) // TODO test
+{
+    evm_word_t w_pos;
+    if(stack_pop(&w_pos, &f->s)) return 1;
+    if(!word_is_uint64(&w_pos))  return 2;
+    uint64_t pos = w_pos.v[0];
+
+    if(!uint64_vec_has_uint64(&f->jumpdest, pos)) return 3;
+
+    GAS_VERIFY(G_mid, 4);
+    GAS_CONSUME(G_mid);
+
+    f->pc = pos;
+    return 0;
+}
+
+
+
+int frame_jumpdest(evm_frame_p f) // TODO test
+{
+    GAS_VERIFY(G_jumpdest, 1);
+    GAS_CONSUME(G_jumpdest);
+
+    f->pc++;
+    return 0;
+}
+
+
+
 int frame_push(evm_frame_p f)
 {
     uchar_t op = frame_get_op(f);

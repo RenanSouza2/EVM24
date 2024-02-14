@@ -26,6 +26,8 @@ bool frame_o_test_immed(evm_frame_o_t fo, bool success, uint64_t gas, char str_r
 #define MSTORE  0x52
 #define MSTORE8 0x53
 
+#define JUMP    0x56
+
 #define JUMPDEST 0x5b
 
 #define PUSH0   0x5f

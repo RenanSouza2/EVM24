@@ -74,6 +74,8 @@ bool uint64_vec_test_immed(uint64_vec_t vec, uint64_t n, ...)
 
 #endif
 
+
+
 uint64_t uint64_add(uint64_t u1, uint64_t u2)
 {
     uint64_t sum = u1 + u2;
@@ -100,4 +102,18 @@ uint64_vec_t uint64_vec_init(uint64_t size)
 void uint64_vec_free(uint64_vec_t vec)
 {
     if(vec.v) free(vec.v);
+}
+
+bool uint64_vec_has_uint64(uint64_vec_p vec, uint64_t v) // TODO test
+{
+    for(uint64_t min = 0, max = vec->size; max - min > 1;)
+    {
+        uint64_t mid = (min + max) >> 1;
+        uint64_t _v = vec->v[mid];
+        if(_v == v) return true;
+
+        if(vec->v[mid] > v) max = mid;
+        else                min = mid;    
+    }
+    return false;
 }
