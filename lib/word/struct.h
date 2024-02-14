@@ -5,8 +5,6 @@
 
 #define V_MAX 4
 
-PLACEHOLDER(evm_bytes);
-
 STRUCT(evm_word)
 {
     uint64_t v[V_MAX];

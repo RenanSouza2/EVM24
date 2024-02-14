@@ -4,7 +4,7 @@
 #include "../../utils/struct.h"
 #include "../word/struct.h"
 
-PLACEHOLDER(evm_bytes);
+typedef uchar_vec_p evm_bytes_p;
 
 void bytes_free(evm_bytes_p b);
 
