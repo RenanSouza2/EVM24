@@ -6,7 +6,7 @@
 
 void test_gas_mem()
 {
-    printf("\n\t%s\t\t", __func__);
+    printf("\n\t%s", __func__);
 
     assert_64(gas_mem( 0),  0);
     assert_64(gas_mem( 1),  3);
@@ -21,7 +21,7 @@ void test_gas_mem()
 
 void test_gas_copy()
 {
-    printf("\n\t%s\t\t", __func__);
+    printf("\n\t%s", __func__);
 
     assert_64(gas_copy( 0), 3);
     assert_64(gas_copy( 1), 6);
@@ -36,7 +36,7 @@ void test_gas_copy()
 
 void test_gas()
 {
-    printf("\n%s\t\t", __func__);
+    printf("\n%s", __func__);
 
     test_gas_mem();
     test_gas_copy();

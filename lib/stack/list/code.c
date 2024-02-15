@@ -52,20 +52,20 @@ bool stack_l_test_variadic(evm_stack_l_p sl, int n, va_list *args)
         evm_word_t w = va_arg(*args, evm_word_t);
         if(!word_test(sl->w, w))
         {
-            printf("\n\tSTACK LIST ASSERTION ERROR | WORD | %d\t\t", i);
+            printf("\n\tSTACK LIST ASSERTION ERROR | WORD | %d", i);
             return false;
         }
     }
 
     if(i < n)
     {
-        printf("\n\n\tSTACK LIST ASSERTION ERROR | FEWER WORDS | %d %d\t\t", i, n);
+        printf("\n\n\tSTACK LIST ASSERTION ERROR | FEWER WORDS | %d %d", i, n);
         return false;
     }
 
     if(sl != NULL)
     {
-        printf("\n\n\tSTACK LIST ASSERTION ERROR | MORE WORDS | %d\t\t", n);
+        printf("\n\n\tSTACK LIST ASSERTION ERROR | MORE WORDS | %d", n);
         return false;
     }
 

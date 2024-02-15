@@ -10,7 +10,7 @@
 
 void test_word_size()
 {
-    printf("\n\t%s\t\t", __func__);
+    printf("\n\t%s", __func__);
     
     assert(sizeof(evm_word_t) == 32);
 
@@ -19,7 +19,7 @@ void test_word_size()
 
 void test_word_init()
 {
-    printf("\n\t%s\t\t", __func__);
+    printf("\n\t%s", __func__);
     
     evm_word_t w = word_init();
     assert(word_test(w, W1(0)));
@@ -29,7 +29,7 @@ void test_word_init()
 
 void test_word_init_uint_64()
 {
-    printf("\n\t%s\t\t", __func__);
+    printf("\n\t%s", __func__);
     
     evm_word_t w = word_init_uint64(0);
     assert(word_test(w, W1(0)));
@@ -51,7 +51,7 @@ void test_word_init_uint_64()
 
 void test_word_init_bytes()
 {
-    printf("\n\t%s\t\t", __func__);
+    printf("\n\t%s", __func__);
     
     evm_bytes_t b = bytes_init_immed("0x");
     evm_word_t w = word_init_bytes(&b);
@@ -76,7 +76,7 @@ void test_word_init_bytes()
 
 void test_word_is_uint_64()
 {
-    printf("\n\t%s\t\t", __func__);
+    printf("\n\t%s", __func__);
     
     evm_word_t w = word_init();
     assert(word_is_uint64(&w) == true);
@@ -95,7 +95,7 @@ void test_word_is_uint_64()
 
 void test_word_eq_bool()
 {
-    printf("\n\t%s\t\t", __func__);
+    printf("\n\t%s", __func__);
     
     evm_word_t w1 = WORD(4, 3, 2, 1);
     evm_word_t w2 = WORD(4, 3, 2, 1);
@@ -118,7 +118,7 @@ void test_word_eq_bool()
 
 void test_word_add_uint64()
 {
-    printf("\n\t%s\t\t", __func__);
+    printf("\n\t%s", __func__);
     
     evm_word_t w = WORD(4, 3, 2, 1);
     word_add_uint64(&w, 0, 1);
@@ -157,7 +157,7 @@ void test_word_add_uint64()
 
 void test_word_set_bytes()
 {
-    printf("\n\t%s\t\t", __func__);
+    printf("\n\t%s", __func__);
     
     evm_word_t w = W1(0);
     word_set_byte(&w, 0, 0xff);
@@ -186,7 +186,7 @@ void test_word_set_bytes()
 
 void test_word_add()
 {
-    printf("\n\t%s\t\t", __func__);
+    printf("\n\t%s", __func__);
     
     evm_word_t w1 = WORD(4, 3, 2, 1);
     evm_word_t w2 = WORD(1, 2, 3, 4);
@@ -210,7 +210,7 @@ void test_word_add()
 
 void test_word()
 {
-    printf("\n%s\t\t", __func__);
+    printf("\n%s", __func__);
 
     test_word_size();
     test_word_init();

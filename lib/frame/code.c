@@ -57,21 +57,21 @@ bool frame_test_immed(evm_frame_t f, uint64_t pc, uint64_t gas, uint64_t n_mem, 
     if(pc < IGN)
     if(!int_test(f.pc, pc))
     {
-        printf("\n\tFRAME ASSERTION ERROR | PC\t\t");
+        printf("\n\tFRAME ASSERTION ERROR | PC");
         return false;
     }
 
     if(gas < IGN)
     if(!int_test(f.gas, gas))
     {
-        printf("\n\tFRAME ASSERTION ERROR | GAS\t\t");
+        printf("\n\tFRAME ASSERTION ERROR | GAS");
         return false;
     }
 
     if(n_mem < IGN)
     if(!mem_test_variadic(f.m, n_mem, &args))
     {
-        printf("\n\tFRAME ASSERTION ERROR | MEM\t\t");
+        printf("\n\tFRAME ASSERTION ERROR | MEM");
         return false;
     }
 
@@ -79,7 +79,7 @@ bool frame_test_immed(evm_frame_t f, uint64_t pc, uint64_t gas, uint64_t n_mem, 
     if(n_stack < IGN)
     if(!stack_test_variadic(f.s, n_stack, &args))
     {
-        printf("\n\tFRAME ASSERTION ERROR | STACK\t\t");
+        printf("\n\tFRAME ASSERTION ERROR | STACK");
         return false;
     }
 
@@ -95,14 +95,14 @@ bool frame_o_test_immed(evm_frame_o_t fo, bool success, uint64_t gas, char str_r
 
     if(!uint64_test(fo.gas, gas))
     {
-        printf("\n\tFRAME OUTPUT ASSERTION ERROR | GAS\t\t");
+        printf("\n\tFRAME OUTPUT ASSERTION ERROR | GAS");
         return false;
     }
 
     evm_bytes_t b = bytes_init_immed(str_returndata);
     if(!bytes_test(fo.returndata, b))
     {
-        printf("\n\tFRAME OUTPUT ASSERTION ERROR | RETURN DATA\t\t");
+        printf("\n\tFRAME OUTPUT ASSERTION ERROR | RETURN DATA");
         return false;
     }
 

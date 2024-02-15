@@ -14,7 +14,7 @@
 
 void test_frame_init()
 {
-    printf("\n\t%s\t\t", __func__);
+    printf("\n\t%s", __func__);
 
     evm_frame_t f = frame_init_immed("0x", GAS_DEF);
     assert_64(f.pc, 0);
@@ -37,7 +37,7 @@ void test_frame_init()
 
 void test_frame_get_jumpdest()
 {
-    printf("\n\t%s\t\t", __func__);
+    printf("\n\t%s", __func__);
 
     uint64_vec_t jumpdest = frame_get_jumpdest_immed("0x");
     _assert(uint64_vec_test_immed(jumpdest, 0));
@@ -62,7 +62,7 @@ void test_frame_get_jumpdest()
 
 void test_frame_stop()
 {
-    printf("\n\t%s\t\t", __func__);
+    printf("\n\t%s", __func__);
 
     evm_frame_t f = frame_init_immed("0x", GAS_DEF);
     evm_frame_o_t fo = frame_stop(&f);
@@ -76,7 +76,7 @@ void test_frame_stop()
 
 void test_frame_pop()
 {
-    printf("\n\t%s\t\t", __func__);
+    printf("\n\t%s", __func__);
 
     evm_frame_t f = frame_init_immed_setup("0x50", GAS_DEF, 0, 2, W1(1), W1(2));
     assert_int(frame_pop(&f), 0);
@@ -103,7 +103,7 @@ void test_frame_pop()
 
 void test_frame_mload()
 {
-    printf("\n\t%s\t\t", __func__);
+    printf("\n\t%s", __func__);
 
     // common case
     evm_frame_t f = frame_init_immed_setup("0x51", GAS_DEF, 1, W1(0xff), 1, W1(0x00));
@@ -137,7 +137,7 @@ void test_frame_mload()
 
 void test_frame_mstore()
 {
-    printf("\n\t%s\t\t", __func__);
+    printf("\n\t%s", __func__);
 
     // common case
     evm_frame_t f = frame_init_immed_setup("0x52", GAS_DEF, 0, 2, W1(0xff), W1(0x00));
@@ -182,7 +182,7 @@ void test_frame_mstore()
 
 void test_frame_mstore8()
 {
-    printf("\n\t%s\t\t", __func__);
+    printf("\n\t%s", __func__);
 
     // common case
     evm_frame_t f = frame_init_immed_setup("0x52", GAS_DEF, 0, 2, W1(U64_MAX), W1(0x00));
@@ -229,7 +229,7 @@ void test_frame_mstore8()
 
 void test_frame_push()
 {
-    printf("\n\t%s\t\t", __func__);
+    printf("\n\t%s", __func__);
 
     evm_frame_t f = frame_init_immed("0x5f", GAS_DEF);
     assert_int(frame_push(&f), 0);
@@ -279,7 +279,7 @@ void test_frame_push()
 
 void test_frame_return()
 {
-    printf("\n\t%s\t\t", __func__);
+    printf("\n\t%s", __func__);
 
     // common case
     evm_frame_t f = frame_init_immed_setup("0xf3", GAS_DEF, 
@@ -355,7 +355,7 @@ void test_frame_return()
 
 void test_frame()
 {
-    printf("\n%s\t\t", __func__);
+    printf("\n%s", __func__);
 
     test_frame_init();
     test_frame_get_jumpdest();

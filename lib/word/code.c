@@ -23,7 +23,7 @@ void word_display_immed(evm_word_t w)
 {
     printf("\n\t");
     word_display(w);
-    printf("\t\t");
+    printf("");
 }
 
 

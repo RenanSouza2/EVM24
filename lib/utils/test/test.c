@@ -5,7 +5,7 @@
 
 void test_utils_uint64_add()
 {
-    printf("\n\t%s\t\t", __func__);
+    printf("\n\t%s", __func__);
 
     assert_64(uint64_add(1, 2), 3);
     assert_64(uint64_add(UINT64_MAX, 2), UINT64_MAX);
@@ -17,7 +17,7 @@ void test_utils_uint64_add()
 
 void test_utils()
 {
-    printf("\n%s\t\t", __func__);
+    printf("\n%s", __func__);
 
     test_utils_uint64_add();
 

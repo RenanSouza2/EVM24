@@ -73,7 +73,7 @@ bool bytes_test(evm_bytes_t b, evm_bytes_t b_exp)
 {
     if(!int_test(b.size, b_exp.size)) 
     {
-        printf("\n\n\tBYTES ASSERTION ERROR | LENGTH\t\t");
+        printf("\n\n\tBYTES ASSERTION ERROR | LENGTH");
         bytes_free(&b_exp);
         return false;
     }

@@ -49,14 +49,14 @@ bool mem_test_variadic(evm_mem_t m, uint64_t n, va_list *args)
 {
     if(!int_test(m.size, n << 5))
     {
-        printf("\n\tMEM ASSERTTION ERROR | LENGTH\t\t");
+        printf("\n\tMEM ASSERTTION ERROR | LENGTH");
         return false;
     }
 
     evm_mem_t m_exp = mem_init_immed_variadic(n, args);
     if(!bytes_test(m, m_exp)) 
     {
-        printf("\n\tMEM ASSERTTION ERROR | BYTES ASSERTTION ERROR\t\t");
+        printf("\n\tMEM ASSERTTION ERROR | BYTES ASSERTTION ERROR");
         return false;
     }
     

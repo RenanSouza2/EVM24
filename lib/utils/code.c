@@ -17,7 +17,7 @@ bool uchar_test(uchar_t u1, uchar_t u2)
 {
     if(u1 == u2) return true;
 
-    printf("\n\n\tUCHAR ASSERTION ERROR | %d %d\t\t", u1, u2);
+    printf("\n\n\tUCHAR ASSERTION ERROR | %d %d", u1, u2);
     return false;
 }
 
@@ -25,7 +25,7 @@ bool int_test(int i1, int i2)
 {
     if(i1 == i2) return true;
 
-    printf("\n\n\tINT ASSERTION ERROR | %d %d\t\t", i1, i2);
+    printf("\n\n\tINT ASSERTION ERROR | %d %d", i1, i2);
     return false;
 }
 
@@ -37,7 +37,7 @@ bool uint64_test(uint64_t i1, uint64_t i2)
     printf("\n\t0x" U64PX, i1);
     printf("\n\t0x" U64PX, i2);
     printf("\n");
-    printf("\n\tUINT64 ASSERTION ERROR\t\t");
+    printf("\n\tUINT64 ASSERTION ERROR");
     return false;
 }
 

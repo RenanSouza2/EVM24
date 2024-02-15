@@ -8,7 +8,7 @@
 
 void test_mem_dry_run()
 {
-    printf("\n\t%s\t\t", __func__);
+    printf("\n\t%s", __func__);
     
     evm_mem_t m = mem_init();
     assert_64(mem_dry_run(&m, W1(  1), 0),  0);
@@ -48,7 +48,7 @@ void test_mem_dry_run()
 
 void test_mem_expand()
 {
-    printf("\n\t%s\t\t", __func__);
+    printf("\n\t%s", __func__);
     
     for(int i=0; i<4; i++)
     {
@@ -73,7 +73,7 @@ void test_mem_expand()
 
 void test_mem_get_word()
 {
-    printf("\n\t%s\t\t", __func__);
+    printf("\n\t%s", __func__);
 
     evm_mem_t m = mem_init();
     evm_word_t w = mem_get_word(&m, 0);
@@ -100,7 +100,7 @@ void test_mem_get_word()
 
 void test_mem_get_bytes()
 {
-    printf("\n\t%s\t\t", __func__);
+    printf("\n\t%s", __func__);
 
     evm_mem_t m = mem_init_immed(1, W1(0x1234));
     evm_bytes_t b = mem_get_bytes(&m, 0x1e, 2);
@@ -126,7 +126,7 @@ void test_mem_get_bytes()
 
 void test_mem_set_byte()
 {
-    printf("\n\t%s\t\t", __func__);
+    printf("\n\t%s", __func__);
 
     evm_mem_t m = mem_init();
     mem_set_byte(&m, 0, 0xff);
@@ -150,7 +150,7 @@ void test_mem_set_byte()
 
 void test_mem_set_word()
 {
-    printf("\n\t%s\t\t", __func__);
+    printf("\n\t%s", __func__);
 
     evm_mem_t m = mem_init();
     evm_word_t w = WORD(U64_MAX, U64_MAX, U64_MAX, U64_MAX);
@@ -172,7 +172,7 @@ void test_mem_set_word()
 
 void test_mem()
 {
-    printf("\n%s\t\t", __func__);
+    printf("\n%s", __func__);
 
     test_mem_dry_run();
     test_mem_expand();

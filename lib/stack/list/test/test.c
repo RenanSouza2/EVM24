@@ -10,7 +10,7 @@
 
 void test_stack_list_create()
 {
-    printf("\n\t%s\t\t", __func__);
+    printf("\n\t%s", __func__);
 
     evm_word_t w = WORD(4, 3, 2, 1);
     evm_stack_l_p sl = stack_l_create((evm_stack_l_p)1, &w);
@@ -27,7 +27,7 @@ void test_stack_list_create()
 
 void test_stack_list_pop()
 {
-    printf("\n\t%s\t\t", __func__);
+    printf("\n\t%s", __func__);
 
     evm_word_t w = WORD(4, 3, 2, 1);
     evm_stack_l_p sl = stack_l_create((evm_stack_l_p)1, &w);
@@ -48,7 +48,7 @@ void test_stack_list_pop()
 
 void test_stack_list()
 {
-    printf("\n%s\t\t", __func__);
+    printf("\n%s", __func__);
 
     test_stack_list_create();
     test_stack_list_pop();
