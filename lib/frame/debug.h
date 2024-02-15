@@ -38,8 +38,8 @@ bool frame_o_test_immed(evm_frame_o_t fo, bool success, uint64_t gas, char str_r
 evm_frame_t frame_init(evm_bytes_t code, uint64_t gas);
 uint64_vec_t frame_get_jumpdest(evm_bytes_p code);
 
-void frame_free(evm_frame_t f);
-void frame_o_free(evm_frame_o_t fo);
+void frame_free(evm_frame_p f);
+void frame_o_free(evm_frame_o_p fo);
 
 evm_frame_o_t frame_stop(evm_frame_p f);
 

@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <assert.h>
 
 #include "debug.h"
 
@@ -161,17 +160,17 @@ uint64_vec_t frame_get_jumpdest(evm_bytes_p code) // TODO improve test
 
 
 
-void frame_free(evm_frame_t f)
+void frame_free(evm_frame_p f)
 {
-    bytes_free(&f.code);
-    uint64_vec_free(f.jumpdest);
-    stack_free(&f.s);
-    mem_free(f.m);
+    bytes_free(&f->code);
+    uint64_vec_free(&f->jumpdest);
+    stack_free(&f->s);
+    mem_free(&f->m);
 }
 
-void frame_o_free(evm_frame_o_t fo)
+void frame_o_free(evm_frame_o_p fo)
 {
-    bytes_free(&fo.returndata);
+    bytes_free(&fo->returndata);
 }
 
 

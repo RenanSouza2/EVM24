@@ -8,12 +8,12 @@
 
 #ifdef __linux__
 
-#define U64P "%lu"
+#define U64P  "%lu"
 #define U64PX "%016lx"
 
 #elif defined __APPLE__
 
-#define U64P "%llu"
+#define U64P  "%llu"
 #define U64PX "%016llx"
 
 #endif
@@ -22,6 +22,9 @@ typedef unsigned char uchar_t;
 typedef uchar_t * uchar_p;
 typedef __uint128_t uint128_t;
 typedef uint64_t * uint64_p;
+
+uint64_t uint64_add(uint64_t u1, uint64_t u2);
+uint64_t uint128_to_uint64(uint128_t res);
 
 #define VEC(TYPE)       \
     STRUCT(TYPE##_vec)  \
@@ -33,11 +36,11 @@ typedef uint64_t * uint64_p;
 VEC(uint64);
 VEC(uchar);
 
-uint64_t uint64_add(uint64_t u1, uint64_t u2);
-uint64_t uint128_to_uint64(uint128_t res);
-
 uint64_vec_t uint64_vec_init(uint64_t size);
-void uint64_vec_free(uint64_vec_t vec);
+
+void uchar_vec_free(uchar_vec_p vec);
+void uint64_vec_free(uint64_vec_p vec);
+
 bool uint64_vec_has_uint64(uint64_vec_p vec, uint64_t v);
 
 #endif

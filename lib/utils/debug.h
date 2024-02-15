@@ -12,15 +12,16 @@
 
 #define IGN UINT64_MAX
 
-#define _assert(COND)               \
-    {                               \
-        bool res = COND;            \
-        if(!res) printf("\n\n");    \
-        assert(res);                \
-    }
+#undef  assert
+#define assert(COND)                                                        \
+        if(!(COND))                                                         \
+        {                                                                   \
+            printf("\n\n");                                                 \
+            __assert_fail(#COND, __FILE__, __LINE__, __ASSERT_FUNCTION);    \
+        }
 
-#define assert_int(RES, EXP) _assert(int_test(RES, EXP))
-#define assert_64(RES, EXP) _assert(uint64_test(RES, EXP));
+#define assert_int(RES, EXP) assert(int_test(RES, EXP))
+#define assert_64(RES, EXP) assert(uint64_test(RES, EXP));
 
 bool uchar_test(uchar_t u1, uchar_t u2);
 bool int_test(int i1, int i2);

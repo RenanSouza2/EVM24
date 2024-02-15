@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include <assert.h>
 
 #include "debug.h"
 
@@ -91,10 +90,14 @@ uint64_vec_t uint64_vec_init(uint64_t size)
     return (uint64_vec_t){size, v};
 }
 
-void uint64_vec_free(uint64_vec_t vec)
-{
-    if(vec.v) free(vec.v);
-}
+#define VEC_FREE(TYPE)                      \
+    void TYPE##_vec_free(TYPE##_vec_p vec)  \
+    {                                       \
+        if(vec->v) free(vec->v);            \
+    }
+
+VEC_FREE(uchar)
+VEC_FREE(uint64)
 
 bool uint64_vec_has_uint64(uint64_vec_p vec, uint64_t v) // TODO test
 {

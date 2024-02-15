@@ -1,5 +1,3 @@
-#include <assert.h>
-
 #include "debug.h"
 #include "../bytes/struct.h"
 
@@ -23,7 +21,6 @@ void word_display_immed(evm_word_t w)
 {
     printf("\n\t");
     word_display(w);
-    printf("");
 }
 
 
@@ -33,9 +30,10 @@ bool word_test(evm_word_t w1, evm_word_t w2)
     if(word_eq_bool(&w1, &w2)) return true;
 
     printf("\n");
-    printf("\n\tword1: ");word_display(w1);
-    printf("\n\tword2: ");word_display(w2);
-    printf("\n\n\tWORD ASSERTION ERROR");
+    printf("\n\t");word_display(w1);
+    printf("\n\t");word_display(w2);
+    printf("\n");
+    printf("\n\tWORD ASSERTION ERROR");
     return false;
 }
 

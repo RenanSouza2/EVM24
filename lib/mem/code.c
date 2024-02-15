@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 
 #include "debug.h"
 #include "../gas/header.h"
@@ -72,9 +71,9 @@ evm_mem_t mem_init()
     return bytes_init();
 }
 
-void mem_free(evm_mem_t m)
+void mem_free(evm_mem_p m)
 {
-    bytes_free(&m);
+    bytes_free(m);
 }
 
 
@@ -146,6 +145,8 @@ void mem_set_word(evm_mem_p m, uint64_t pos, evm_word_p w)
 
 void mem_set_bytes(evm_mem_p m, uint64_t pos, evm_bytes_p b) // TODO test
 {
+    if(b->size == 0) return;
+
     mem_expand(m, pos + b->size);
     memcpy(&m->v[pos], b->v, b->size);
 }

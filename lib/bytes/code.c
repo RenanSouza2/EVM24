@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
 
 #include "debug.h"
 
@@ -103,7 +102,7 @@ evm_bytes_t bytes_init()
 
 void bytes_free(evm_bytes_p b)
 {
-    if(b->v) free(b->v);
+    uchar_vec_free(b);
 }
 
 
