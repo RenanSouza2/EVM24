@@ -98,6 +98,30 @@ void test_mem_get_word()
     assert(mem_empty());
 }
 
+void test_mem_get_bytes()
+{
+    printf("\n\t%s\t\t", __func__);
+
+    evm_mem_t m = mem_init_immed(1, W1(0x1234));
+    evm_bytes_t b = mem_get_bytes(&m, 0x1e, 2);
+    _assert(bytes_test_immed(b, "0x1234"));
+    _assert(mem_test_immed(m, 1, W1(0x1234)));
+    bytes_free(&b);
+
+    b = mem_get_bytes(&m, 0x40, 0);
+    _assert(bytes_test_immed(b, "0x"));
+    _assert(mem_test_immed(m, 1, W1(0x1234)));
+    bytes_free(&b);
+
+    b = mem_get_bytes(&m, 0x1e, 3);
+    _assert(bytes_test_immed(b, "0x123400"));
+    _assert(mem_test_immed(m, 2, W1(0x1234), W1(0)));
+    bytes_free(&b);
+    mem_free(m);
+    
+    assert(mem_empty());
+}
+
 
 
 void test_mem_set_byte()
@@ -154,6 +178,7 @@ void test_mem()
     test_mem_expand();
 
     test_mem_get_word();
+    test_mem_get_bytes();
 
     test_mem_set_byte();
     test_mem_set_word();

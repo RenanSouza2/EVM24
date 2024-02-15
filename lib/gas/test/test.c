@@ -19,6 +19,19 @@ void test_gas_mem()
     assert(mem_empty());
 }
 
+void test_gas_copy()
+{
+    printf("\n\t%s\t\t", __func__);
+
+    assert_64(gas_copy( 0), 3);
+    assert_64(gas_copy( 1), 6);
+    assert_64(gas_copy(32), 6);
+    assert_64(gas_copy(64), 9);
+    assert_64(gas_copy(U64_MAX), 0x1800000000000003);
+
+    assert(mem_empty());
+}
+
 
 
 void test_gas()
@@ -26,6 +39,7 @@ void test_gas()
     printf("\n%s\t\t", __func__);
 
     test_gas_mem();
+    test_gas_copy();
 
     assert(mem_empty());
 }

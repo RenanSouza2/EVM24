@@ -117,7 +117,7 @@ evm_word_t mem_get_word(evm_mem_p m, uint64_t pos)
     return bytes_get_word(m, pos);
 }
 
-evm_bytes_t mem_get_bytes(evm_mem_p m, uint64_t pos, uint64_t size) // TODO test
+evm_bytes_t mem_get_bytes(evm_mem_p m, uint64_t pos, uint64_t size)
 {
     if(size == 0) return bytes_init();
 
