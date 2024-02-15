@@ -6,8 +6,17 @@
 
 #include "header.h"
 
+#ifdef __linux__
+
 #define U64P "%lu"
 #define U64PX "%016lx"
+
+#elif defined __APPLE__
+
+#define U64P "%llu"
+#define U64PX "%016llx"
+
+#endif
 
 typedef unsigned char uchar_t;
 typedef uchar_t * uchar_p;

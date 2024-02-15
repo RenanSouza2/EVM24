@@ -13,14 +13,6 @@
 
 
 
-void uint64_display(uint64_t u)
-{
-    for(int i=7; i>=0; i--)
-        printf("%02hx", ((uchar_t*)&u)[i]);
-}
-
-
-
 bool uchar_test(uchar_t u1, uchar_t u2)
 {
     if(u1 == u2) return true;
@@ -42,8 +34,8 @@ bool uint64_test(uint64_t i1, uint64_t i2)
     if(i1 == i2) return true;
 
     printf("\n");
-    printf("\n\t0x");uint64_display(i1);
-    printf("\n\t0x");uint64_display(i2);
+    printf("\n\t0x" U64PX, i1);
+    printf("\n\t0x" U64PX, i2);
     printf("\n");
     printf("\n\tUINT64 ASSERTION ERROR\t\t");
     return false;
@@ -64,7 +56,7 @@ bool uint64_vec_test_immed(uint64_vec_t vec, uint64_t n, ...)
         uint64_t jumpdest = va_arg(args, uint64_t);
         if(!uint64_test(vec.v[i], jumpdest))
         {
-            printf("\n\tJUMPDEST TEST ASSERTION ERROR | JUMPDEST | " U64P, i);
+            printf("\n\tJUMPDEST TEST ASSERTION ERROR | JUMPDEST | %llu", i);
             return false;
         }
     }
