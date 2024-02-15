@@ -64,7 +64,7 @@ bool uint64_vec_test_immed(uint64_vec_t vec, uint64_t n, ...)
         uint64_t jumpdest = va_arg(args, uint64_t);
         if(!uint64_test(vec.v[i], jumpdest))
         {
-            printf("\n\tJUMPDEST TEST ASSERTION ERROR | JUMPDEST | %llu", i);
+            printf("\n\tJUMPDEST TEST ASSERTION ERROR | JUMPDEST | " U64P, i);
             return false;
         }
     }

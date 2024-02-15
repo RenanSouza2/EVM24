@@ -6,6 +6,9 @@
 
 #include "header.h"
 
+#define U64P "%lu"
+#define U64PX "%016lx"
+
 typedef unsigned char uchar_t;
 typedef uchar_t * uchar_p;
 typedef __uint128_t uint128_t;

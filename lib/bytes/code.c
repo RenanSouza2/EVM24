@@ -28,7 +28,7 @@ uchar_t cton(uchar_t c)
 
 void bytes_display(evm_bytes_t b)
 {
-    printf("\n\nbytes (%llu):", b.size);
+    printf("\n\nbytes (" U64P "):", b.size);
     printf("\n");
     for(uint64_t i=0; i< b.size >> 5; i++)
     {
@@ -82,7 +82,7 @@ bool bytes_test(evm_bytes_t b, evm_bytes_t b_exp)
     {
         if(!uchar_test(b.v[i], b_exp.v[i]))
         {
-            printf("\n\tBYTES ASSERTION ERROR | BYTE | %lld\t\t", i);
+            printf("\n\tBYTES ASSERTION ERROR | BYTE | " U64P, i);
             bytes_free(&b_exp);
             return false;
         }
