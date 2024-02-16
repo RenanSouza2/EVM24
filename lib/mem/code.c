@@ -143,7 +143,7 @@ void mem_set_word(evm_mem_p m, uint64_t pos, evm_word_p w)
         m->v[pos + i] = word_get_byte(w, 31-i);
 }
 
-void mem_set_bytes(evm_mem_p m, uint64_t pos, evm_bytes_p b) // TODO test
+void mem_set_bytes(evm_mem_p m, uint64_t pos, evm_bytes_p b)
 {
     if(b->size == 0) return;
 

@@ -12,6 +12,19 @@
 
 
 
+uint64_vec_t uint64_vec_init_immed(uint64_t n, ...)
+{
+    va_list args;
+    va_start(args, n);
+    uint64_vec_t vec = uint64_vec_init(n);
+    for(uint64_t i=0; i<n; i++)
+        vec.v[i] = va_arg(args, uint64_t);
+
+    return vec;
+}
+
+
+
 bool uchar_test(uchar_t u1, uchar_t u2)
 {
     if(u1 == u2) return true;
@@ -75,7 +88,7 @@ uint64_t uint64_add(uint64_t u1, uint64_t u2)
 
 
 
-uint64_t uint128_to_uint64(uint128_t res) // TODO test
+uint64_t uint128_to_uint64(uint128_t res)
 {
     return (res >> 64) ? UINT64_MAX : (uint64_t) res;
 }
@@ -99,16 +112,27 @@ uint64_vec_t uint64_vec_init(uint64_t size)
 VEC_FREE(uchar)
 VEC_FREE(uint64)
 
-bool uint64_vec_has_uint64(uint64_vec_p vec, uint64_t v) // TODO test
+uint64_t uint64_vec_binary_search(uint64_vec_p vec, uint64_t v)
 {
-    for(uint64_t min = 0, max = vec->size; max - min > 1;)
+    assert(vec->size);
+
+    uint64_t min = 0;
+    for(uint64_t max = vec->size; max - min > 1; )
     {
         uint64_t mid = (min + max) >> 1;
         uint64_t _v = vec->v[mid];
-        if(_v == v) return true;
+        if(_v == v) return mid;
 
         if(vec->v[mid] > v) max = mid;
         else                min = mid;    
     }
-    return false;
+    return min;
+}
+
+bool uint64_vec_has_uint64(uint64_vec_p vec, uint64_t v) // TODO test
+{
+    if(vec->size == 0) return false;
+
+    uint64_t pos = uint64_vec_binary_search(vec, v);
+    return vec->v[pos] == v;
 }
