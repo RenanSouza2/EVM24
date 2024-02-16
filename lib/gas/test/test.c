@@ -17,7 +17,7 @@ void test_gas_mem()
     assert_64(gas_mem(0xffffffffff), U64_MAX);
     assert_64(gas_mem(     U64_MAX), U64_MAX);
 
-    assert(mem_empty());
+    assert(clu_mem_empty());
 }
 
 void test_gas_copy()
@@ -30,7 +30,7 @@ void test_gas_copy()
     assert_64(gas_copy(64), 9);
     assert_64(gas_copy(U64_MAX), 0x1800000000000003);
 
-    assert(mem_empty());
+    assert(clu_mem_empty());
 }
 
 
@@ -42,7 +42,7 @@ void test_gas()
     test_gas_mem();
     test_gas_copy();
 
-    assert(mem_empty());
+    assert(clu_mem_empty());
 }
 
 
