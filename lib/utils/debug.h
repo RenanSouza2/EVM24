@@ -7,6 +7,8 @@
 
 #include <stdbool.h>
 
+#include "../../utils/assert.h"
+
 #define U128(U641, U642) ((((uint128_t)(U641)) << 64) | (uint128_t)(U642))
 
 #define U64_MAX     UINT64_MAX
