@@ -3,6 +3,4 @@
 
 #include "../../utils/struct.h"
 
-void error_log(char str[]);
-
 #endif

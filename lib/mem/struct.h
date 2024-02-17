@@ -7,6 +7,5 @@
 typedef evm_bytes_t evm_mem_t;
 
 evm_mem_t mem_init();
-void mem_free(evm_mem_t m);
 
 #endif

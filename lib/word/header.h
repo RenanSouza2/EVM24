@@ -7,9 +7,10 @@
 #include "../utils/struct.h"
 
 PLACEHOLDER(evm_word);
+typedef uchar_vec_p evm_bytes_p;
 
-uchar word_get_byte(evm_word_p w, int i);
-void word_set_byte(evm_word_p w, int i, uchar u);
-bool word_is_uint_64(evm_word_p w);
+uchar_t word_get_byte(evm_word_p w, int i);
+void word_set_byte(evm_word_p w, int i, uchar_t u);
+bool word_is_uint64(evm_word_p w);
 
 #endif

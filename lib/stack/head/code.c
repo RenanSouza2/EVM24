@@ -1,18 +1,12 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
 
 #include "debug.h"
-#include "../list/struct.h"
+#include "../list/header.h"
 
 
 
 #ifdef DEBUG
 
-#include <stdarg.h>
-
-#include "../../../utils/clu/bin/header.h"
-#include "../../word/debug.h"
 #include "../../utils/debug.h"
 #include "../list/debug.h"
 
@@ -44,13 +38,13 @@ bool stack_test_variadic(evm_stack_t s, int n, va_list *args)
 {
     if(!int_test(s.count, n))
     {
-        printf("\n\n\tSTACK ASSERTION ERROR | COUNT\t\t");
+        printf("\n\tSTACK ASSERTION ERROR | COUNT");
         return false;
     }
 
     if(!stack_l_test_variadic(s.sl, n, args))
     {
-        printf("\n\tSTACK ASSERTION ERROR | STACK LIST\t\t");
+        printf("\n\tSTACK ASSERTION ERROR | STACK LIST");
         return false;
     }
 
@@ -91,8 +85,7 @@ int stack_pop(evm_word_p w, evm_stack_p s)
 {
     if(s->count == 0) return 1;
 
-    if(w) *w = s->sl->w;
     s->count--;
-    s->sl = stack_l_pop(s->sl);
+    s->sl = stack_l_pop(w, s->sl);
     return 0;
 }
