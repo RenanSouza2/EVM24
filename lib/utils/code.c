@@ -112,7 +112,7 @@ uint64_vec_t uint64_vec_init(uint64_t size)
 VEC_FREE(uchar)
 VEC_FREE(uint64)
 
-bool uint64_vec_has_uint64(uint64_vec_p vec, uint64_t v) // TODO test
+bool uint64_vec_has_uint64(uint64_vec_p vec, uint64_t v)
 {
     if(vec->size == 0) return false;
 
