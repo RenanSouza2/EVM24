@@ -3,6 +3,8 @@
 #include <string.h>
 
 #include "debug.h"
+#include "../../utils/assert.h"
+
 #include "../gas/header.h"
 
 

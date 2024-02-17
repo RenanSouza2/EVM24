@@ -3,7 +3,7 @@ LIB = lib
 CLU = utils/clu
 
 run:
-	$(MAKE) --directory=$(SRC) 
+	$(MAKE) --directory=$(SRC) -s
 
 build b:
 	$(MAKE) build --directory=$(SRC)

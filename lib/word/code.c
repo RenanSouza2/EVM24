@@ -1,4 +1,6 @@
 #include "debug.h"
+#include "../../utils/assert.h"
+
 #include "../bytes/struct.h"
 
 
