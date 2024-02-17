@@ -10,7 +10,7 @@ void test_utils_uint64_add()
     assert_64(uint64_add(1, 2), 3);
     assert_64(uint64_add(UINT64_MAX, 2), UINT64_MAX);
 
-    assert(mem_empty());
+    assert(clu_mem_empty());
 }
 
 void test_utils_uint128_to_uint64()
@@ -24,7 +24,7 @@ void test_utils_uint128_to_uint64()
     assert_64(uint128_to_uint64(U128_1), U64_MAX);
     assert_64(uint128_to_uint64(U128_MAX), U64_MAX);
 
-    assert(mem_empty());
+    assert(clu_mem_empty());
 }
 
 
@@ -51,7 +51,7 @@ void test_utils_uint64_vec_has_uint64()
     assert(uint64_vec_has_uint64(&vec, 3) == false);
     uint64_vec_free(&vec);
 
-    assert(mem_empty());
+    assert(clu_mem_empty());
 }
 
 
@@ -64,7 +64,7 @@ void test_utils()
     test_utils_uint128_to_uint64();
     test_utils_uint64_vec_has_uint64();
 
-    assert(mem_empty());
+    assert(clu_mem_empty());
 }
 
 

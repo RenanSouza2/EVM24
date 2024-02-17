@@ -14,7 +14,7 @@ void test_word_size()
     
     assert(sizeof(evm_word_t) == 32);
 
-    assert(mem_empty());
+    assert(clu_mem_empty());
 }
 
 void test_word_init()
@@ -24,7 +24,7 @@ void test_word_init()
     evm_word_t w = word_init();
     assert(word_test(w, W1(0)));
 
-    assert(mem_empty());
+    assert(clu_mem_empty());
 }
 
 void test_word_init_uint_64()
@@ -46,7 +46,7 @@ void test_word_init_uint_64()
     w = word_init_uint64(U64_MAX);
     assert(word_test(w, W1(U64_MAX)));
 
-    assert(mem_empty());
+    assert(clu_mem_empty());
 }
 
 void test_word_init_bytes()
@@ -69,7 +69,7 @@ void test_word_init_bytes()
     w = word_init_bytes(&b);
     assert(word_test(w, WORD(0, 0, 0xff, 0)));
 
-    assert(mem_empty());
+    assert(clu_mem_empty());
 }
 
 
@@ -90,7 +90,7 @@ void test_word_is_uint_64()
     w = WORD(U64_MAX, U64_MAX, U64_MAX, U64_MAX);
     assert(word_is_uint64(&w) == false);
 
-    assert(mem_empty());
+    assert(clu_mem_empty());
 }
 
 void test_word_eq_bool()
@@ -113,7 +113,7 @@ void test_word_eq_bool()
     w2 = WORD(0, 3, 2, 1);
     assert(word_eq_bool(&w1, &w2) == false);
 
-    assert(mem_empty());
+    assert(clu_mem_empty());
 }
 
 void test_word_add_uint64()
@@ -152,7 +152,7 @@ void test_word_add_uint64()
     word_add_uint64(&w, 0, 1);
     assert(word_test(w, W1(0)));
 
-    assert(mem_empty());
+    assert(clu_mem_empty());
 }
 
 void test_word_set_bytes()
@@ -179,7 +179,7 @@ void test_word_set_bytes()
     word_set_byte(&w, 31, 0xff);
     assert(word_test(w, WORD(U64_FF, 0, 0, 0)));
 
-    assert(mem_empty());
+    assert(clu_mem_empty());
 }
 
 
@@ -203,7 +203,7 @@ void test_word_add()
     w = word_add(&w1, &w2);
     assert(word_test(w, WORD(U64_MAX, U64_MAX, U64_MAX, U64_MAX - 1)));
 
-    assert(mem_empty());
+    assert(clu_mem_empty());
 }
 
 
@@ -224,7 +224,7 @@ void test_word()
 
     test_word_add();
 
-    assert(mem_empty());
+    assert(clu_mem_empty());
 }
 
 

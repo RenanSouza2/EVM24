@@ -15,7 +15,7 @@ void test_stack_init()
     evm_stack_t s = stack_init();
     assert(stack_test_immed(s, 0) == true);
 
-    assert(mem_empty());
+    assert(clu_mem_empty());
 }
 
 void test_stack_evm_push()
@@ -42,7 +42,7 @@ void test_stack_evm_push()
     assert_int(stack_push(&s, &w), 1);
     stack_free(&s);
 
-    assert(mem_empty());
+    assert(clu_mem_empty());
 }
 
 void test_stack_evm_pop()
@@ -66,7 +66,7 @@ void test_stack_evm_pop()
 
     assert_int(stack_pop(&w, &s), 1);
 
-    assert(mem_empty());
+    assert(clu_mem_empty());
 }
 
 
@@ -80,7 +80,7 @@ void test_stack()
     test_stack_evm_push();
     test_stack_evm_pop();
 
-    assert(mem_empty());
+    assert(clu_mem_empty());
 }
 
 

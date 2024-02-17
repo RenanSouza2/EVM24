@@ -22,7 +22,7 @@ void test_bytes_cton()
     for(int i=0; i<6; i++)
         assert(cton(ASCII[i]) == i + 10);
 
-    assert(mem_empty());
+    assert(clu_mem_empty());
 }
 
 void test_bytes_init()
@@ -33,7 +33,7 @@ void test_bytes_init()
     assert_64(b.size, 0);
     assert(b.v == NULL);
 
-    assert(mem_empty());
+    assert(clu_mem_empty());
 }
 
 void test_bytes_init_immed()
@@ -110,7 +110,7 @@ void test_bytes_init_immed()
     assert(b.v[1] == 52);
     bytes_free(&b);
 
-    assert(mem_empty());
+    assert(clu_mem_empty());
 }
 
 
@@ -128,7 +128,7 @@ void test_bytes_get_byte()
     assert(bytes_get_byte(&b, 64) == 0);
     bytes_free(&b);
 
-    assert(mem_empty());
+    assert(clu_mem_empty());
 }
 
 void test_bytes_get_word()
@@ -169,7 +169,7 @@ void test_bytes_get_word()
     assert(word_test(w, WORD(0, 0, 0, 0)));
     bytes_free(&b);
 
-    assert(mem_empty());
+    assert(clu_mem_empty());
 }
 
 void test_bytes_get_bytes()
@@ -189,7 +189,7 @@ void test_bytes_get_bytes()
     bytes_free(&b0);
     bytes_free(&b1);
 
-    assert(mem_empty());
+    assert(clu_mem_empty());
 }
 
 
@@ -206,7 +206,7 @@ void test_bytes()
     test_bytes_get_word();
     test_bytes_get_bytes();
 
-    assert(mem_empty());
+    assert(clu_mem_empty());
 }
 
 

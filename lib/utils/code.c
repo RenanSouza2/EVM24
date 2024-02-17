@@ -113,27 +113,19 @@ uint64_vec_t uint64_vec_init(uint64_t size)
 VEC_FREE(uchar)
 VEC_FREE(uint64)
 
-uint64_t uint64_vec_binary_search(uint64_vec_p vec, uint64_t v)
+bool uint64_vec_has_uint64(uint64_vec_p vec, uint64_t v)
 {
-    assert(vec->size);
+    if(vec->size == 0) return false;
 
     uint64_t min = 0;
     for(uint64_t max = vec->size; max - min > 1; )
     {
         uint64_t mid = (min + max) >> 1;
         uint64_t _v = vec->v[mid];
-        if(_v == v) return mid;
+        if(_v == v) return true;
 
-        if(vec->v[mid] > v) max = mid;
-        else                min = mid;    
+        if(_v >  v) max = mid;
+        else        min = mid;    
     }
-    return min;
-}
-
-bool uint64_vec_has_uint64(uint64_vec_p vec, uint64_t v) // TODO test
-{
-    if(vec->size == 0) return false;
-
-    uint64_t pos = uint64_vec_binary_search(vec, v);
-    return vec->v[pos] == v;
+    return vec->v[min] == v;
 }

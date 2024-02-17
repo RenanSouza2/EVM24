@@ -44,7 +44,7 @@ void test_mem_dry_run()
     m.size = U64_MAX;
     assert_64(mem_dry_run(&m, W1(U64_MAX), 1), U64_MAX);
 
-    assert(mem_empty()); 
+    assert(clu_mem_empty()); 
 }
 
 void test_mem_expand()
@@ -67,7 +67,7 @@ void test_mem_expand()
         }
     }
 
-    assert(mem_empty());
+    assert(clu_mem_empty());
 }
 
 
@@ -96,7 +96,7 @@ void test_mem_get_word()
     assert(word_test(w, W1(0)));
     mem_free(&m);
     
-    assert(mem_empty());
+    assert(clu_mem_empty());
 }
 
 void test_mem_get_bytes()
@@ -120,7 +120,7 @@ void test_mem_get_bytes()
     bytes_free(&b);
     mem_free(&m);
     
-    assert(mem_empty());
+    assert(clu_mem_empty());
 }
 
 
@@ -146,7 +146,7 @@ void test_mem_set_byte()
     ));
     mem_free(&m);
 
-    assert(mem_empty());
+    assert(clu_mem_empty());
 }
 
 void test_mem_set_word()
@@ -166,7 +166,7 @@ void test_mem_set_word()
     ));
     mem_free(&m);
 
-    assert(mem_empty());
+    assert(clu_mem_empty());
 }
 
 void test_mem_set_bytes()
@@ -196,7 +196,7 @@ void test_mem_set_bytes()
     bytes_free(&b);
     mem_free(&m);
 
-    assert(mem_empty());
+    assert(clu_mem_empty());
 }
 
 
@@ -215,7 +215,7 @@ void test_mem()
     test_mem_set_word();
     test_mem_set_bytes();
 
-    assert(mem_empty());
+    assert(clu_mem_empty());
 }
 
 
