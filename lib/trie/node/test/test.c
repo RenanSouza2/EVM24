@@ -1,8 +1,8 @@
 #include "../debug.h"
-#include "../../../utils/assert.h"
-#include "../../../utils/clu/bin/header.h"
+#include "../../../../utils/assert.h"
+#include "../../../../utils/clu/bin/header.h"
 
-void test_example()
+void test_node()
 {
     printf("\n%s\t\t", __func__);
 
@@ -13,7 +13,7 @@ void test_example()
 int main() 
 {
     setbuf(stdout, NULL);
-    test_example();
+    test_node();
     printf("\n\n\tTest successful\n\n");
     return 0;
 }
