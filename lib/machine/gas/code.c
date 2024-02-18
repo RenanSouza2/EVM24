@@ -2,13 +2,13 @@
 #include <stdlib.h>
 
 #include "debug.h"
-#include "../utils/struct.h"
+#include "../../utils/struct.h"
 
 
 
 #ifdef DEBUG
 
-#include "../../utils/clu/bin/header.h"
+#include "../../../utils/clu/bin/header.h"
 
 #endif
 

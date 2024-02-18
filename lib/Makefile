@@ -4,14 +4,18 @@ LIB_FILES = $(foreach DIR,$(DIRS),$(dir $(DIR))lib.o)
 DGB_FILES = $(foreach DIR,$(DIRS),$(dir $(DIR))debug.o)
 CLU_FILE = ../utils/clu/bin/bin.o
 
+DIR = $(shell basename $(CURDIR))
+
 build: lib.o
 
 
 
 lib.o: $(LIB_FILES)
+	echo "linking $(DIR) object"
 	ld -r -o $@ $^
 	
 debug.o: $(DGB_FILES) $(CLU_FILE)
+	echo "linking $(DIR) debug"
 	ld -r -o $@ $^
 
 

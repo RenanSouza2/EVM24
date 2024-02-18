@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#include "../../utils/struct.h"
+#include "../../../utils/struct.h"
 
 #define G_jumpdest  1
 #define G_base      2

@@ -3,14 +3,18 @@ DIRS := $(wildcard */.)
 LIB_FILES = $(foreach DIR,$(DIRS),$(dir $(DIR))lib.o)
 DGB_FILES = $(foreach DIR,$(DIRS),$(dir $(DIR))debug.o)
 
+DIR = $(shell basename $(CURDIR))
+
 build: lib.o
 
 
 
 lib.o: $(LIB_FILES)
+	echo "linking $(DIR) object"
 	ld -r -o $@ $^
 	
 debug.o: $(DGB_FILES)
+	echo "linking $(DIR) debug"
 	ld -r -o $@ $^
 
 
