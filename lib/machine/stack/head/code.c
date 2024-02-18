@@ -7,8 +7,8 @@
 
 #ifdef DEBUG
 
-#include "../../utils/debug.h"
 #include "../list/debug.h"
+#include "../../../utils/debug.h"
 
 void stack_display(evm_stack_t s)
 {

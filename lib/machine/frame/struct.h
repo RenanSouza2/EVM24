@@ -2,8 +2,8 @@
 #define __FRAME_STRUCT_H__
 
 #include "header.h"
-#include "../stack/head/struct.h"
 #include "../mem/struct.h"
+#include "../stack/head/struct.h"
 
 STRUCT(evm_frame)
 {

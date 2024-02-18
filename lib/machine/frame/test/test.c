@@ -1,14 +1,14 @@
 #include <string.h>
 
 #include "../debug.h"
-#include "../../../utils/clu/bin/header.h"
+#include "../../../../utils/clu/bin/header.h"
 
-#include "../../bytes/debug.h"
-#include "../../gas/header.h"
 #include "../../mem/debug.h"
 #include "../../stack/head/debug.h"
-#include "../../utils/debug.h"
-#include "../../word/debug.h"
+#include "../../../bytes/debug.h"
+#include "../../../gas/header.h"
+#include "../../../utils/debug.h"
+#include "../../../word/debug.h"
 
 
 

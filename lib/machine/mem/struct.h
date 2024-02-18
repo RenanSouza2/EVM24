@@ -2,7 +2,7 @@
 #define __MEM_STRUCT_H__
 
 #include "header.h"
-#include "../bytes/struct.h"
+#include "../../bytes/struct.h"
 
 typedef evm_bytes_t evm_mem_t;
 

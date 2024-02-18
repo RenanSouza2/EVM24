@@ -3,17 +3,17 @@
 #include <string.h>
 
 #include "debug.h"
-#include "../../utils/assert.h"
+#include "../../../utils/assert.h"
 
-#include "../gas/header.h"
+#include "../../gas/header.h"
 
 
 
 #ifdef DEBUG
 
-#include "../../utils/clu/bin/header.h"
-#include "../bytes/debug.h"
-#include "../utils/debug.h"
+#include "../../../utils/clu/bin/header.h"
+#include "../../bytes/debug.h"
+#include "../../utils/debug.h"
 
 
 

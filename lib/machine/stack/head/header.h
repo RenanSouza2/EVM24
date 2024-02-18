@@ -1,7 +1,7 @@
 #ifndef __STACK_HEAD_H__
 #define __STACK_HEAD_H__
 
-#include "../../../utils/struct.h"
+#include "../../../../utils/struct.h"
 
 PLACEHOLDER(evm_word);
 PLACEHOLDER(evm_stack);

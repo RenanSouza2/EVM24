@@ -1,8 +1,8 @@
 #ifndef __MEM_H__
 #define __MEM_H__
 
-#include "../../utils/struct.h"
-#include "../bytes/struct.h"
+#include "../../../utils/struct.h"
+#include "../../bytes/struct.h"
 
 typedef evm_bytes_p evm_mem_p;
 

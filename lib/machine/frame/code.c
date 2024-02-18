@@ -1,20 +1,20 @@
 #include <stdio.h>
 
 #include "debug.h"
-#include "../../utils/assert.h"
+#include "../../../utils/assert.h"
 
-#include "../gas/header.h"
+#include "../../gas/header.h"
 
 
 
 #ifdef DEBUG
 
-#include "../../utils/clu/bin/header.h"
+#include "../../../utils/clu/bin/header.h"
 
-#include "../stack/head/debug.h"
-#include "../bytes/debug.h"
 #include "../mem/debug.h"
-#include "../utils/debug.h"
+#include "../stack/head/debug.h"
+#include "../../bytes/debug.h"
+#include "../../utils/debug.h"
 
 
 
