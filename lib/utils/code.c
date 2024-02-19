@@ -26,7 +26,7 @@ uint64_vec_t uint64_vec_init_immed(uint64_t n, ...)
 
 
 
-bool uchar_test(uchar_t u1, uchar_t u2)
+bool uchar_test(byte_t u1, byte_t u2)
 {
     if(u1 == u2) return true;
 
@@ -110,7 +110,7 @@ uint64_vec_t uint64_vec_init(uint64_t size)
         if(vec->v) free(vec->v);            \
     }
 
-VEC_FREE(uchar)
+VEC_FREE(byte)
 VEC_FREE(uint64)
 
 bool uint64_vec_has_uint64(uint64_vec_p vec, uint64_t v)

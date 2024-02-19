@@ -123,7 +123,7 @@ evm_bytes_t mem_get_bytes(evm_mem_p m, uint64_t pos, uint64_t size)
     if(size == 0) return bytes_init();
 
     mem_expand(m, pos+size);
-    uchar_t *v = malloc(size);
+    byte_t *v = malloc(size);
     assert(v);
 
     memcpy(v, &m->v[pos], size);
@@ -132,7 +132,7 @@ evm_bytes_t mem_get_bytes(evm_mem_p m, uint64_t pos, uint64_t size)
 
 
 
-void mem_set_byte(evm_mem_p m, uint64_t pos, uchar_t u)
+void mem_set_byte(evm_mem_p m, uint64_t pos, byte_t u)
 {
     mem_expand(m, pos+1);
     m->v[pos] = u;

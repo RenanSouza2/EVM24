@@ -6,7 +6,7 @@
 
 #ifdef DEBUG
 
-uchar_t cton(uchar_t c);
+byte_t cton(byte_t c);
 void bytes_display(evm_bytes_t b);
 evm_bytes_t bytes_init_immed(char str[]);
 

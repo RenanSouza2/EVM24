@@ -23,7 +23,7 @@
 
 uint64_vec_t uint64_vec_init_immed(uint64_t n, ...);
 
-bool uchar_test(uchar_t u1, uchar_t u2);
+bool uchar_test(byte_t u1, byte_t u2);
 bool int_test(int i1, int i2);
 bool uint64_test(uint64_t i1, uint64_t i2);
 bool uint64_vec_test_immed(uint64_vec_t vec, uint64_t n, ...);

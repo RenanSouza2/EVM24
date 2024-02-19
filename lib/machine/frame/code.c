@@ -137,7 +137,7 @@ uint64_vec_t frame_get_jumpdest(evm_bytes_p code) // TODO improve test
     uint64_t count = 0;
     for(uint64_t pc=0; pc<code->size; pc++)
     {
-        uchar_t op = bytes_get_byte(code, pc);
+        byte_t op = bytes_get_byte(code, pc);
         switch (op)
         {
             case JUMPDEST: count++; break;
@@ -150,7 +150,7 @@ uint64_vec_t frame_get_jumpdest(evm_bytes_p code) // TODO improve test
     count = 1;
     for(uint64_t pc=0; pc<code->size; pc++)
     {
-        uchar_t op = bytes_get_byte(code, pc);
+        byte_t op = bytes_get_byte(code, pc);
         switch (op)
         {
             case JUMPDEST: vec.v[count++] = pc; break;
@@ -177,7 +177,7 @@ void frame_o_free(evm_frame_o_p fo)
 
 
 
-uchar_t frame_get_op(evm_frame_p f)
+byte_t frame_get_op(evm_frame_p f)
 {
     return bytes_get_byte(&f->code, f->pc);
 }
@@ -330,7 +330,7 @@ int frame_mstore8(evm_frame_p f)
     if(stack_pop(&w_value, &f->s)) return 3;
     GAS_CONSUME(gas);
     
-    uchar_t u = word_get_byte(&w_value, 0);
+    byte_t u = word_get_byte(&w_value, 0);
     mem_set_byte(&f->m, w_pos.v[0], u);
     f->pc++;
     
@@ -370,7 +370,7 @@ int frame_jumpdest(evm_frame_p f) // TODO test
 
 int frame_push(evm_frame_p f)
 {
-    uchar_t op = frame_get_op(f);
+    byte_t op = frame_get_op(f);
     assert(0x59 <= op);
     assert(op <= 0x7f);
     int size = op - 0x5f;

@@ -16,8 +16,8 @@ STRUCT(evm_node)
 
 STRUCT(evm_node_leaf)
 {
-    uchar_p path;
-    uchar_p val;
+    byte_p path;
+    byte_p val;
 };
 
 #endif
