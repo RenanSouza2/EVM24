@@ -104,14 +104,12 @@ uint64_vec_t uint64_vec_init(uint64_t size)
     return (uint64_vec_t){size, v};
 }
 
-#define VEC_FREE(TYPE)                      \
-    void TYPE##_vec_free(TYPE##_vec_p vec)  \
-    {                                       \
-        if(vec->v) free(vec->v);            \
-    }
+void vec_free(handler_p vec)
+{
+    handler_p v = ((vec_p)vec)->v;
+    if(v) free(v);
+}
 
-VEC_FREE(byte)
-VEC_FREE(uint64)
 
 bool uint64_vec_has_uint64(uint64_vec_p vec, uint64_t v)
 {

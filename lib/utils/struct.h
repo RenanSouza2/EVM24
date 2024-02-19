@@ -26,6 +26,12 @@ typedef __uint128_t uint128_t;
 uint64_t uint64_add(uint64_t u1, uint64_t u2);
 uint64_t uint128_to_uint64(uint128_t res);
 
+STRUCT(vec)         \
+{                   \
+    uint64_t size;  \
+    handler_p v;    \
+};
+
 #define VEC(TYPE)       \
     STRUCT(TYPE##_vec)  \
     {                   \
@@ -38,8 +44,7 @@ VEC(byte);
 
 uint64_vec_t uint64_vec_init(uint64_t size);
 
-void byte_vec_free(byte_vec_p vec);
-void uint64_vec_free(uint64_vec_p vec);
+void vec_free(handler_p vec);
 
 bool uint64_vec_has_uint64(uint64_vec_p vec, uint64_t v);
 

@@ -52,7 +52,6 @@ evm_bytes_t bytes_init_immed(char str[])
     assert(len > 1);
     assert(str[0] == '0');
     assert(str[1] == 'x');
-
     if(len == 2) return bytes_init();
 
     uint64_t size = len / 2 - 1;
@@ -103,7 +102,7 @@ evm_bytes_t bytes_init()
 
 void bytes_free(evm_bytes_p b)
 {
-    byte_vec_free(b);
+    vec_free(b);
 }
 
 

@@ -36,20 +36,20 @@ void test_utils_uint64_vec_has_uint64()
     uint64_vec_t vec = uint64_vec_init_immed(0);
     assert(uint64_vec_has_uint64(&vec, 0) == false);
     assert(uint64_vec_has_uint64(&vec, 1) == false);
-    uint64_vec_free(&vec);
+    vec_free(&vec);
     
     vec = uint64_vec_init_immed(1, 1);
     assert(uint64_vec_has_uint64(&vec, 0) == false);
     assert(uint64_vec_has_uint64(&vec, 1) == true);
     assert(uint64_vec_has_uint64(&vec, 2) == false);
-    uint64_vec_free(&vec);
+    vec_free(&vec);
     
     vec = uint64_vec_init_immed(2, 0, 2);
     assert(uint64_vec_has_uint64(&vec, 0) == true);
     assert(uint64_vec_has_uint64(&vec, 1) == false);
     assert(uint64_vec_has_uint64(&vec, 2) == true);
     assert(uint64_vec_has_uint64(&vec, 3) == false);
-    uint64_vec_free(&vec);
+    vec_free(&vec);
 
     assert(clu_mem_empty());
 }
