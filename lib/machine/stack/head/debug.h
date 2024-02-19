@@ -5,7 +5,7 @@
 
 #ifdef DEBUG
 
-#include "../../../word/struct.h"
+#include "../../word/struct.h"
 
 void stack_display(evm_stack_t s);
 

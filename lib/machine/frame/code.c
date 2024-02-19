@@ -13,7 +13,7 @@
 
 #include "../mem/debug.h"
 #include "../stack/head/debug.h"
-#include "../../bytes/debug.h"
+#include "../bytes/debug.h"
 #include "../../utils/debug.h"
 
 

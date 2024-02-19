@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 #include "../../utils/struct.h"
-#include "../utils/struct.h"
+// #include "../utils/struct.h"
 
 PLACEHOLDER(evm_word);
 typedef byte_vec_p evm_bytes_p;
