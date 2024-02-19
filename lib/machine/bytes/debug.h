@@ -7,10 +7,6 @@
 #ifdef DEBUG
 
 void bytes_display(evm_bytes_t b);
-evm_bytes_t bytes_init_immed(char str[]);
-
-bool bytes_test_immed(evm_bytes_t b, char str[]);
-bool bytes_test(evm_bytes_t b, evm_bytes_t b_exp);
 
 #endif
 

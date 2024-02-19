@@ -3,6 +3,7 @@
 
 #include "header.h"
 
+#include "../bytes/struct.h"
 #include "../mem/struct.h"
 #include "../stack/head/struct.h"
 

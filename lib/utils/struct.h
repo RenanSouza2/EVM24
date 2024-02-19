@@ -39,6 +39,7 @@ VEC(byte);
 #define DECL_VEC_INIT(TYPE) TYPE##_vec_t TYPE##_vec_init(uint64_t size)
 #define DECL_VEC_FREE(TYPE) void TYPE##_vec_free(TYPE##_vec_p vec)
 
+byte_vec_t byte_vec_init_zero();
 DECL_VEC_INIT(byte);
 DECL_VEC_INIT(uint64);
 

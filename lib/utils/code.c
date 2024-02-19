@@ -25,8 +25,6 @@ byte_t cton(byte_t c)
     assert(false);
 }
 
-
-
 byte_vec_t byte_vec_init_immed(char str[])
 {
     uint64_t len = strlen(str);
@@ -56,7 +54,7 @@ uint64_vec_t uint64_vec_init_immed(uint64_t n, ...)
 
 
 
-bool uchar_test(byte_t u1, byte_t u2)
+bool byte_test(byte_t u1, byte_t u2)
 {
     if(u1 == u2) return true;
 
@@ -84,11 +82,42 @@ bool uint64_test(uint64_t i1, uint64_t i2)
     return false;
 }
 
+
+
+bool byte_vec_test(byte_vec_t b, byte_vec_t b_exp)
+{
+    if(!int_test(b.size, b_exp.size)) 
+    {
+        printf("\n\tBYTE VEC ASSERTION ERROR | LENGTH");
+        byte_vec_free(&b_exp);
+        return false;
+    }
+
+    for(uint64_t i=0; i<b.size; i++)
+    {
+        if(!byte_test(b.v[i], b_exp.v[i]))
+        {
+            printf("\n\tBYTE VEC ASSERTION ERROR | BYTE | " U64P, i);
+            byte_vec_free(&b_exp);
+            return false;
+        }
+    }
+
+    byte_vec_free(&b_exp);
+    return true;
+}
+
+bool byte_vec_test_immed(byte_vec_t b, char str[])
+{
+    byte_vec_t b_exp = byte_vec_init_immed(str);
+    return byte_vec_test(b, b_exp);
+}
+
 bool uint64_vec_test_immed(uint64_vec_t vec, uint64_t n, ...)
 {
     if(!uint64_test(vec.size, n))
     {
-        printf("\n\tJUMPDEST TEST ASSERTION ERROR | COUNT");
+        printf("\n\tUINT64 VEC TEST ASSERTION ERROR | COUNT");
         return false;
     }
 
@@ -99,7 +128,7 @@ bool uint64_vec_test_immed(uint64_vec_t vec, uint64_t n, ...)
         uint64_t jumpdest = va_arg(args, uint64_t);
         if(!uint64_test(vec.v[i], jumpdest))
         {
-            printf("\n\tJUMPDEST TEST ASSERTION ERROR | JUMPDEST | " U64P, i);
+            printf("\n\tUINT64 VEC TEST ASSERTION ERROR | UINT64 | " U64P, i);
             return false;
         }
     }
@@ -152,6 +181,11 @@ uint64_t uint128_to_uint64(uint128_t res)
     {                                       \
         if(vec->v) free(vec->v);            \
     }
+
+byte_vec_t byte_vec_init_zero() // TODO test
+{
+    return (byte_vec_t){0, NULL};
+}
 
 VEC_INIT(byte);
 VEC_INIT(uint64);

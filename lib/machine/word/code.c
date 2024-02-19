@@ -54,7 +54,7 @@ evm_word_t word_init_uint64(uint64_t num)
     return (evm_word_t){{num, 0, 0, 0}};
 }
 
-evm_word_t word_init_bytes(evm_bytes_p b)
+evm_word_t word_init_bytes(byte_vec_p b)
 {
     int size = b->size;
     assert(size <= 32);
@@ -65,9 +65,11 @@ evm_word_t word_init_bytes(evm_bytes_p b)
         byte_t u = bytes_get_byte(b, size-1-i);
         word_set_byte(&w, i, u);
     }
-    bytes_free(b);
+    byte_vec_free(b);
     return w;
 }
+
+
 
 bool word_is_uint64(evm_word_p w)
 {
@@ -77,8 +79,6 @@ bool word_is_uint64(evm_word_p w)
 
     return true;
 }
-
-
 
 bool word_eq_bool(evm_word_p w1, evm_word_p w2)
 {

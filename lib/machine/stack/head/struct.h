@@ -3,7 +3,7 @@
 
 #include "header.h"
 
-PLACEHOLDER(evm_stack_l);
+#include "../list/struct.h"
 
 STRUCT(evm_stack)
 {

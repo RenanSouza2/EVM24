@@ -19,7 +19,7 @@ void test_frame_init()
     evm_frame_t f = frame_init_immed("0x", GAS_DEF);
     assert_64(f.pc, 0);
     assert_64(f.gas, GAS_DEF);
-    assert(bytes_test_immed(f.code, "0x"));
+    assert(byte_vec_test_immed(f.code, "0x"));
     assert(stack_test_immed(f.s, 0));
     assert(mem_test_immed(f.m, 0));
     frame_free(&f);
@@ -27,7 +27,7 @@ void test_frame_init()
     f = frame_init_immed("0xff", GAS_DEF);
     assert_64(f.pc, 0);
     assert_64(f.gas, GAS_DEF);
-    assert(bytes_test_immed(f.code, "0xff"));
+    assert(byte_vec_test_immed(f.code, "0xff"));
     assert(stack_test_immed(f.s, 0));
     assert(mem_test_immed(f.m, 0));
     frame_free(&f);

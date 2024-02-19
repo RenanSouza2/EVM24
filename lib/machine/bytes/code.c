@@ -33,53 +33,7 @@ void bytes_display(evm_bytes_t b)
     printf("\n");
 }
 
-evm_bytes_t bytes_init_immed(char str[])
-{
-    return byte_vec_init_immed(str);
-}
-
-bool bytes_test_immed(evm_bytes_t b, char str[])
-{
-    evm_bytes_t b_exp = bytes_init_immed(str);
-    return bytes_test(b, b_exp);
-}
-
-bool bytes_test(evm_bytes_t b, evm_bytes_t b_exp)
-{
-    if(!int_test(b.size, b_exp.size)) 
-    {
-        printf("\n\n\tBYTES ASSERTION ERROR | LENGTH");
-        bytes_free(&b_exp);
-        return false;
-    }
-
-    for(uint64_t i=0; i<b.size; i++)
-    {
-        if(!uchar_test(b.v[i], b_exp.v[i]))
-        {
-            printf("\n\tBYTES ASSERTION ERROR | BYTE | " U64P, i);
-            bytes_free(&b_exp);
-            return false;
-        }
-    }
-
-    bytes_free(&b_exp);
-    return true;
-}
-
 #endif
-
-
-
-evm_bytes_t bytes_init()
-{
-    return (evm_bytes_t){0, NULL};
-}
-
-void bytes_free(evm_bytes_p b)
-{
-    byte_vec_free(b);
-}
 
 
 
@@ -102,7 +56,7 @@ evm_word_t bytes_get_word(evm_bytes_p b, uint64_t pos)
 
 evm_bytes_t bytes_get_bytes(evm_bytes_p b, uint64_t pos, uint64_t size)
 {
-    if(size == 0) return bytes_init();
+    if(size == 0) return byte_vec_init_zero();
     
     byte_t *v = malloc(size);
     assert(v);

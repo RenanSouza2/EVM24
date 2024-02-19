@@ -53,19 +53,19 @@ void test_word_init_bytes()
 {
     printf("\n\t%s", __func__);
     
-    evm_bytes_t b = bytes_init_immed("0x");
+    evm_bytes_t b = byte_vec_init_immed("0x");
     evm_word_t w = word_init_bytes(&b);
     assert(word_test(w, W1(0)));
 
-    b = bytes_init_immed("0xff");
+    b = byte_vec_init_immed("0xff");
     w = word_init_bytes(&b);
     assert(word_test(w, W1(0xff)));
 
-    b = bytes_init_immed("0xffee");
+    b = byte_vec_init_immed("0xffee");
     w = word_init_bytes(&b);
     assert(word_test(w, W1(0xffee)));
 
-    b = bytes_init_immed("0xff0000000000000000");
+    b = byte_vec_init_immed("0xff0000000000000000");
     w = word_init_bytes(&b);
     assert(word_test(w, WORD(0, 0, 0xff, 0)));
 

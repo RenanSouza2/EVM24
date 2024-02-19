@@ -27,7 +27,7 @@ evm_mem_t mem_init_immed(uint64_t n, ...)
 
 evm_mem_t mem_init_immed_variadic(uint64_t n, va_list *arg)
 {
-    evm_mem_t m = mem_init();
+    evm_mem_t m = byte_vec_init_zero();
     mem_expand(&m, n << 5);
     for(uint64_t i=0; i<n; i++)
     {
@@ -56,7 +56,7 @@ bool mem_test_variadic(evm_mem_t m, uint64_t n, va_list *args)
     }
 
     evm_mem_t m_exp = mem_init_immed_variadic(n, args);
-    if(!bytes_test(m, m_exp)) 
+    if(!byte_vec_test(m, m_exp)) 
     {
         printf("\n\tMEM ASSERTTION ERROR | BYTES ASSERTTION ERROR");
         return false;
@@ -66,18 +66,6 @@ bool mem_test_variadic(evm_mem_t m, uint64_t n, va_list *args)
 }
 
 #endif
-
-
-
-evm_mem_t mem_init()
-{
-    return bytes_init();
-}
-
-void mem_free(evm_mem_p m)
-{
-    bytes_free(m);
-}
 
 
 
@@ -119,16 +107,16 @@ evm_word_t mem_get_word(evm_mem_p m, uint64_t pos)
     return bytes_get_word(m, pos);
 }
 
-evm_bytes_t mem_get_bytes(evm_mem_p m, uint64_t pos, uint64_t size)
+byte_vec_t mem_get_bytes(evm_mem_p m, uint64_t pos, uint64_t size)
 {
-    if(size == 0) return bytes_init();
+    if(size == 0) return byte_vec_init_zero();
 
     mem_expand(m, pos+size);
     byte_t *v = malloc(size);
     assert(v);
 
     memcpy(v, &m->v[pos], size);
-    return (evm_bytes_t){size, v};
+    return (byte_vec_t){size, v};
 }
 
 
@@ -146,7 +134,7 @@ void mem_set_word(evm_mem_p m, uint64_t pos, evm_word_p w)
         m->v[pos + i] = word_get_byte(w, 31-i);
 }
 
-void mem_set_bytes(evm_mem_p m, uint64_t pos, evm_bytes_p b)
+void mem_set_bytes(evm_mem_p m, uint64_t pos, byte_vec_p b)
 {
     if(b->size == 0) return;
 

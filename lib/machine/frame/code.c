@@ -20,13 +20,13 @@
 
 evm_frame_t frame_init_immed(char str_code[], uint64_t gas)
 {
-    evm_bytes_t code = bytes_init_immed(str_code);
+    evm_bytes_t code = byte_vec_init_immed(str_code);
     return frame_init(code, gas);
 }
 
 evm_frame_t frame_init_immed_setup(char str_code[], uint64_t gas, uint64_t n_mem, ...)
 {
-    evm_bytes_t code = bytes_init_immed(str_code);
+    evm_bytes_t code = byte_vec_init_immed(str_code);
 
     va_list args;
     va_start(args, n_mem);
@@ -43,9 +43,9 @@ evm_frame_t frame_init_immed_setup(char str_code[], uint64_t gas, uint64_t n_mem
 
 uint64_vec_t frame_get_jumpdest_immed(char str_code[])
 {
-    evm_bytes_t code = bytes_init_immed(str_code);
+    evm_bytes_t code = byte_vec_init_immed(str_code);
     uint64_vec_t jumpdest = frame_get_jumpdest(&code);
-    bytes_free(&code);
+    byte_vec_free(&code);
     return jumpdest;
 }
 
@@ -100,8 +100,7 @@ bool frame_o_test_immed(evm_frame_o_t fo, bool success, uint64_t gas, char str_r
         return false;
     }
 
-    evm_bytes_t b = bytes_init_immed(str_returndata);
-    if(!bytes_test(fo.returndata, b))
+    if(!byte_vec_test_immed(fo.returndata, str_returndata))
     {
         printf("\n\tFRAME OUTPUT ASSERTION ERROR | RETURN DATA");
         return false;
@@ -127,7 +126,7 @@ evm_frame_t frame_init(evm_bytes_t code, uint64_t gas)
         gas,
         code,
         frame_get_jumpdest(&code),
-        mem_init(),
+        byte_vec_init_zero(),
         stack_init(),
     };
 }
@@ -164,15 +163,15 @@ uint64_vec_t frame_get_jumpdest(evm_bytes_p code) // TODO improve test
 
 void frame_free(evm_frame_p f)
 {
-    bytes_free(&f->code);
+    byte_vec_free(&f->code);
     uint64_vec_free(&f->jumpdest);
     stack_free(&f->s);
-    mem_free(&f->m);
+    byte_vec_free(&f->m);
 }
 
 void frame_o_free(evm_frame_o_p fo)
 {
-    bytes_free(&fo->returndata);
+    byte_vec_free(&fo->returndata);
 }
 
 
@@ -198,12 +197,12 @@ int frame_push_uint64(evm_frame_p f, uint64_t value)
 
 evm_frame_o_t frame_stop(evm_frame_p f)
 {
-    return (evm_frame_o_t){true, f->gas, bytes_init()};
+    return (evm_frame_o_t){true, f->gas, byte_vec_init_zero()};
 }
 
 evm_frame_o_t frame_halt(evm_frame_p f)
 {
-    return (evm_frame_o_t){false, f->gas, bytes_init()};
+    return (evm_frame_o_t){false, f->gas, byte_vec_init_zero()};
 }
 
 
@@ -252,7 +251,7 @@ int frame_codecopy(evm_frame_p f) // TODO test
 
     evm_bytes_t b = bytes_get_bytes(&f->code, w_code.v[0], size);
     mem_set_bytes(&f->m, w_mem.v[0], &b);
-    bytes_free(&b);
+    byte_vec_free(&b);
     return 0;
 }
 
