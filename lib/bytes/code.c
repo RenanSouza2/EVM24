@@ -102,7 +102,7 @@ evm_bytes_t bytes_init()
 
 void bytes_free(evm_bytes_p b)
 {
-    vec_free(b);
+    byte_vec_free(b);
 }
 
 

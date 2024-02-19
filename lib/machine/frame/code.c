@@ -165,7 +165,7 @@ uint64_vec_t frame_get_jumpdest(evm_bytes_p code) // TODO improve test
 void frame_free(evm_frame_p f)
 {
     bytes_free(&f->code);
-    vec_free(&f->jumpdest);
+    uint64_vec_free(&f->jumpdest);
     stack_free(&f->s);
     mem_free(&f->m);
 }
