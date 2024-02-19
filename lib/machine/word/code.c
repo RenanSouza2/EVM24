@@ -1,5 +1,5 @@
 #include "debug.h"
-#include "../../utils/assert.h"
+#include "../../../utils/assert.h"
 
 #include "../bytes/struct.h"
 
@@ -7,8 +7,9 @@
 
 #ifdef DEBUG
 
-#include "../../utils/clu/bin/header.h"
-#include "../utils/debug.h"
+#include "../../../utils/clu/bin/header.h"
+
+#include "../../utils/debug.h"
 
 
 
