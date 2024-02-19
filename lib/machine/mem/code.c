@@ -6,6 +6,7 @@
 #include "../../../utils/assert.h"
 
 #include "../gas/header.h"
+#include "../bytes/struct.h"
 
 
 
@@ -13,7 +14,6 @@
 
 #include "../../../utils/clu/bin/header.h"
 
-#include "../bytes/debug.h"
 #include "../../utils/debug.h"
 
 
