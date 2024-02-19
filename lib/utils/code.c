@@ -8,10 +8,40 @@
 #ifdef DEBUG
 
 #include <stdarg.h>
+#include <string.h>
 
 #include "../../utils/clu/bin/header.h"
 
 
+
+byte_t cton(byte_t c)
+{
+    switch (c)
+    {
+        case '0' ... '9': return c - '0';
+        case 'a' ... 'f': return c - 'a' + 10;
+        case 'A' ... 'F': return c - 'A' + 10;
+    }
+    assert(false);
+}
+
+
+
+byte_vec_t byte_vec_init_immed(char str[])
+{
+    uint64_t len = strlen(str);
+    assert(len > 1);
+    assert(str[0] == '0');
+    assert(str[1] == 'x');
+    if(len == 2) return byte_vec_init(0);
+
+    uint64_t size = len / 2 - 1;
+    byte_t *b = malloc(size);
+    for(uint64_t i=0; i<size; i++)
+        b[i] = (cton(str[2 * i + 2]) << 4) | cton(str[2 * i + 3]);
+
+    return (byte_vec_t){size, b};
+}
 
 uint64_vec_t uint64_vec_init_immed(uint64_t n, ...)
 {
@@ -87,7 +117,19 @@ uint64_t uint64_add(uint64_t u1, uint64_t u2)
     return sum < u1 ? UINT64_MAX : sum;
 }
 
+uint64_t uint64_set_byte(uint64_t u, int index, byte_t b)
+{
+    int offset = index << 3;
+    return (u & ~(0xff << offset)) | ((uint64_t)b << offset);
+}
 
+uint64_t uint64_init_bytes(uint64_t size, byte_p b) // TODO test
+{
+    uint64_t u = 0;
+    for(int i=0; i<size; i++)
+        u = uint64_set_byte(u, i, b[size-1 - i]);
+    return u;
+}
 
 uint64_t uint128_to_uint64(uint128_t res)
 {
@@ -99,6 +141,7 @@ uint64_t uint128_to_uint64(uint128_t res)
 #define VEC_INIT(TYPE)                                  \
     TYPE##_vec_t TYPE##_vec_init(uint64_t size)         \
     {                                                   \
+        if(size == 0) return (TYPE##_vec_t){0, NULL};   \
         TYPE##_p v = calloc(size, sizeof(TYPE##_t));    \
         assert(v);                                      \
         return (TYPE##_vec_t){size, v};                 \

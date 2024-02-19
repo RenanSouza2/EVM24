@@ -6,4 +6,6 @@
 #ifdef DEBUG
 #endif
 
+void rlp_decode(byte_p in);
+
 #endif

@@ -8,23 +8,10 @@
 
 #ifdef DEBUG
 
-#include <string.h>
-
 #include "../../utils/clu/bin/header.h"
 #include "../utils/debug.h"
 
 
-
-byte_t cton(byte_t c)
-{
-    switch (c)
-    {
-        case '0' ... '9': return c - '0';
-        case 'a' ... 'f': return c - 'a' + 10;
-        case 'A' ... 'F': return c - 'A' + 10;
-    }
-    assert(false);
-}
 
 void bytes_display(evm_bytes_t b)
 {
@@ -48,18 +35,7 @@ void bytes_display(evm_bytes_t b)
 
 evm_bytes_t bytes_init_immed(char str[])
 {
-    uint64_t len = strlen(str);
-    assert(len > 1);
-    assert(str[0] == '0');
-    assert(str[1] == 'x');
-    if(len == 2) return bytes_init();
-
-    uint64_t size = len / 2 - 1;
-    byte_t *b = malloc(size);
-    for(uint64_t i=0; i<size; i++)
-        b[i] = (cton(str[2 * i + 2]) << 4) | cton(str[2 * i + 3]);
-
-    return (evm_bytes_t){size, b};
+    return byte_vec_init_immed(str);
 }
 
 bool bytes_test_immed(evm_bytes_t b, char str[])

@@ -21,6 +21,7 @@
 #define assert_int(RES, EXP) assert(int_test(RES, EXP))
 #define assert_64(RES, EXP) assert(uint64_test(RES, EXP));
 
+byte_vec_t byte_vec_init_immed(char str[]);
 uint64_vec_t uint64_vec_init_immed(uint64_t n, ...);
 
 bool uchar_test(byte_t u1, byte_t u2);
