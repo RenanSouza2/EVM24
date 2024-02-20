@@ -113,6 +113,38 @@ void test_utils_uint64_add()
     assert(clu_mem_empty());
 }
 
+void test_utils_uint64_set_byte()
+{
+    printf("\n\t%s", __func__);
+
+    assert_64(uint64_set_byte(   0, 0, 0xff),   0xff);
+    assert_64(uint64_set_byte(0xff, 0, 0xee),   0xee);
+    assert_64(uint64_set_byte(   0, 1, 0xff), 0xff00);
+    assert_64(uint64_set_byte(0xff, 1, 0xee), 0xeeff);
+    
+    for(int i=0; i<8; i++)
+        assert_64(uint64_set_byte(0, i, 0xff), (uint64_t)0xff << (i << 3));
+
+    uint64_t u = 0;
+    for(int i=0; i<8; i++)
+        u = uint64_set_byte(u, i, i+1);
+    assert_64(u, 0x0807060504030201);
+
+    assert(clu_mem_empty());
+}
+
+void test_utils_uint64_init_byte()
+{
+    printf("\n\t%s", __func__);
+
+    assert_64(uint64_init_byte_immed(  "0xff"),   0xff);
+    assert_64(uint64_init_byte_immed("0xffee"), 0xffee);
+    assert_64(uint64_init_byte_immed("0xffffffffffffffff"), U64_MAX);
+    assert_64(uint64_init_byte_immed("0x0807060504030201"), 0x0807060504030201);
+
+    assert(clu_mem_empty());
+}
+
 void test_utils_uint128_to_uint64()
 {
     printf("\n\t%s", __func__);
@@ -164,7 +196,10 @@ void test_utils()
     test_byte_vec_init_immed();
     
     test_utils_uint64_add();
+    test_utils_uint64_set_byte();
+    test_utils_uint64_init_byte();
     test_utils_uint128_to_uint64();
+
     test_utils_uint64_vec_has_uint64();
 
     assert(clu_mem_empty());

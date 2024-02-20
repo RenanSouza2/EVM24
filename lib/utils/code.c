@@ -52,6 +52,14 @@ uint64_vec_t uint64_vec_init_immed(uint64_t n, ...)
     return vec;
 }
 
+uint64_t uint64_init_byte_immed(char str[])
+{
+    byte_vec_t b = byte_vec_init_immed(str);
+    uint64_t res = uint64_init_byte(b.size, b.v);
+    byte_vec_free(&b);
+    return res;
+}
+
 
 
 bool byte_test(byte_t u1, byte_t u2)
@@ -149,10 +157,10 @@ uint64_t uint64_add(uint64_t u1, uint64_t u2)
 uint64_t uint64_set_byte(uint64_t u, int index, byte_t b)
 {
     int offset = index << 3;
-    return (u & ~(0xff << offset)) | ((uint64_t)b << offset);
+    return (u & ~((uint64_t)0xff << offset)) | ((uint64_t)b << offset);
 }
 
-uint64_t uint64_init_byte(uint64_t size, byte_p b) // TODO test
+uint64_t uint64_init_byte(uint64_t size, byte_p b)
 {
     uint64_t u = 0;
     for(int i=0; i<size; i++)
@@ -182,7 +190,7 @@ uint64_t uint128_to_uint64(uint128_t res)
         if(vec->v) free(vec->v);            \
     }
 
-byte_vec_t byte_vec_init_zero() // TODO test
+byte_vec_t byte_vec_init_zero()
 {
     return (byte_vec_t){0, NULL};
 }
