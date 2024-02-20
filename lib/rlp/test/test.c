@@ -7,11 +7,10 @@
 
 void test_rlp_decode()
 {
-    printf("\n%s\t\t", __func__);
+    printf("\n\t%s\t\t", __func__);
 
-    
-    // byte_vec_t b = byte_vec_init_immed("0xb8");
-    // rlp_decode(b.v);
+    byte_vec_t b = byte_vec_init_immed("0xb9ffff");
+    rlp_decode(b.v);
 
     assert(clu_mem_empty());
 }

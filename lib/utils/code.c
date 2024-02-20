@@ -152,7 +152,7 @@ uint64_t uint64_set_byte(uint64_t u, int index, byte_t b)
     return (u & ~(0xff << offset)) | ((uint64_t)b << offset);
 }
 
-uint64_t uint64_init_bytes(uint64_t size, byte_p b) // TODO test
+uint64_t uint64_init_byte(uint64_t size, byte_p b) // TODO test
 {
     uint64_t u = 0;
     for(int i=0; i<size; i++)

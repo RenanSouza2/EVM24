@@ -6,6 +6,7 @@
 #ifdef DEBUG
 #endif
 
-void rlp_decode(byte_p in);
+evm_rlp_t rlp_decode_rec(uint64_p ptr, byte_p in);
+bool rlp_decode(evm_rlp_p r, byte_vec_p b);
 
 #endif
