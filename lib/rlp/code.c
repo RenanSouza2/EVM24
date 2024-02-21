@@ -15,7 +15,7 @@
 
 void rlp_display_rec(evm_rlp_t r, int cnt)
 {
-    printf("\nType: %s", r.type ? "bytes" : "str");
+    printf("\nType: %s", r.type ? "str" : "bytes");
     
     switch (r.type)
     {
@@ -24,15 +24,16 @@ void rlp_display_rec(evm_rlp_t r, int cnt)
         break;
     
         case LIST:
-        printf("\n%.*scount: " U64P, cnt, "\t", r.vec.r.size);
+        printf("\n%*scount: " U64P, cnt, "\t", r.vec.r.size);
         for(int i=0; i<r.vec.r.size; i++)
         {
-            printf("\n\n%.*si: %d", cnt, "\t", i);
+            printf("\n\n%*si: %d", cnt, "\t", i);
             rlp_display_rec(r.vec.r.v[i], cnt + 1);
         }
         break;
     }
 }
+
 void rlp_display(evm_rlp_t r)
 {
     rlp_display_rec(r, 0);
