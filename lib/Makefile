@@ -32,13 +32,19 @@ $(DGB_FILES):
 
 .PHONY: clean c
 clean c:
+	echo "cleaning $(DIR)"
 	rm -rf *.o
 	for DIR in $(DIRS) ; do \
-		( $(MAKE) clean --directory=$$DIR ) || exit $$? ; \
+		( $(MAKE) _clean --directory=$$DIR ) || exit $$? ; \
 	done
+	$(MAKE) clean --directory=$(dir $(CLU_FILE))
 
-.PHONY: test t
+.PHONY: test
 test t:
+	$(MAKE) debug.o
+	$(MAKE) _test -s
+
+_test:
 	for DIR in $(DIRS) ; do \
-		( $(MAKE) test --directory=$$DIR ) || exit $$? ; \
+		( $(MAKE) _test --directory=$$DIR ) || exit $$? ; \
 	done
