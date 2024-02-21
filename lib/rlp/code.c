@@ -9,6 +9,25 @@
 
 #include "../../utils/clu/bin/header.h"
 
+#include "../utils/debug.h"
+
+
+
+void rlp_display(evm_rlp_t r)
+{
+    printf("\nType: %s", r.type ? "bytes" : "str");
+}
+
+evm_rlp_t rlp_decode_immed(char str[])
+{
+    evm_rlp_t r;
+    byte_vec_t b = byte_vec_init_immed(str);
+
+    assert(rlp_decode(&r, &b));
+    byte_vec_free(&b);
+    return r;
+}
+
 #endif
 
 
@@ -28,8 +47,8 @@ evm_rlp_t rlp_init(uint64_t type, uint64_t size)
     r.type = type;
     switch (type)
     {
-        case BYTE: r.vec.b = byte_vec_init(size);
-        case LIST: r.vec.r = rlp_vec_init(size);
+        case BYTE: r.vec.b = byte_vec_init(size);   break;
+        case LIST: r.vec.r = rlp_vec_init(size);    break;
         default: assert(false);
     }
     return r;
@@ -125,7 +144,7 @@ bool rlp_decode_validate(byte_vec_p b)
     uint64_t ptr_size, size;
     if(b0 < 192) size = rlp_get_size_b(&ptr_size, b->v, b0);
     else         size = rlp_get_size_s(&ptr_size, b->v, b0);
-    return b->size != ptr_size + size;
+    return b->size == ptr_size + size;
 }
 
 bool rlp_decode(evm_rlp_p r, byte_vec_p b)

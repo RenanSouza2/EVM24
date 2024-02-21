@@ -4,6 +4,10 @@
 #include "struct.h"
 
 #ifdef DEBUG
+
+void rlp_display(evm_rlp_t r);
+evm_rlp_t rlp_decode_immed(char str[]);
+
 #endif
 
 evm_rlp_t rlp_decode_rec(uint64_p ptr, byte_p in);
