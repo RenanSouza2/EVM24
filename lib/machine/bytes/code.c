@@ -9,29 +9,6 @@
 #ifdef DEBUG
 
 #include "../../../utils/clu/bin/header.h"
-#include "../../utils/debug.h"
-
-
-
-void bytes_display(evm_bytes_t b)
-{
-    printf("\n\nbytes (" U64P "):", b.size);
-    printf("\n");
-    for(uint64_t i=0; i< b.size >> 5; i++)
-    {
-        printf("\n\t0x");
-        for(uint64_t j=0; j<32; j++)
-            printf("%02x", b.v[(i << 5) + j]);
-    }
-    if(b.size % 32)
-    {
-        uint64_t i = b.size & ~31;
-        printf("\n\t0x");
-        for(uint64_t j=i; j<b.size; j++)
-            printf("%02x", b.v[j]);
-    }
-    printf("\n");
-}
 
 #endif
 

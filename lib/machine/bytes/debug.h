@@ -5,9 +5,6 @@
 #include "../word/struct.h"
 
 #ifdef DEBUG
-
-void bytes_display(evm_bytes_t b);
-
 #endif
 
 #endif
