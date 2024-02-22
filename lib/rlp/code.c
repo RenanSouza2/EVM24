@@ -127,13 +127,29 @@ byte_vec_t rlp_encode(evm_rlp_p r) // TODO test
         }
 
         byte_vec_t b_size_2 = byte_vec_init_uint64(b.size);
-        byte_vec_t b_size_1 = byte_vec_init_uint64(183 + b_size_2.size); // TODO verify number
+        byte_vec_t b_size_1 = byte_vec_init_uint64(183 + b_size_2.size);
         b_size_1 = byte_vec_concat(&b_size_1, &b_size_2);
         return byte_vec_concat(&b_size_1, &b);
-        break;
     
         case LIST:
-        break;
+        evm_rlp_vec_t _r = r->vec.r;
+        byte_vec_t b = byte_vec_init_zero();
+        for(int i=0; i<_r.size; i++)
+        {
+            byte_vec_t _b = rlp_encode(&_r.v[i]);
+            b = byte_vec_concat(&b, &_b);
+        }
+
+        if(b.size < 56)
+        {
+            byte_vec_t b_size = byte_vec_init_uint64(192 + b.size);
+            return byte_vec_concat(&b_size, &b);
+        }
+
+        byte_vec_t b_size_2 = byte_vec_init_uint64(b.size);
+        byte_vec_t b_size_1 = byte_vec_init_uint64(247 + b_size_2.size);
+        b_size_1 = byte_vec_concat(&b_size_1, &b_size_2);
+        return byte_vec_concat(&b_size_1, &b);
     }
     assert(false);
 }
