@@ -48,6 +48,7 @@ DECL_VEC_INIT(uint64);
 DECL_VEC_FREE(byte);
 DECL_VEC_FREE(uint64);
 
+byte_vec_t byte_vec_concat(byte_vec_p b1, byte_vec_p b2);
 bool uint64_vec_has_uint64(uint64_vec_p vec, uint64_t v);
 
 #endif

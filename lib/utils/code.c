@@ -176,7 +176,7 @@ uint64_t uint64_add(uint64_t u1, uint64_t u2)
     return sum < u1 ? UINT64_MAX : sum;
 }
 
-byte_t uint64_get_byte(uint64_t u, uint64_t i) // TODO test
+byte_t uint64_get_byte(uint64_t u, uint64_t i)
 {
     return (byte_t)(u >> (i << 3));
 }
@@ -187,7 +187,7 @@ uint64_t uint64_set_byte(uint64_t u, int index, byte_t b)
     return (u & ~((uint64_t)0xff << offset)) | ((uint64_t)b << offset);
 }
 
-uint64_t uint64_get_size(uint64_t u) // TODO test
+uint64_t uint64_get_size(uint64_t u)
 {
     for(int i=0; i<8; i++, u >>= 8)
         if(u == 0)
@@ -231,7 +231,7 @@ byte_vec_t byte_vec_init_zero()
     return (byte_vec_t){0, NULL};
 }
 
-byte_vec_t byte_vec_init_uint64(uint64_t u) // TODO test
+byte_vec_t byte_vec_init_uint64(uint64_t u)
 {
     uint64_t size = uint64_get_size(u);
     byte_vec_t b = byte_vec_init(size);
@@ -246,6 +246,17 @@ VEC_INIT(uint64);
 VEC_FREE(byte);
 VEC_FREE(uint64);
 
+byte_vec_t byte_vec_concat(byte_vec_p b1, byte_vec_p b2) // TODO test
+{
+    if(b2->size == 0) return *b1;
+    if(b1->size == 0) return *b2;
+
+    b1->v = realloc(b1->v, b1->size + b2->size);
+    memcpy(&b1->v[b1->size], b2->v, b2->size);
+    b1->size += b2->size;
+    byte_vec_free(b2);
+    return *b1;
+}
 bool uint64_vec_has_uint64(uint64_vec_p vec, uint64_t v)
 {
     if(vec->size == 0) return false;

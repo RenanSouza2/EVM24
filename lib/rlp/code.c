@@ -122,8 +122,14 @@ byte_vec_t rlp_encode(evm_rlp_p r) // TODO test
         
         if(b.size < 56)
         {
-            
+            byte_vec_t b_size = byte_vec_init_uint64(128 + b.size);
+            return byte_vec_concat(&b_size, &b);
         }
+
+        byte_vec_t b_size_2 = byte_vec_init_uint64(b.size);
+        byte_vec_t b_size_1 = byte_vec_init_uint64(183 + b_size_2.size); // TODO verify number
+        b_size_1 = byte_vec_concat(&b_size_1, &b_size_2);
+        return byte_vec_concat(&b_size_1, &b);
         break;
     
         case LIST:
