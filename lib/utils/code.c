@@ -176,10 +176,24 @@ uint64_t uint64_add(uint64_t u1, uint64_t u2)
     return sum < u1 ? UINT64_MAX : sum;
 }
 
+byte_t uint64_get_byte(uint64_t u, uint64_t i) // TODO test
+{
+    return (byte_t)(u >> (i << 3));
+}
+
 uint64_t uint64_set_byte(uint64_t u, int index, byte_t b)
 {
     int offset = index << 3;
     return (u & ~((uint64_t)0xff << offset)) | ((uint64_t)b << offset);
+}
+
+uint64_t uint64_get_size(uint64_t u) // TODO test
+{
+    for(int i=0; i<8; i++, u >>= 8)
+        if(u == 0)
+            return i;
+
+    return 8;
 }
 
 uint64_t uint64_init_byte(uint64_t size, byte_p b)
@@ -195,19 +209,6 @@ uint64_t uint128_to_uint64(uint128_t res)
     return (res >> 64) ? UINT64_MAX : (uint64_t) res;
 }
 
-uint64_t uint64_get_size(uint64_t u) // TODO test
-{
-    for(int i=0; i<8; i++, u <<= 1)
-        if(u == 0)
-            return u;
-
-    return 8;
-}
-
-byte_t uint64_get_byte(uint64_t u, uint64_t i) // TODO test
-{
-    return (byte_t)(u >> (i >> 3));
-}
 
 
 #define VEC_INIT(TYPE)                                  \

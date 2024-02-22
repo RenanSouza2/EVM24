@@ -5,6 +5,8 @@ DIR = $(shell basename $(CURDIR))
 
 build: lib.o
 
+
+
 lib.o: code.c
 	echo "Building clu $(DIR) object"
 	gcc -o $@ $^ $(FLAGS)
@@ -13,13 +15,17 @@ debug.o: code.c
 	echo "Building $(DIR) debug"
 	gcc -o $@ $^ $(FLAGS) -D DEBUG
 
+
+
 clean c:
-	$(MAKE) clean --directory=$(LIB_ROOT)
+	$(MAKE) clean --directory=$(LIB_ROOT) -s
 
 _clean:
 	echo "cleaning $(DIR)"
 	rm -f *.o
 	$(MAKE) clean --directory=test
+
+
 
 .PHONY: test
 test t:

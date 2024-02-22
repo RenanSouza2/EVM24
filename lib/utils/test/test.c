@@ -113,6 +113,17 @@ void test_utils_uint64_add()
     assert(clu_mem_empty());
 }
 
+void test_utils_uint64_get_byte()
+{
+    printf("\n\t%s", __func__);
+
+    for(int i=0; i<8; i++)
+        assert_byte(uint64_get_byte(0x0807060504030201, i), i+1);
+
+    assert(clu_mem_empty());
+}
+
+
 void test_utils_uint64_set_byte()
 {
     printf("\n\t%s", __func__);
@@ -132,6 +143,21 @@ void test_utils_uint64_set_byte()
 
     assert(clu_mem_empty());
 }
+
+void test_utils_uint64_get_size()
+{
+    printf("\n\t%s", __func__);
+
+    assert_64(uint64_get_size(0), 0);
+    assert_64(uint64_get_size(1), 1);
+    assert_64(uint64_get_size(0xff), 1);
+    assert_64(uint64_get_size(0x100), 2);
+    assert_64(uint64_get_size(U64_FF), 8);
+    assert_64(uint64_get_size(U64_MAX), 8);
+    
+    assert(clu_mem_empty());
+}
+
 
 void test_utils_uint64_init_byte()
 {
@@ -160,6 +186,39 @@ void test_utils_uint128_to_uint64()
 }
 
 
+
+
+void test_utils_byte_vec_init_uint64()
+{
+    printf("\n\t%s", __func__);
+
+    byte_vec_t b = byte_vec_init_uint64(0);
+    assert(byte_vec_test_immed(b, "0x"));
+    byte_vec_free(&b);
+
+    b = byte_vec_init_uint64(1);
+    assert(byte_vec_test_immed(b, "0x01"));
+    byte_vec_free(&b);
+
+    b = byte_vec_init_uint64(0xff);
+    assert(byte_vec_test_immed(b, "0xff"));
+    byte_vec_free(&b);
+
+    b = byte_vec_init_uint64(0x100);
+    assert(byte_vec_test_immed(b, "0x0100"));
+    byte_vec_free(&b);
+
+    b = byte_vec_init_uint64(U64_FF);
+    assert(byte_vec_test_immed(b, "0xff00000000000000"));
+    byte_vec_free(&b);
+
+    b = byte_vec_init_uint64(U64_MAX);
+    assert(byte_vec_test_immed(b, "0xffffffffffffffff"));
+    byte_vec_free(&b);
+
+    
+    assert(clu_mem_empty());
+}
 
 void test_utils_uint64_vec_has_uint64()
 {
@@ -196,10 +255,13 @@ void test_utils()
     test_byte_vec_init_immed();
     
     test_utils_uint64_add();
+    test_utils_uint64_get_byte();
     test_utils_uint64_set_byte();
+    test_utils_uint64_get_size();
     test_utils_uint64_init_byte();
     test_utils_uint128_to_uint64();
 
+    test_utils_byte_vec_init_uint64();
     test_utils_uint64_vec_has_uint64();
 
     assert(clu_mem_empty());
