@@ -54,12 +54,10 @@ evm_rlp_t rlp_init_immed_variadic(uint64_t type, va_list *args)
     switch (type)
     {
         case BYTE:
-        printf("\ncreating bytes");
         char *str = va_arg(*args, char*);
         return (evm_rlp_t){BYTE, {.b = byte_vec_init_immed(str)}};
     
-        default:
-        printf("\ncreating list");
+        case LIST:
         uint64_t size = va_arg(*args, uint64_t);
         evm_rlp_t r = (evm_rlp_t){LIST, {.r = rlp_vec_init(size)}};
         for(uint64_t i=0; i<size; i++)
@@ -74,6 +72,13 @@ evm_rlp_t rlp_init_immed_variadic(uint64_t type, va_list *args)
 
 
 
+byte_vec_t rlp_encode_immed(uint64_t type, ...)
+{
+    va_list args;
+    va_start(args, type);
+    evm_rlp_t r = rlp_init_immed_variadic(type, &args);
+    return rlp_encode(&r);
+}
 
 evm_rlp_t rlp_decode_immed(char str[])
 {
@@ -96,6 +101,11 @@ evm_rlp_vec_t rlp_vec_init(uint64_t size)
     assert(v);
 
     return (evm_rlp_vec_t){size, v};
+}
+
+void rlp_vec_free(evm_rlp_vec_p r)
+{
+    if(r->v) free(r->v);
 }
 
 evm_rlp_t rlp_init(uint64_t type, uint64_t size)
@@ -133,12 +143,13 @@ byte_vec_t rlp_encode(evm_rlp_p r) // TODO test
     
         case LIST:
         evm_rlp_vec_t _r = r->vec.r;
-        byte_vec_t b = byte_vec_init_zero();
+        b = byte_vec_init_zero();
         for(int i=0; i<_r.size; i++)
         {
             byte_vec_t _b = rlp_encode(&_r.v[i]);
             b = byte_vec_concat(&b, &_b);
         }
+        rlp_vec_free(&_r);
 
         if(b.size < 56)
         {
@@ -146,8 +157,8 @@ byte_vec_t rlp_encode(evm_rlp_p r) // TODO test
             return byte_vec_concat(&b_size, &b);
         }
 
-        byte_vec_t b_size_2 = byte_vec_init_uint64(b.size);
-        byte_vec_t b_size_1 = byte_vec_init_uint64(247 + b_size_2.size);
+        b_size_2 = byte_vec_init_uint64(b.size);
+        b_size_1 = byte_vec_init_uint64(247 + b_size_2.size);
         b_size_1 = byte_vec_concat(&b_size_1, &b_size_2);
         return byte_vec_concat(&b_size_1, &b);
     }

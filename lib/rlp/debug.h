@@ -12,6 +12,7 @@ void rlp_display(evm_rlp_t r);
 evm_rlp_t rlp_init_immed(uint64_t type, ...);
 evm_rlp_t rlp_init_immed_variadic(uint64_t type, va_list *args);
 
+byte_vec_t rlp_encode_immed(uint64_t type, ...);
 evm_rlp_t rlp_decode_immed(char str[]);
 
 #endif

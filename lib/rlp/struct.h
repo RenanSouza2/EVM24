@@ -22,4 +22,6 @@ STRUCT(evm_rlp)
     } vec;
 };
 
+byte_vec_t rlp_encode(evm_rlp_p r);
+
 #endif
