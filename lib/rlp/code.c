@@ -90,9 +90,80 @@ evm_rlp_t rlp_decode_immed(char str[])
     return r;
 }
 
+
+
+bool rlp_test_immed(evm_rlp_t r, uint64_t type, ...)
+{
+    va_list args;
+    va_start(args, type);
+    evm_rlp_t r_exp = rlp_init_immed_variadic(type, &args);
+    bool res = rlp_test(r, r_exp);
+    return res;
+}
+
+bool rlp_test(evm_rlp_t r, evm_rlp_t r_exp)
+{
+    if(!byte_test(r.type, r_exp.type))
+    {
+        printf("\n\tRLP ASSERTION ERROR | TYPE");
+        return false;
+    }
+
+    switch (r.type)
+    {
+        case BYTE:
+        if(!byte_vec_test(r.vec.b, r_exp.vec.b))
+        {
+            printf("\n\tRLP ASSERTION ERROR | BYTE VEC");
+            return false;
+        }
+        return true;
+    
+        case LIST:
+        if(!rlp_vec_test(r.vec.r, r_exp.vec.r))
+        {
+            printf("\n\tRLP ASSERTION ERROR | BYTE VEC");
+            return false;
+        }
+        break;
+    }
+
+    printf("\n\n\tRLP ASSERTION ERROR | INVALID TYPE");
+    return false;
+}
+
+bool rlp_vec_test(evm_rlp_vec_t r, evm_rlp_vec_t r_exp)
+{
+    if(!byte_test(r.size, r_exp.size))
+    {
+        printf("\n\tRLP VECTOR ASSERTION ERROR | SIZE");
+        return false;
+    }
+    
+    for(uint64_t i=0; i<r.size; i++)
+        if(!rlp_test(r.v[i], r_exp.v[i]))
+        {
+            printf("\n\tRLP VECTOR ASSERTION ERROR | ITEM | " U64P, i);
+            return false;
+        }
+
+    rlp_vec_free(&r_exp);
+    return true;
+}
+
 #endif
 
 
+
+evm_rlp_t rlp_init(uint64_t type, uint64_t size)
+{
+    switch (type)
+    {
+        case BYTE: return (evm_rlp_t){type, {.b = byte_vec_init(size)}};
+        case LIST: return (evm_rlp_t){type, {.r = rlp_vec_init(size)}};
+    }
+    assert(false)
+}
 
 evm_rlp_vec_t rlp_vec_init(uint64_t size)
 {
@@ -103,19 +174,28 @@ evm_rlp_vec_t rlp_vec_init(uint64_t size)
     return (evm_rlp_vec_t){size, v};
 }
 
+
+
+void rlp_free(evm_rlp_p r)
+{
+    switch (r->type)
+    {
+        case BYTE:
+        byte_vec_free(&r->vec.b);
+        return;
+    
+        case LIST:
+        for(uint64_t i=0; i<r->vec.r.size; i++)
+            rlp_free(&r->vec.r.v[i]);
+        rlp_vec_free(&r->vec.r);
+        return;
+    }
+    assert(false);
+}
+
 void rlp_vec_free(evm_rlp_vec_p r)
 {
     if(r->v) free(r->v);
-}
-
-evm_rlp_t rlp_init(uint64_t type, uint64_t size)
-{
-    switch (type)
-    {
-        case BYTE: return (evm_rlp_t){type, {.b = byte_vec_init(size)}};
-        case LIST: return (evm_rlp_t){type, {.r = rlp_vec_init(size)}};
-    }
-    assert(false)
 }
 
 
