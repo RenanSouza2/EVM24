@@ -195,6 +195,19 @@ uint64_t uint128_to_uint64(uint128_t res)
     return (res >> 64) ? UINT64_MAX : (uint64_t) res;
 }
 
+uint64_t uint64_get_size(uint64_t u) // TODO test
+{
+    for(int i=0; i<8; i++, u <<= 1)
+        if(u == 0)
+            return u;
+
+    return 8;
+}
+
+byte_t uint64_get_byte(uint64_t u, uint64_t i) // TODO test
+{
+    return (byte_t)(u >> (i >> 3));
+}
 
 
 #define VEC_INIT(TYPE)                                  \
@@ -215,6 +228,15 @@ uint64_t uint128_to_uint64(uint128_t res)
 byte_vec_t byte_vec_init_zero()
 {
     return (byte_vec_t){0, NULL};
+}
+
+byte_vec_t byte_vec_init_uint64(uint64_t u) // TODO test
+{
+    uint64_t size = uint64_get_size(u);
+    byte_vec_t b = byte_vec_init(size);
+    for(uint64_t i=0; i<size; i++)
+        b.v[size - 1 - i] = uint64_get_byte(u, i);
+    return b;
 }
 
 VEC_INIT(byte);

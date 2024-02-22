@@ -30,14 +30,18 @@ $(DGB_FILES):
 
 
 
-.PHONY: clean c
 clean c:
+	$(MAKE) _clean -s
+
+_clean:
 	echo "cleaning $(DIR)"
 	rm -rf *.o
 	for DIR in $(DIRS) ; do \
 		( $(MAKE) _clean --directory=$$DIR ) || exit $$? ; \
 	done
 	$(MAKE) clean --directory=$(dir $(CLU_FILE))
+
+
 
 .PHONY: test
 test t:

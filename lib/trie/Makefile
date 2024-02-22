@@ -30,9 +30,8 @@ $(DGB_FILES):
 
 
 
-.PHONY: clean
 clean c:
-	$(MAKE) clean --directory=$(LIB_ROOT) -s
+	$(MAKE) _clean --directory=$(LIB_ROOT) -s
 
 _clean:
 	echo "cleaning $(DIR)"
@@ -40,6 +39,8 @@ _clean:
 	for DIR in $(DIRS) ; do \
 		( $(MAKE) _clean --directory=$$DIR ) || exit $$? ; \
 	done
+
+
 
 .PHONY: test
 test t:
