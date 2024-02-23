@@ -1,8 +1,8 @@
 DIRS := $(wildcard */.)
 
+LIB_ROOT = $(word 1,$(subst lib, ,$(CURDIR)))lib
 LIB_FILES = $(foreach DIR,$(DIRS),$(dir $(DIR))lib.o)
 DGB_FILES = $(foreach DIR,$(DIRS),$(dir $(DIR))debug.o)
-CLU_FILE = ../utils/clu/bin/bin.o
 
 DIR = $(shell basename $(CURDIR))
 
@@ -11,17 +11,17 @@ build: lib.o
 
 
 lib.o: $(LIB_FILES)
-	echo "linking $(DIR) object"
+	echo "linking clu $(DIR) object"
 	ld -r -o $@ $^
 	
-debug.o: $(DGB_FILES) $(CLU_FILE)
+debug.o: $(DGB_FILES)
 	echo "linking $(DIR) debug"
 	ld -r -o $@ $^
 
 
 
-.PHONY: $(LIB_FILES) $(CLU_FILE)
-$(LIB_FILES) $(CLU_FILE):
+.PHONY: $(LIB_FILES)
+$(LIB_FILES):
 	$(MAKE) --directory=$(dir $@)
 
 .PHONY: $(DGB_FILES)
@@ -31,7 +31,7 @@ $(DGB_FILES):
 
 
 clean c:
-	$(MAKE) _clean -s
+	$(MAKE) _clean --directory=$(LIB_ROOT) -s
 
 _clean:
 	echo "cleaning $(DIR)"
@@ -39,13 +39,12 @@ _clean:
 	for DIR in $(DIRS) ; do \
 		( $(MAKE) _clean --directory=$$DIR ) || exit $$? ; \
 	done
-	$(MAKE) clean --directory=$(dir $(CLU_FILE))
 
 
 
 .PHONY: test
 test t:
-	$(MAKE) debug.o
+	$(MAKE) debug.o --directory=$(LIB_ROOT) -s
 	$(MAKE) _test -s
 
 _test:
