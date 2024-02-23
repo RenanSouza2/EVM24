@@ -7,8 +7,6 @@
 
 #include <stdarg.h>
 
-void rlp_display(evm_rlp_t r);
-
 evm_rlp_t rlp_init_immed(uint64_t type, ...);
 evm_rlp_t rlp_init_immed_variadic(uint64_t type, va_list *args);
 

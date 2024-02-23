@@ -13,34 +13,6 @@
 
 
 
-void rlp_display_rec(evm_rlp_t r, int cnt)
-{
-    printf("\nType: %s", r.type ? "str" : "bytes");
-    
-    switch (r.type)
-    {
-        case BYTE:
-        byte_vec_display(r.vec.b);
-        break;
-    
-        case LIST:
-        printf("\n%*scount: " U64P, cnt, "\t", r.vec.r.size);
-        for(int i=0; i<r.vec.r.size; i++)
-        {
-            printf("\n\n%*si: %d", cnt, "\t", i);
-            rlp_display_rec(r.vec.r.v[i], cnt + 1);
-        }
-        break;
-    }
-}
-
-void rlp_display(evm_rlp_t r) // TODO work here
-{
-    rlp_display_rec(r, 0);
-}
-
-
-
 evm_rlp_t rlp_init_immed(uint64_t type, ...)
 {
     va_list args;
@@ -306,39 +278,32 @@ bool rlp_get_size_l(uint64_p size_size, uint64_p size_list, byte_p b, uint64_t s
 
 bool rlp_decode_rec_l_rec(evm_rlp_p r, byte_p in, uint64_t size, int count)
 {
+    if(size == 0)
+    {
+        *r = rlp_init(LIST, count);
+        return true;
+    }
+
     evm_rlp_t r1;
     uint64_t consumed;
     if(!rlp_decode_rec(&r1, &consumed, in, size)) return false;
-
-    if(consumed == size)
-    {
-        evm_rlp_t _r = rlp_init(LIST, count + 1);
-        _r.vec.r.v[count] = r1;
-        *r = _r;
-        return true;
-    }
     assert(consumed < size);
 
     evm_rlp_t _r;
     if(!rlp_decode_rec_l_rec(&_r, &in[consumed], size - consumed, count + 1)) return false;
     _r.vec.r.v[count] = r1;
-
+    
     *r = _r;
     return true;
 }
 
 bool rlp_decode_rec_l(evm_rlp_p r, byte_p in, uint64_t size_list, uint64_t size)
 {
-    if(size_list == 0) {
-        *r = (evm_rlp_t){LIST, {.r = rlp_vec_init(0)}};
-        return true;
-    }
-    
     if(size_list > size) return false;
     
     evm_rlp_t _r;
     if(!rlp_decode_rec_l_rec(&_r, in, size_list, 0)) return false;
-    
+
     *r = _r;
     return true;
 }
@@ -374,6 +339,7 @@ bool rlp_decode(evm_rlp_p r, byte_vec_p b)
     evm_rlp_t _r;
     uint64_t consumed;
     if(!rlp_decode_rec(&_r, &consumed, b->v, b->size)) return false;
+    if(consumed != b->size) return false;
 
     *r = _r;
     return true;
