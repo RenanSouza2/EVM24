@@ -53,11 +53,11 @@ evm_rlp_t rlp_init_immed_variadic(uint64_t type, va_list *args)
 {
     switch (type)
     {
-        case BYTE:
+        case BYTE:;
         char *str = va_arg(*args, char*);
         return (evm_rlp_t){BYTE, {.b = byte_vec_init_immed(str)}};
     
-        case LIST:
+        case LIST:;
         uint64_t size = va_arg(*args, uint64_t);
         evm_rlp_t r = (evm_rlp_t){LIST, {.r = rlp_vec_init(size)}};
         for(uint64_t i=0; i<size; i++)
@@ -204,7 +204,7 @@ byte_vec_t rlp_encode(evm_rlp_p r)
 {
     switch (r->type)
     {
-        case BYTE:
+        case BYTE:;
         byte_vec_t b = r->vec.b;
         if(b.size == 1)
         if(b.v[0] < 128)
@@ -221,7 +221,7 @@ byte_vec_t rlp_encode(evm_rlp_p r)
         b_size_1 = byte_vec_concat(&b_size_1, &b_size_2);
         return byte_vec_concat(&b_size_1, &b);
     
-        case LIST:
+        case LIST:;
         evm_rlp_vec_t _r = r->vec.r;
         b = byte_vec_init_zero();
         for(int i=0; i<_r.size; i++)

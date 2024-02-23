@@ -8,7 +8,7 @@ build: lib.o
 
 
 lib.o: code.c
-	echo "Building clu $(DIR) object"
+	echo "Building $(DIR) object"
 	gcc -o $@ $^ $(FLAGS)
 
 debug.o: code.c
