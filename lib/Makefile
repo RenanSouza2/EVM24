@@ -11,11 +11,11 @@ build: lib.o
 
 
 lib.o: $(LIB_FILES)
-	echo "linking $(DIR) object"
+	echo "linking  object $(DIR)"
 	ld -r -o $@ $^
 	
 debug.o: $(DGB_FILES) $(CLU_FILE)
-	echo "linking $(DIR) debug"
+	echo "linking  debug $(DIR)"
 	ld -r -o $@ $^
 
 

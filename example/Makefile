@@ -8,11 +8,11 @@ build: lib.o
 
 
 lib.o: code.c
-	echo "Building clu $(DIR) object"
+	echo "building clu object $(DIR)"
 	gcc -o $@ $^ $(FLAGS)
 
 debug.o: code.c
-	echo "Building $(DIR) debug"
+	echo "building debug $(DIR)"
 	gcc -o $@ $^ $(FLAGS) -D DEBUG
 
 
