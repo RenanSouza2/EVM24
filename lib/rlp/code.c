@@ -82,9 +82,9 @@ byte_vec_t rlp_encode_immed(uint64_t type, ...)
 
 evm_rlp_t rlp_decode_immed(char str[])
 {
-    evm_rlp_t r;
     byte_vec_t b = byte_vec_init_immed(str);
 
+    evm_rlp_t r;
     assert(rlp_decode(&r, &b));
     byte_vec_free(&b);
     return r;
@@ -125,7 +125,7 @@ bool rlp_test(evm_rlp_t r, evm_rlp_t r_exp)
             printf("\n\tRLP ASSERTION ERROR | BYTE VEC");
             return false;
         }
-        break;
+        return true;
     }
 
     printf("\n\n\tRLP ASSERTION ERROR | INVALID TYPE");
@@ -200,7 +200,7 @@ void rlp_vec_free(evm_rlp_vec_p r)
 
 
 
-byte_vec_t rlp_encode(evm_rlp_p r) // TODO test
+byte_vec_t rlp_encode(evm_rlp_p r)
 {
     switch (r->type)
     {
@@ -307,7 +307,8 @@ evm_rlp_t rlp_decode_rec_s_rec(byte_p in, uint64_t size, int count)
 
 evm_rlp_t rlp_decode_rec_s(byte_p in, uint64_t size)
 {
-    return rlp_decode_rec_s_rec(in, size, 0);
+    if(size) return rlp_decode_rec_s_rec(in, size, 0);
+    return (evm_rlp_t){LIST, {.r = rlp_vec_init(0)}};
 }
 
 
@@ -323,8 +324,9 @@ evm_rlp_t rlp_decode_rec(uint64_p ptr, byte_p in)
         return rlp_decode_rec_b(&in[ptr_size], size);
     }
 
-    uint64_t ptr_size;
-    uint64_t size = rlp_get_size_s(&ptr_size, in, b0);
+    uint64_t size, ptr_size;
+    size = rlp_get_size_s(&ptr_size, in, b0);
+
     *ptr = ptr_size + size;
     return rlp_decode_rec_s(&in[ptr_size], size);
 }

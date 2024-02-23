@@ -26,36 +26,36 @@ void test_bytes_get_word()
 {
     printf("\n\t%s", __func__);
 
-    printf("\n\t\t%s 1", __func__);
+    // printf("\n\t\t%s 1", __func__);
     evm_bytes_t b = byte_vec_init_immed("0x");
     evm_word_t w = bytes_get_word(&b, 0);
     assert(word_test(w, WORD(0, 0, 0, 0)));
     byte_vec_free(&b);
 
-    printf("\n\t\t%s 2", __func__);
+    // printf("\n\t\t%s 2", __func__);
     b = byte_vec_init_immed("0xff");
     w = bytes_get_word(&b, 0);
     assert(word_test(w, WORD(U64_FF, 0, 0, 0)));
 
-    printf("\n\t\t%s 3", __func__);
+    // printf("\n\t\t%s 3", __func__);
     w = bytes_get_word(&b, 1);
     assert(word_test(w, WORD(0, 0, 0, 0)));
     byte_vec_free(&b);
 
-    printf("\n\t\t%s 4", __func__);
+    // printf("\n\t\t%s 4", __func__);
     b = byte_vec_init_immed("0x00000000000000000000000000000000000000000000000000000000000000ff");
     w = bytes_get_word(&b, 0);
     assert(word_test(w, WORD(0, 0, 0, 0xff)));
 
-    printf("\n\t\t%s 5", __func__);
+    // printf("\n\t\t%s 5", __func__);
     w = bytes_get_word(&b, 1);
     assert(word_test(w, WORD(0, 0, 0, 0xff00)));
 
-    printf("\n\t\t%s 6", __func__);
+    // printf("\n\t\t%s 6", __func__);
     w = bytes_get_word(&b, 31);
     assert(word_test(w, WORD(U64_FF, 0, 0, 0)));
 
-    printf("\n\t\t%s 7", __func__);
+    // printf("\n\t\t%s 7", __func__);
     w = bytes_get_word(&b, 32);
     assert(word_test(w, WORD(0, 0, 0, 0)));
     byte_vec_free(&b);
