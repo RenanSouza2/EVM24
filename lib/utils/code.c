@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 
 #include "debug.h"
 #include "../../utils/assert.h"
@@ -8,7 +9,6 @@
 #ifdef DEBUG
 
 #include <stdarg.h>
-#include <string.h>
 
 #include "../../utils/clu/bin/header.h"
 
