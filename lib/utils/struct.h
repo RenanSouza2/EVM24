@@ -18,6 +18,12 @@
 
 #endif
 
+#define ERR(FN, CODE)                       \
+    {                                       \
+        uint64_t res = (FN);                \
+        if(res) return (res << 4) | (CODE); \
+    }
+
 typedef unsigned char byte_t;
 typedef byte_t * byte_p;
 typedef uint64_t * uint64_p;
