@@ -247,48 +247,48 @@ void test_rlp_decode()
 {
     printf("\n\t%s\t\t", __func__);
 
-    printf("\n\t\t%s  1\t\t", __func__);
+    // printf("\n\t\t%s  1\t\t", __func__);
     evm_rlp_t r;
     assert_64(rlp_decode_immed(&r, "0x80"), 0);
     assert(rlp_test_immed(r, BYTE, "0x"));
     rlp_free(&r);
 
-    printf("\n\t\t%s  2\t\t", __func__);
+    // printf("\n\t\t%s  2\t\t", __func__);
     assert_64(rlp_decode_immed(&r, "0x00"), 0);
     assert(rlp_test_immed(r, BYTE, "0x00"));
     rlp_free(&r);
     
-    printf("\n\t\t%s  3\t\t", __func__);
+    // printf("\n\t\t%s  3\t\t", __func__);
     assert_64(rlp_decode_immed(&r, "0x01"), 0);
     assert(rlp_test_immed(r, BYTE, "0x01"));
     rlp_free(&r);
 
-    printf("\n\t\t%s  4\t\t", __func__);
+    // printf("\n\t\t%s  4\t\t", __func__);
     assert_64(rlp_decode_immed(&r, "0x7f"), 0);
     assert(rlp_test_immed(r, BYTE, "0x7f"));
     rlp_free(&r);
 
-    printf("\n\t\t%s  5\t\t", __func__);
+    // printf("\n\t\t%s  5\t\t", __func__);
     assert_64(rlp_decode_immed(&r, "0x8180"), 0);
     assert(rlp_test_immed(r, BYTE, "0x80"));
     rlp_free(&r);
     
-    printf("\n\t\t%s  6\t\t", __func__);
+    // printf("\n\t\t%s  6\t\t", __func__);
     assert_64(rlp_decode_immed(&r, "0x8180"), 0);
     assert(rlp_test_immed(r, BYTE, "0x80"));
     rlp_free(&r);
     
-    printf("\n\t\t%s  7\t\t", __func__);
+    // printf("\n\t\t%s  7\t\t", __func__);
     assert_64(rlp_decode_immed(&r, "0x81ff"), 0);
     assert(rlp_test_immed(r, BYTE, "0xff"));
     rlp_free(&r);
     
-    printf("\n\t\t%s  8\t\t", __func__);
+    // printf("\n\t\t%s  8\t\t", __func__);
     assert_64(rlp_decode_immed(&r, "0x820000"), 0);
     assert(rlp_test_immed(r, BYTE, "0x0000"));
     rlp_free(&r);
     
-    printf("\n\t\t%s  9\t\t", __func__);
+    // printf("\n\t\t%s  9\t\t", __func__);
     assert_64(rlp_decode_immed(&r, "0xb7" 
         "000102030405060708090a0b0c0d0e0f"
         "101112131415161718191a1b1c1d1e1f"
@@ -303,7 +303,7 @@ void test_rlp_decode()
     ));
     rlp_free(&r);
     
-    printf("\n\t\t%s 10\t\t", __func__);
+    // printf("\n\t\t%s 10\t\t", __func__);
     assert_64(rlp_decode_immed(&r, "0xb838" 
         "000102030405060708090a0b0c0d0e0f"
         "101112131415161718191a1b1c1d1e1f"
@@ -318,7 +318,7 @@ void test_rlp_decode()
     ));
     rlp_free(&r);
 
-    printf("\n\t\t%s 11\t\t", __func__);
+    // printf("\n\t\t%s 11\t\t", __func__);
     assert_64(rlp_decode_immed(&r, "0xb8ff"
         "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
         "202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f"
@@ -341,7 +341,7 @@ void test_rlp_decode()
     ));
     rlp_free(&r);
 
-    printf("\n\t\t%s 12\t\t", __func__);
+    // printf("\n\t\t%s 12\t\t", __func__);
     assert_64(rlp_decode_immed(&r, "0xb90100"
         "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
         "202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f"
@@ -364,37 +364,37 @@ void test_rlp_decode()
 	));
     rlp_free(&r);
 
-    printf("\n\t\t%s 13\t\t", __func__);
+    // printf("\n\t\t%s 13\t\t", __func__);
     assert_64(rlp_decode_immed(&r, "0xc0"), 0);
     assert(rlp_test_immed(r, LIST, 0));
     rlp_free(&r);
     
-    printf("\n\t\t%s 14\t\t", __func__);
+    // printf("\n\t\t%s 14\t\t", __func__);
     assert_64(rlp_decode_immed(&r, "0xc100"), 0);
     assert(rlp_test_immed(r, LIST, 1, BYTE, "0x00"));
     rlp_free(&r);
 
-    printf("\n\t\t%s 15\t\t", __func__);
+    // printf("\n\t\t%s 15\t\t", __func__);
     assert_64(rlp_decode_immed(&r, "0xc28180"), 0);
     assert(rlp_test_immed(r, LIST, 1, BYTE, "0x80"));
     rlp_free(&r);
 
-    printf("\n\t\t%s 16\t\t", __func__);
+    // printf("\n\t\t%s 16\t\t", __func__);
     assert_64(rlp_decode_immed(&r, "0xc20001"), 0);
     assert(rlp_test_immed(r, LIST, 2, BYTE, "0x00", BYTE, "0x01"));
     rlp_free(&r);
 
-    printf("\n\t\t%s 17\t\t", __func__);
+    // printf("\n\t\t%s 17\t\t", __func__);
     assert_64(rlp_decode_immed(&r, "0xc2c001"), 0);
     assert(rlp_test_immed(r, LIST, 2, LIST, 0, BYTE, "0x01"));
     rlp_free(&r);
 
-    printf("\n\t\t%s 18\t\t", __func__);
+    // printf("\n\t\t%s 18\t\t", __func__);
     assert_64(rlp_decode_immed(&r, "0xc3c10001"), 0);
     assert(rlp_test_immed(r, LIST, 2, LIST, 1, BYTE, "0x00", BYTE, "0x01"));
     rlp_free(&r);
 
-    printf("\n\t\t%s 19\t\t", __func__);
+    // printf("\n\t\t%s 19\t\t", __func__);
     assert_64(rlp_decode_immed(&r, "0xf7b6"
         "000102030405060708090a0b0c0d0e0f"
         "101112131415161718191a1b1c1d1e1f"
@@ -409,7 +409,7 @@ void test_rlp_decode()
     ));
     rlp_free(&r);
     
-    printf("\n\t\t%s 20\t\t", __func__);
+    // printf("\n\t\t%s 20\t\t", __func__);
     assert_64(rlp_decode_immed(&r, "0xf838b7"
         "000102030405060708090a0b0c0d0e0f"
         "101112131415161718191a1b1c1d1e1f"
@@ -424,7 +424,7 @@ void test_rlp_decode()
     ));
     rlp_free(&r);
 
-    printf("\n\t\t%s 21\t\t", __func__);
+    // printf("\n\t\t%s 21\t\t", __func__);
     assert_64(rlp_decode_immed(&r, "0xf8ffb8fd"
         "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
         "202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f"
@@ -447,7 +447,7 @@ void test_rlp_decode()
     ));
     rlp_free(&r);
 
-    printf("\n\t\t%s 22\t\t", __func__);
+    // printf("\n\t\t%s 22\t\t", __func__);
     assert_64(rlp_decode_immed(&r, "0xf90100b8fe"
         "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
         "202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f"
@@ -469,6 +469,24 @@ void test_rlp_decode()
         "e0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfd"
     ));
     rlp_free(&r);
+
+    // printf("\n\t\t%s 23\t\t", __func__);
+    assert_64(rlp_decode_immed(&r, "0x"),           0x11);
+    assert_64(rlp_decode_immed(&r, "0x81"),         0x121);
+    assert_64(rlp_decode_immed(&r, "0xb8"),         0x221);
+    assert_64(rlp_decode_immed(&r, "0xb801"),       0x321);
+    assert_64(rlp_decode_immed(&r, "0xb838"),       0x421);
+    assert_64(rlp_decode_immed(&r, "0xc1"),         0x131);
+    assert_64(rlp_decode_immed(&r, "0xf8"),         0x231);
+    assert_64(rlp_decode_immed(&r, "0xf801"),       0x331);
+    assert_64(rlp_decode_immed(&r, "0xf838"),       0x431);
+    assert_64(rlp_decode_immed(&r, "0xf838"),       0x431);
+    assert_64(rlp_decode_immed(&r, "0xc181"),     0x12141);
+    assert_64(rlp_decode_immed(&r, "0xc20081"),  0x121241);
+    assert_64(rlp_decode_immed(&r, "0xc1c10081"), 0x13141);
+    assert_64(rlp_decode_immed(&r, "0xc1c10081"), 0x13141);
+    assert_64(rlp_decode_immed(&r, "0x0000"),         0x2);
+
 
     assert(clu_mem_empty());
 }

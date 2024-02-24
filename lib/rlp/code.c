@@ -242,7 +242,8 @@ uint64_t rlp_get_size_b(uint64_p size_size, uint64_p size_bytes, byte_p b, uint6
     if(size_1 + 1 > size) return 2;
     
     uint64_t _size_bytes = uint64_init_byte(size_1, &b[1]);
-    if(1 + size_1 + _size_bytes > size) return 3;
+    if(_size_bytes < 56) return 3;
+    if(1 + size_1 + _size_bytes > size) return 4;
 
     *size_size = 1 + size_1;
     *size_bytes = _size_bytes;
@@ -274,7 +275,8 @@ uint64_t rlp_get_size_l(uint64_p size_size, uint64_p size_list, byte_p b, uint64
     if(size_1 + 1 > size) return 2;
 
     uint64_t _size_list = uint64_init_byte(size_1, &b[1]);
-    if(1 + size_1 + _size_list > size) return 3;
+    if(_size_list < 56) return 3;
+    if(1 + size_1 + _size_list > size) return 4;
 
     *size_size = 1 + size_1;
     *size_list = _size_list;
@@ -295,7 +297,12 @@ uint64_t rlp_decode_rec_l_rec(evm_rlp_p r, byte_p in, uint64_t size, uint64_t co
     assert(consumed <= size);
 
     evm_rlp_t _r;
-    ERR(rlp_decode_rec_l_rec(&_r, &in[consumed], size - consumed, count + 1), 2);
+    uint64_t res;
+    if((res = rlp_decode_rec_l_rec(&_r, &in[consumed], size - consumed, count + 1)))
+    {
+        rlp_free(&r1);
+        return (res << 4) | 2;
+    }
     _r.vec.r.v[count] = r1;
     
     *r = _r;
@@ -338,7 +345,11 @@ uint64_t rlp_decode(evm_rlp_p r, byte_vec_p b)
     uint64_t consumed;
 
     ERR(rlp_decode_rec(&_r, &consumed, b->v, b->size), 1);
-    if(consumed != b->size) return 2;
+    if(consumed != b->size) 
+    {
+        rlp_free(&_r);
+        return 2;
+    }
 
     *r = _r;
     return 0;
