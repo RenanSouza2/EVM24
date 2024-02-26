@@ -28,17 +28,19 @@ evm_rlp_t rlp_init_immed_variadic(uint64_t type, va_list *args)
     {
         case BYTE:;
         char *str = va_arg(*args, char*);
-        return (evm_rlp_t){BYTE, {.b = byte_vec_init_immed(str)}};
+        byte_vec_t b = byte_vec_init_immed(str);
+        return rlp_init_byte(&b);
     
         case LIST:;
         uint64_t size = va_arg(*args, uint64_t);
-        evm_rlp_t r = (evm_rlp_t){LIST, {.r = rlp_vec_init(size)}};
+        evm_rlp_vec_t r = rlp_vec_init(size);
         for(uint64_t i=0; i<size; i++)
         {
-            uint64_t type_2 = va_arg(*args, uint64_t);
-            r.vec.r.v[i] = rlp_init_immed_variadic(type_2, args);
+            uint64_t r1_type = va_arg(*args, uint64_t);
+            r.v[i] = rlp_init_immed_variadic(r1_type, args);
         }
-        return r;
+        
+        return rlp_init_list(&r);
     }
     assert(false);
 }
@@ -126,6 +128,16 @@ bool rlp_vec_test(evm_rlp_vec_t r, evm_rlp_vec_t r_exp)
 #endif
 
 
+
+evm_rlp_t rlp_init_byte(byte_vec_p b)
+{
+    return (evm_rlp_t){BYTE, {.b = *b}};
+}
+
+evm_rlp_t rlp_init_list(evm_rlp_vec_p r)
+{
+    return (evm_rlp_t){LIST, {.r = *r}};
+}
 
 evm_rlp_vec_t rlp_vec_init(uint64_t size)
 {
@@ -309,7 +321,7 @@ evm_rlp_t rlp_decode_rec_b(byte_p b, uint64_t body_size)
     byte_vec_t _b = byte_vec_init(body_size);
     memcpy(_b.v, b, body_size);
 
-    return (evm_rlp_t){BYTE, {.b = _b}};
+    return rlp_init_byte(&_b);
 }
 
 uint64_t rlp_decode_rec_l(evm_rlp_p r, byte_p b, uint64_t list_size)
@@ -318,7 +330,7 @@ uint64_t rlp_decode_rec_l(evm_rlp_p r, byte_p b, uint64_t list_size)
     ERR(rlp_get_sizes(&r1_sizes, b, list_size), 1)
 
     uint64_t r_vec_size = r1_sizes.size >> 1;
-    evm_rlp_vec_t r0_vec = rlp_vec_init(r_vec_size);
+    evm_rlp_vec_t r_vec = rlp_vec_init(r_vec_size);
     for(uint64_t i=0, ptr=0; i<r_vec_size; i++)
     {
         uint64_t index, head_size, body_size;
@@ -329,19 +341,19 @@ uint64_t rlp_decode_rec_l(evm_rlp_p r, byte_p b, uint64_t list_size)
         evm_rlp_t r1;
         TRY(rlp_decode_rec(&r1, &b[ptr], head_size, body_size))
         {
-            r0_vec.size = i;
-            rlp_vec_free_full(&r0_vec);
+            r_vec.size = i;
+            rlp_vec_free_full(&r_vec);
             uint64_vec_free(&r1_sizes);
             return ERR_CONCAT(res, 2);
         }
         CATCH
 
-        r0_vec.v[i] = r1;
+        r_vec.v[i] = r1;
         ptr += head_size + body_size;
     }
-
     uint64_vec_free(&r1_sizes);
-    *r = (evm_rlp_t){LIST, {.r = r0_vec}};
+
+    *r = rlp_init_list(&r_vec);
     return 0;
 }
 

@@ -19,6 +19,8 @@ bool rlp_vec_test(evm_rlp_vec_t r, evm_rlp_vec_t r_exp);
 
 #endif
 
+evm_rlp_t rlp_init_byte(byte_vec_p b);
+evm_rlp_t rlp_init_list(evm_rlp_vec_p r);
 evm_rlp_vec_t rlp_vec_init(uint64_t size);
 
 void rlp_free(evm_rlp_p r);

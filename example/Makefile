@@ -12,7 +12,7 @@ lib.o: code.c
 	gcc -o $@ $^ $(FLAGS)
 
 debug.o: code.c
-	echo "building debug $(DIR)"
+	echo "building clu debug $(DIR)"
 	gcc -o $@ $^ $(FLAGS) -D DEBUG
 
 
@@ -21,7 +21,7 @@ clean c:
 	$(MAKE) clean --directory=$(LIB_ROOT) -s
 
 _clean:
-	echo "cleaning $(DIR)"
+	echo "cleaning clu $(DIR)"
 	rm -f *.o
 	$(MAKE) clean --directory=test
 
