@@ -77,7 +77,7 @@ uint64_vec_t uint64_vec_init_immed(uint64_t n, ...)
 uint64_t uint64_init_byte_immed(char str[])
 {
     byte_vec_t b = byte_vec_init_immed(str);
-    uint64_t res = uint64_init_byte(b.size, b.v);
+    uint64_t res = uint64_init_byte(b.v, b.size);
     byte_vec_free(&b);
     return res;
 }
@@ -89,14 +89,6 @@ bool byte_test(byte_t u1, byte_t u2)
     if(u1 == u2) return true;
 
     printf("\n\n\tUCHAR ASSERTION ERROR | %d %d", u1, u2);
-    return false;
-}
-
-bool int_test(int i1, int i2)
-{
-    if(i1 == i2) return true;
-
-    printf("\n\n\tINT ASSERTION ERROR | %d %d", i1, i2);
     return false;
 }
 
@@ -116,7 +108,7 @@ bool uint64_test(uint64_t i1, uint64_t i2)
 
 bool byte_vec_test(byte_vec_t b, byte_vec_t b_exp)
 {
-    if(!int_test(b.size, b_exp.size)) 
+    if(!uint64_test(b.size, b_exp.size)) 
     {
         printf("\n\tBYTE VEC ASSERTION ERROR | LENGTH");
         byte_vec_free(&b_exp);
@@ -181,25 +173,25 @@ byte_t uint64_get_byte(uint64_t u, uint64_t i)
     return (byte_t)(u >> (i << 3));
 }
 
-uint64_t uint64_set_byte(uint64_t u, int index, byte_t b)
+uint64_t uint64_set_byte(uint64_t u, uint64_t index, byte_t b)
 {
-    int offset = index << 3;
+    uint64_t offset = index << 3;
     return (u & ~((uint64_t)0xff << offset)) | ((uint64_t)b << offset);
 }
 
 uint64_t uint64_get_size(uint64_t u)
 {
-    for(int i=0; i<8; i++, u >>= 8)
+    for(uint64_t i=0; i<8; i++, u >>= 8)
         if(u == 0)
             return i;
 
     return 8;
 }
 
-uint64_t uint64_init_byte(uint64_t size, byte_p b)
+uint64_t uint64_init_byte(byte_p b, uint64_t size)
 {
     uint64_t u = 0;
-    for(int i=0; i<size; i++)
+    for(uint64_t i=0; i<size; i++)
         u = uint64_set_byte(u, i, b[size-1 - i]);
     return u;
 }
@@ -210,21 +202,6 @@ uint64_t uint128_to_uint64(uint128_t res)
 }
 
 
-
-#define VEC_INIT(TYPE)                                  \
-    TYPE##_vec_t TYPE##_vec_init(uint64_t size)         \
-    {                                                   \
-        if(size == 0) return (TYPE##_vec_t){0, NULL};   \
-        TYPE##_p v = calloc(size, sizeof(TYPE##_t));    \
-        assert(v);                                      \
-        return (TYPE##_vec_t){size, v};                 \
-    }
-
-#define VEC_FREE(TYPE)                      \
-    void TYPE##_vec_free(TYPE##_vec_p vec)  \
-    {                                       \
-        if(vec->v) free(vec->v);            \
-    }
 
 byte_vec_t byte_vec_init_zero()
 {
@@ -240,11 +217,35 @@ byte_vec_t byte_vec_init_uint64(uint64_t u)
     return b;
 }
 
-VEC_INIT(byte);
-VEC_INIT(uint64);
+byte_vec_t byte_vec_init(uint64_t size)
+{
+    if(size == 0) return (byte_vec_t){0, NULL};
+    byte_p v = calloc(size, sizeof(byte_t));
+    assert(v);
 
-VEC_FREE(byte);
-VEC_FREE(uint64);
+    return (byte_vec_t){size, v};
+}
+
+uint64_vec_t uint64_vec_init(uint64_t size)
+{
+    if(size == 0) return (uint64_vec_t){0, NULL};
+    uint64_p v = calloc(size, sizeof(uint64_t));
+    assert(v);
+
+    return (uint64_vec_t){size, v};
+}
+
+
+
+void byte_vec_free(byte_vec_p b)
+{
+    if(b->v) free(b->v);
+}
+
+void uint64_vec_free(uint64_vec_p u)
+{
+    if(u->v) free(u->v);
+}
 
 byte_vec_t byte_vec_concat(byte_vec_p b1, byte_vec_p b2) // TODO test
 {

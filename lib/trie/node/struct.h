@@ -11,7 +11,7 @@
 
 STRUCT(evm_node)
 {
-    int type;
+    uint64_t type;
 };
 
 STRUCT(evm_node_leaf)

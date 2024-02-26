@@ -15,9 +15,9 @@
 
 void stack_l_display(evm_stack_l_p sl)
 {
-    for(int i=0; sl; i++, sl = sl->sl)
+    for(uint64_t i=0; sl; i++, sl = sl->sl)
     {
-        printf("\n\tword %d: ", i);
+        printf("\n\tword " U64P ": ", i);
         word_display(sl->w);
     }
     printf("\n");
@@ -25,10 +25,10 @@ void stack_l_display(evm_stack_l_p sl)
 
 
 
-evm_stack_l_p stack_l_init_immed_variadic(int n, va_list *args)
+evm_stack_l_p stack_l_init_immed_variadic(uint64_t n, va_list *args)
 {
     evm_stack_l_p sl = NULL;
-    for(int i=0; i<n; i++)
+    for(uint64_t i=0; i<n; i++)
     {
         evm_word_t w = va_arg(*args, evm_word_t);
         sl = stack_l_create(sl, &w);
@@ -38,35 +38,35 @@ evm_stack_l_p stack_l_init_immed_variadic(int n, va_list *args)
 
 
 
-bool stack_l_test_immed(evm_stack_l_p sl, int n, ...)
+bool stack_l_test_immed(evm_stack_l_p sl, uint64_t n, ...)
 {
     va_list args;
     va_start(args, n);
     return stack_l_test_variadic(sl, n, &args);
 }
 
-bool stack_l_test_variadic(evm_stack_l_p sl, int n, va_list *args)
+bool stack_l_test_variadic(evm_stack_l_p sl, uint64_t n, va_list *args)
 {
-    int i;
+    uint64_t i;
     for(i=0; sl && i < n; sl = sl->sl, i++)
     {
         evm_word_t w = va_arg(*args, evm_word_t);
         if(!word_test(sl->w, w))
         {
-            printf("\n\tSTACK LIST ASSERTION ERROR | WORD | %d", i);
+            printf("\n\tSTACK LIST ASSERTION ERROR | WORD | " U64P, i);
             return false;
         }
     }
 
     if(i < n)
     {
-        printf("\n\n\tSTACK LIST ASSERTION ERROR | FEWER WORDS | %d %d", i, n);
+        printf("\n\n\tSTACK LIST ASSERTION ERROR | FEWER WORDS | " U64P " " U64P, i, n);
         return false;
     }
 
     if(sl != NULL)
     {
-        printf("\n\n\tSTACK LIST ASSERTION ERROR | MORE WORDS | %d", n);
+        printf("\n\n\tSTACK LIST ASSERTION ERROR | MORE WORDS | " U64P, n);
         return false;
     }
 

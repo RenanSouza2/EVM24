@@ -14,11 +14,11 @@ void test_utils_cton()
         'c', 'd', 'e', 'f'
     };
 
-    for(int i=0; i<16; i++)
+    for(uint64_t i=0; i<16; i++)
         assert(cton(ascii[i]) == i);
 
     char ASCII[] = {'A', 'B', 'C', 'D', 'E', 'F'};
-    for(int i=0; i<6; i++)
+    for(uint64_t i=0; i<6; i++)
         assert(cton(ASCII[i]) == i + 10);
 
     assert(clu_mem_empty());
@@ -117,7 +117,7 @@ void test_utils_uint64_get_byte()
 {
     printf("\n\t%s", __func__);
 
-    for(int i=0; i<8; i++)
+    for(uint64_t i=0; i<8; i++)
         assert_byte(uint64_get_byte(0x0807060504030201, i), i+1);
 
     assert(clu_mem_empty());
@@ -133,11 +133,11 @@ void test_utils_uint64_set_byte()
     assert_64(uint64_set_byte(   0, 1, 0xff), 0xff00);
     assert_64(uint64_set_byte(0xff, 1, 0xee), 0xeeff);
     
-    for(int i=0; i<8; i++)
+    for(uint64_t i=0; i<8; i++)
         assert_64(uint64_set_byte(0, i, 0xff), (uint64_t)0xff << (i << 3));
 
     uint64_t u = 0;
-    for(int i=0; i<8; i++)
+    for(uint64_t i=0; i<8; i++)
         u = uint64_set_byte(u, i, i+1);
     assert_64(u, 0x0807060504030201);
 

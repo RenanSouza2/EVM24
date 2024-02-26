@@ -5,7 +5,7 @@ test: test.o
 	./test.o 
 
 test.o: test.c $(DEBUG_FILE)
-	echo "Building $(DIR) test"
+	echo "building test $(DIR)"
 	gcc -o $@ $^ $(FLAGS) -D DEBUG
 
 clean:

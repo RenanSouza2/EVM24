@@ -51,14 +51,14 @@ void test_mem_expand()
 {
     printf("\n\t%s", __func__);
     
-    for(int i=0; i<4; i++)
+    for(uint64_t i=0; i<4; i++)
     {
         evm_mem_t m = byte_vec_init_zero();
         mem_expand(&m, 32 * i);
         assert(m.size == 32 * i);
         byte_vec_free(&m);
 
-        for(int j=1; j<32; j++)
+        for(uint64_t j=1; j<32; j++)
         {
             evm_mem_t m = byte_vec_init_zero();
             mem_expand(&m, 32 * i + j);
