@@ -18,11 +18,26 @@
 
 #endif
 
-#define ERR(FN, CODE)                       \
-    {                                       \
-        uint64_t res = (FN);                \
-        if(res) return (res << 4) | (CODE); \
+#define ERR_CONCAT(RES, CODE) ((res) << 4) | (CODE)
+
+#define ERR(FN, CODE)                           \
+    {                                           \
+        uint64_t res = (FN);                    \
+        if(res) return ERR_CONCAT(res, CODE);   \
     }
+
+#define ERR1(FN)                \
+    {                           \
+        uint64_t res = (FN);    \
+        if(res) return res;     \
+    }
+
+#define TRY(FN)                 \
+    {                           \
+        uint64_t res = (FN);    \
+        if(res)
+
+#define CATCH }
 
 typedef unsigned char byte_t;
 typedef byte_t * byte_p;
@@ -44,15 +59,14 @@ VEC(uint64);
 VEC(byte);
 
 #define DECL_VEC_INIT(TYPE) TYPE##_vec_t TYPE##_vec_init(uint64_t size)
-#define DECL_VEC_FREE(TYPE) void TYPE##_vec_free(TYPE##_vec_p vec)
 
 byte_vec_t byte_vec_init_zero();
 byte_vec_t byte_vec_init_uint64(uint64_t u);
 DECL_VEC_INIT(byte);
 DECL_VEC_INIT(uint64);
 
-DECL_VEC_FREE(byte);
-DECL_VEC_FREE(uint64);
+void byte_vec_free(byte_vec_p b);
+void uint64_vec_free(uint64_vec_p u);
 
 byte_vec_t byte_vec_concat(byte_vec_p b1, byte_vec_p b2);
 bool uint64_vec_has_uint64(uint64_vec_p vec, uint64_t v);

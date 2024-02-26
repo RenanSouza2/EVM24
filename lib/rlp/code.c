@@ -70,6 +70,7 @@ bool rlp_test_immed(evm_rlp_t r, uint64_t type, ...)
     va_start(args, type);
     evm_rlp_t r_exp = rlp_init_immed_variadic(type, &args);
     bool res = rlp_test(r, r_exp);
+    // rlp_free(&r_exp);
     return res;
 }
 
@@ -119,7 +120,6 @@ bool rlp_vec_test(evm_rlp_vec_t r, evm_rlp_vec_t r_exp)
             return false;
         }
 
-    rlp_vec_free(&r_exp);
     return true;
 }
 
@@ -157,8 +157,6 @@ void rlp_free(evm_rlp_p r)
         return;
     
         case LIST:
-        for(uint64_t i=0; i<r->vec.r.size; i++)
-            rlp_free(&r->vec.r.v[i]);
         rlp_vec_free(&r->vec.r);
         return;
     }
@@ -167,6 +165,13 @@ void rlp_free(evm_rlp_p r)
 
 void rlp_vec_free(evm_rlp_vec_p r)
 {
+    if(r->v) free(r->v);
+}
+
+void rlp_vec_free_full(evm_rlp_vec_p r)
+{
+    for(uint64_t i=0; i<r->size; i++)
+        rlp_free(&r->v[i]);
     if(r->v) free(r->v);
 }
 
@@ -219,7 +224,7 @@ byte_vec_t rlp_encode(evm_rlp_p r)
 
 
 
-uint64_t rlp_get_size_b(uint64_p size_size, uint64_p size_bytes, byte_p b, uint64_t size) // TODO test
+uint64_t rlp_get_size_b(uint64_p size_size, uint64_p size_bytes, byte_p b, uint64_t size)
 {
     byte_t b0 = b[0];
     if(b0 < 128) 
@@ -250,16 +255,7 @@ uint64_t rlp_get_size_b(uint64_p size_size, uint64_p size_bytes, byte_p b, uint6
     return 0;
 }
 
-evm_rlp_t rlp_decode_rec_b(byte_p in, uint64_t size_bytes)
-{
-    evm_rlp_t r = rlp_init(BYTE, size_bytes);
-    memcpy(r.vec.b.v, in, size_bytes);
-    return r;
-}
-
-
-
-uint64_t rlp_get_size_l(uint64_p size_size, uint64_p size_list, byte_p b, uint64_t size) // TODO test
+uint64_t rlp_get_size_l(uint64_p size_size, uint64_p size_list, byte_p b, uint64_t size)
 {
     byte_t b0 = b[0];
     if(b0 < 248)
@@ -283,73 +279,113 @@ uint64_t rlp_get_size_l(uint64_p size_size, uint64_p size_list, byte_p b, uint64
     return 0;
 }
 
-uint64_t rlp_decode_rec_l_rec(evm_rlp_p r, byte_p in, uint64_t size, uint64_t count)
+uint64_t rlp_get_size(uint64_p size_rlp, byte_p b, uint64_t size)
 {
-    if(size == 0)
-    {
-        *r = rlp_init(LIST, count);
-        return 0;
-    }
+    if(size == 0) return 1;
 
-    evm_rlp_t r1;
-    uint64_t consumed;
-    ERR(rlp_decode_rec(&r1, &consumed, in, size), 1);
-    assert(consumed <= size);
+    uint64_t size_size, _size_rlp;
+    if(b[0] < 192) ERR(rlp_get_size_b(&size_size, &_size_rlp, b, size), 2)
+    else           ERR(rlp_get_size_l(&size_size, &_size_rlp, b, size), 3)
+    *size_rlp = size_size + _size_rlp;
 
-    evm_rlp_t _r;
-    uint64_t res;
-    if((res = rlp_decode_rec_l_rec(&_r, &in[consumed], size - consumed, count + 1)))
-    {
-        rlp_free(&r1);
-        return (res << 4) | 2;
-    }
-    _r.vec.r.v[count] = r1;
-    
-    *r = _r;
     return 0;
 }
 
-uint64_t rlp_decode_rec_l(evm_rlp_p r, byte_p in, uint64_t size_list)
+uint64_t rlp_get_sizes_rec(uint64_vec_p sizes_r1, byte_p b, uint64_t size_list, uint64_t cnt)
 {
-    return rlp_decode_rec_l_rec(r, in, size_list, 0);
+    if(size_list == 0)
+    {
+        *sizes_r1 = uint64_vec_init(cnt);
+        return 0;
+    }
+
+    uint64_t size_r1;
+    ERR(rlp_get_size(&size_r1, b, size_list), 1);
+    assert(size_r1 <= size_list);
+
+    ERR1(rlp_get_sizes_rec(sizes_r1, &b[size_r1], size_list - size_r1, cnt));
+    sizes_r1->v[cnt] = size_r1;
+    return 0;
+}
+
+uint64_t rlp_get_sizes(uint64_vec_p sizes_r1, byte_p b, uint64_t size_list)
+{
+    uint64_vec_t _sizes_r1;
+    ERR1(rlp_get_sizes_rec(&_sizes_r1, b, size_list, 0))
+
+    *sizes_r1 = _sizes_r1;
+    return 0;
 }
 
 
 
-uint64_t rlp_decode_rec(evm_rlp_p r, uint64_p consumed, byte_p b, uint64_t size)
+evm_rlp_t rlp_decode_rec_b(byte_p in, uint64_t size_bytes)
 {
-    if(size == 0) return 1;
+    evm_rlp_t r = rlp_init(BYTE, size_bytes);
+    memcpy(r.vec.b.v, in, size_bytes);
+    return r;
+}
+
+uint64_t rlp_decode_rec_l(evm_rlp_p r, byte_p b, uint64_t size_list)
+{
+    uint64_vec_t r1_sizes;
+    ERR(rlp_get_sizes(&r1_sizes, b, size_list), 1)
+
+    evm_rlp_vec_t r0_vec = rlp_vec_init(r1_sizes.size);
+    for(uint64_t i=0, ptr=0; i<r1_sizes.size; ptr += r1_sizes.v[i], i++)
+    {
+        evm_rlp_t r1;
+        TRY(rlp_decode_rec(&r1, &b[ptr], r1_sizes.v[i]))
+        {
+            r0_vec.size = i;
+            rlp_vec_free(&r0_vec);
+            uint64_vec_free(&r1_sizes);
+            return ERR_CONCAT(res, 2);
+        }
+        CATCH
+
+        r0_vec.v[i] = r1;
+    }
+
+    
+    uint64_vec_free(&r1_sizes);
+    *r = (evm_rlp_t){LIST, {.r = r0_vec}};
+    return 0;
+}
+
+
+
+uint64_t rlp_decode_rec(evm_rlp_p r, byte_p b, uint64_t size_rlp)
+{
+    if(size_rlp == 0) return 1;
 
     byte_t b0 = b[0];
     if(b0 < 192)
     {
         uint64_t size_size, size_bytes;
-        ERR(rlp_get_size_b(&size_size, &size_bytes, b, size), 2);
+        ERR(rlp_get_size_b(&size_size, &size_bytes, b, size_rlp), 2);
         
         *r = rlp_decode_rec_b(&b[size_size], size_bytes);
-        *consumed = size_size + size_bytes;
         return 0;
     }
 
     uint64_t size_size, size_list;
-    ERR(rlp_get_size_l(&size_size, &size_list, b, size), 3);
+    ERR(rlp_get_size_l(&size_size, &size_list, b, size_rlp), 3);
     ERR(rlp_decode_rec_l(r, &b[size_size], size_list), 4);
     
-    *consumed = size_size + size_list;
     return 0;
 }
 
 uint64_t rlp_decode(evm_rlp_p r, byte_vec_p b)
 {
     evm_rlp_t _r;
-    uint64_t consumed;
+    uint64_t size_list;
 
-    ERR(rlp_decode_rec(&_r, &consumed, b->v, b->size), 1);
-    if(consumed != b->size) 
-    {
-        rlp_free(&_r);
-        return 2;
-    }
+    ERR(rlp_get_size(&size_list, b->v, b->size), 1);
+    assert(size_list <= b->size);
+    if(size_list < b->size) return 2;
+
+    ERR(rlp_decode_rec(&_r, b->v, b->size), 3);
 
     *r = _r;
     return 0;

@@ -220,12 +220,6 @@ uint64_t uint128_to_uint64(uint128_t res)
         return (TYPE##_vec_t){size, v};                 \
     }
 
-#define VEC_FREE(TYPE)                      \
-    void TYPE##_vec_free(TYPE##_vec_p vec)  \
-    {                                       \
-        if(vec->v) free(vec->v);            \
-    }
-
 byte_vec_t byte_vec_init_zero()
 {
     return (byte_vec_t){0, NULL};
@@ -243,8 +237,16 @@ byte_vec_t byte_vec_init_uint64(uint64_t u)
 VEC_INIT(byte);
 VEC_INIT(uint64);
 
-VEC_FREE(byte);
-VEC_FREE(uint64);
+
+void byte_vec_free(byte_vec_p b)
+{
+    if(b->v) free(b->v);
+}
+
+void uint64_vec_free(uint64_vec_p u)
+{
+    if(u->v) free(u->v);
+}
 
 byte_vec_t byte_vec_concat(byte_vec_p b1, byte_vec_p b2) // TODO test
 {
