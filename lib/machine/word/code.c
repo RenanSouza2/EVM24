@@ -16,7 +16,7 @@
 void word_display(evm_word_t w)
 {
     printf("0x");
-    for(int i=V_MAX-1; i>=0; i--)
+    for(uint64_t i=V_MAX-1; i>=0; i--)
         printf(U64PX, w.v[i]);
 }
 
@@ -56,11 +56,11 @@ evm_word_t word_init_uint64(uint64_t num)
 
 evm_word_t word_init_bytes(byte_vec_p b)
 {
-    int size = b->size;
+    uint64_t size = b->size;
     assert(size <= 32);
 
     evm_word_t w = word_init();
-    for(int i=0; i<size; i++)
+    for(uint64_t i=0; i<size; i++)
     {
         byte_t u = bytes_get_byte(b, size-1-i);
         word_set_byte(&w, i, u);
@@ -73,7 +73,7 @@ evm_word_t word_init_bytes(byte_vec_p b)
 
 bool word_is_uint64(evm_word_p w)
 {
-    for(int i=1; i<V_MAX; i++)
+    for(uint64_t i=1; i<V_MAX; i++)
         if(w->v[i])
             return false;
 
@@ -82,14 +82,14 @@ bool word_is_uint64(evm_word_p w)
 
 bool word_eq_bool(evm_word_p w1, evm_word_p w2)
 {
-    for(int i=0; i<V_MAX; i++)
+    for(uint64_t i=0; i<V_MAX; i++)
         if(w1->v[i] != w2->v[i])
             return false;
 
     return true;
 }
 
-void word_add_uint64(evm_word_p w, int i, uint64_t v)
+void word_add_uint64(evm_word_p w, uint64_t i, uint64_t v)
 {
     if(i >= V_MAX) return;
 
@@ -97,13 +97,13 @@ void word_add_uint64(evm_word_p w, int i, uint64_t v)
     if(res < v) word_add_uint64(w, i+1, 1);
 }
 
-byte_t word_get_byte(evm_word_p w, int i)
+byte_t word_get_byte(evm_word_p w, uint64_t i)
 {
     assert(i<32);
     return ((byte_t*)w->v)[i];
 }
 
-void word_set_byte(evm_word_p w, int i, byte_t u)
+void word_set_byte(evm_word_p w, uint64_t i, byte_t u)
 {
     assert(i<32);
     ((byte_t*)w->v)[i] = u;
@@ -114,7 +114,7 @@ void word_set_byte(evm_word_p w, int i, byte_t u)
 evm_word_t word_add(evm_word_p w1, evm_word_p w2)
 {
     evm_word_t w = *w1;
-    for(int i=0; i<V_MAX; i++)
+    for(uint64_t i=0; i<V_MAX; i++)
         word_add_uint64(&w, i, w2->v[i]);
 
     return w;

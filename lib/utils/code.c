@@ -173,15 +173,15 @@ byte_t uint64_get_byte(uint64_t u, uint64_t i)
     return (byte_t)(u >> (i << 3));
 }
 
-uint64_t uint64_set_byte(uint64_t u, int index, byte_t b)
+uint64_t uint64_set_byte(uint64_t u, uint64_t index, byte_t b)
 {
-    int offset = index << 3;
+    uint64_t offset = index << 3;
     return (u & ~((uint64_t)0xff << offset)) | ((uint64_t)b << offset);
 }
 
 uint64_t uint64_get_size(uint64_t u)
 {
-    for(int i=0; i<8; i++, u >>= 8)
+    for(uint64_t i=0; i<8; i++, u >>= 8)
         if(u == 0)
             return i;
 
@@ -191,7 +191,7 @@ uint64_t uint64_get_size(uint64_t u)
 uint64_t uint64_init_byte(byte_p b, uint64_t size)
 {
     uint64_t u = 0;
-    for(int i=0; i<size; i++)
+    for(uint64_t i=0; i<size; i++)
         u = uint64_set_byte(u, i, b[size-1 - i]);
     return u;
 }

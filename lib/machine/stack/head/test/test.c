@@ -37,7 +37,7 @@ void test_stack_evm_push()
     // printf("\n\t\t%s 3", __func__);
     s = stack_init();
     evm_word_t w = WORD(0, 0, 0, 0);
-    for(int i=0; i<1024; i++)
+    for(uint64_t i=0; i<1024; i++)
         assert_64(stack_push(&s, &w), 0);
     assert_64(stack_push(&s, &w), 1);
     stack_free(&s);

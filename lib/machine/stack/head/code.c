@@ -19,7 +19,7 @@ void stack_display(evm_stack_t s)
     printf("\n");
 }
 
-evm_stack_t stack_init_immed_variadic(int n, va_list *args)
+evm_stack_t stack_init_immed_variadic(uint64_t n, va_list *args)
 {
     evm_stack_l_p sl = stack_l_init_immed_variadic(n, args);
     return (evm_stack_t){sl, n};
@@ -27,14 +27,14 @@ evm_stack_t stack_init_immed_variadic(int n, va_list *args)
 
 
 
-bool stack_test_immed(evm_stack_t s, int n, ...)
+bool stack_test_immed(evm_stack_t s, uint64_t n, ...)
 {
     va_list args;
     va_start(args, n);
     return stack_test_variadic(s, n, &args);
 }
 
-bool stack_test_variadic(evm_stack_t s, int n, va_list *args)
+bool stack_test_variadic(evm_stack_t s, uint64_t n, va_list *args)
 {
     if(!uint64_test(s.count, n))
     {
@@ -53,7 +53,7 @@ bool stack_test_variadic(evm_stack_t s, int n, va_list *args)
 
 
 
-int stack_push_immed(evm_stack_p s, evm_word_t w)
+uint64_t stack_push_immed(evm_stack_p s, evm_word_t w)
 {
     return stack_push(s, &w);
 }
@@ -72,7 +72,7 @@ void stack_free(evm_stack_p s)
     stack_l_free(s->sl);
 }
 
-int stack_push(evm_stack_p s, evm_word_p w)
+uint64_t stack_push(evm_stack_p s, evm_word_p w)
 {
     if(s->count == 1024) return 1;
 
@@ -81,7 +81,7 @@ int stack_push(evm_stack_p s, evm_word_p w)
     return 0;
 }
 
-int stack_pop(evm_word_p w, evm_stack_p s)
+uint64_t stack_pop(evm_word_p w, evm_stack_p s)
 {
     if(s->count == 0) return 1;
 

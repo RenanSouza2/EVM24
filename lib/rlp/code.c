@@ -201,7 +201,7 @@ byte_vec_t rlp_encode(evm_rlp_p r)
         case LIST:;
         evm_rlp_vec_t _r = r->vec.r;
         b = byte_vec_init_zero();
-        for(int i=0; i<_r.size; i++)
+        for(uint64_t i=0; i<_r.size; i++)
         {
             byte_vec_t _b = rlp_encode(&_r.v[i]);
             b = byte_vec_concat(&b, &_b);
