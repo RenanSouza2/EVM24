@@ -18,26 +18,21 @@
 
 #endif
 
-#define ERR_CONCAT(RES, CODE) ((res) << 4) | (CODE)
-
-#define ERR(FN, CODE)                           \
-    {                                           \
-        uint64_t res = (FN);                    \
-        if(res) return ERR_CONCAT(res, CODE);   \
-    }
-
-#define ERR1(FN)                \
-    {                           \
-        uint64_t res = (FN);    \
-        if(res) return res;     \
-    }
-
 #define TRY(FN)                 \
     {                           \
         uint64_t res = (FN);    \
         if(res)
 
 #define CATCH }
+
+#define ERR_CONCAT(RES, CODE) ((res) << 4) | (CODE)
+
+#define ERR(FN, CODE)               \
+    TRY(FN)                         \
+        return (CODE)               \
+            ? ERR_CONCAT(res, CODE) \
+            : res;                  \
+    CATCH
 
 typedef unsigned char byte_t;
 typedef byte_t * byte_p;

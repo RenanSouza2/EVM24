@@ -70,7 +70,6 @@ bool rlp_test_immed(evm_rlp_t r, uint64_t type, ...)
     va_start(args, type);
     evm_rlp_t r_exp = rlp_init_immed_variadic(type, &args);
     bool res = rlp_test(r, r_exp);
-    // rlp_free(&r_exp);
     return res;
 }
 
@@ -107,7 +106,7 @@ bool rlp_test(evm_rlp_t r, evm_rlp_t r_exp)
 
 bool rlp_vec_test(evm_rlp_vec_t r, evm_rlp_vec_t r_exp)
 {
-    if(!byte_test(r.size, r_exp.size))
+    if(!uint64_test(r.size, r_exp.size))
     {
         printf("\n\tRLP VECTOR ASSERTION ERROR | SIZE");
         return false;
@@ -120,6 +119,7 @@ bool rlp_vec_test(evm_rlp_vec_t r, evm_rlp_vec_t r_exp)
             return false;
         }
 
+    rlp_vec_free(&r_exp);
     return true;
 }
 
@@ -148,21 +148,6 @@ evm_rlp_vec_t rlp_vec_init(uint64_t size)
 
 
 
-void rlp_free(evm_rlp_p r)
-{
-    switch (r->type)
-    {
-        case BYTE:
-        byte_vec_free(&r->vec.b);
-        return;
-    
-        case LIST:
-        rlp_vec_free(&r->vec.r);
-        return;
-    }
-    assert(false);
-}
-
 void rlp_vec_free(evm_rlp_vec_p r)
 {
     if(r->v) free(r->v);
@@ -173,6 +158,21 @@ void rlp_vec_free_full(evm_rlp_vec_p r)
     for(uint64_t i=0; i<r->size; i++)
         rlp_free(&r->v[i]);
     if(r->v) free(r->v);
+}
+
+void rlp_free(evm_rlp_p r)
+{
+    switch (r->type)
+    {
+        case BYTE:
+        byte_vec_free(&r->vec.b);
+        return;
+    
+        case LIST:
+        rlp_vec_free_full(&r->vec.r);
+        return;
+    }
+    assert(false);
 }
 
 
@@ -291,11 +291,11 @@ uint64_t rlp_get_size(uint64_p size_rlp, byte_p b, uint64_t size)
     return 0;
 }
 
-uint64_t rlp_get_sizes_rec(uint64_vec_p sizes_r1, byte_p b, uint64_t size_list, uint64_t cnt)
+uint64_t rlp_get_sizes_rec(uint64_vec_p r1_sizes, byte_p b, uint64_t size_list, uint64_t cnt)
 {
     if(size_list == 0)
     {
-        *sizes_r1 = uint64_vec_init(cnt);
+        *r1_sizes = uint64_vec_init(cnt);
         return 0;
     }
 
@@ -303,15 +303,16 @@ uint64_t rlp_get_sizes_rec(uint64_vec_p sizes_r1, byte_p b, uint64_t size_list, 
     ERR(rlp_get_size(&size_r1, b, size_list), 1);
     assert(size_r1 <= size_list);
 
-    ERR1(rlp_get_sizes_rec(sizes_r1, &b[size_r1], size_list - size_r1, cnt));
-    sizes_r1->v[cnt] = size_r1;
+    ERR(rlp_get_sizes_rec(r1_sizes, &b[size_r1], size_list - size_r1, cnt + 1), 0);
+    r1_sizes->v[cnt] = size_r1;
+    
     return 0;
 }
 
 uint64_t rlp_get_sizes(uint64_vec_p sizes_r1, byte_p b, uint64_t size_list)
 {
     uint64_vec_t _sizes_r1;
-    ERR1(rlp_get_sizes_rec(&_sizes_r1, b, size_list, 0))
+    ERR(rlp_get_sizes_rec(&_sizes_r1, b, size_list, 0), 0)
 
     *sizes_r1 = _sizes_r1;
     return 0;
@@ -319,10 +320,10 @@ uint64_t rlp_get_sizes(uint64_vec_p sizes_r1, byte_p b, uint64_t size_list)
 
 
 
-evm_rlp_t rlp_decode_rec_b(byte_p in, uint64_t size_bytes)
+evm_rlp_t rlp_decode_rec_b(byte_p b, uint64_t size_bytes)
 {
     evm_rlp_t r = rlp_init(BYTE, size_bytes);
-    memcpy(r.vec.b.v, in, size_bytes);
+    memcpy(r.vec.b.v, b, size_bytes);
     return r;
 }
 
@@ -338,7 +339,7 @@ uint64_t rlp_decode_rec_l(evm_rlp_p r, byte_p b, uint64_t size_list)
         TRY(rlp_decode_rec(&r1, &b[ptr], r1_sizes.v[i]))
         {
             r0_vec.size = i;
-            rlp_vec_free(&r0_vec);
+            rlp_vec_free_full(&r0_vec);
             uint64_vec_free(&r1_sizes);
             return ERR_CONCAT(res, 2);
         }
@@ -347,7 +348,6 @@ uint64_t rlp_decode_rec_l(evm_rlp_p r, byte_p b, uint64_t size_list)
         r0_vec.v[i] = r1;
     }
 
-    
     uint64_vec_free(&r1_sizes);
     *r = (evm_rlp_t){LIST, {.r = r0_vec}};
     return 0;
