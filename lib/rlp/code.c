@@ -224,6 +224,30 @@ byte_vec_t rlp_encode(evm_rlp_p r)
 
 
 
+uint64_t rlp_get_size_1(uint64_p head_size, uint64_p body_size, uint64_t _body_size, uint64_t size)
+{
+    uint64_t _head_size = 1;
+    if(_head_size + _body_size > size) return 1;
+
+    *head_size = _head_size;
+    *body_size = _body_size;
+    return 0;
+}
+
+uint64_t rlp_get_size_2(uint64_p head_size, uint64_p body_size, byte_p b, uint64_t _size_size, uint64_t size)
+{
+    uint64_t _head_size = 1 + _size_size;
+    if(_head_size > size) return 1;
+    
+    uint64_t _body_size = uint64_init_byte(&b[1], _size_size);
+    if(_body_size < 56) return 2;
+    if(_head_size + _body_size > size) return 3;
+
+    *head_size = _head_size;
+    *body_size = _body_size;
+    return 0;
+}
+
 uint64_t rlp_get_size(uint64_p head_size, uint64_p body_size, byte_p b, uint64_t size)
 {
     if(size == 0) return 1;
@@ -236,53 +260,25 @@ uint64_t rlp_get_size(uint64_p head_size, uint64_p body_size, byte_p b, uint64_t
         return 0;
     }
 
-    if(b0 < 184)
+    if(b0 < 184) 
     {
-        uint64_t _head_size = 1;
-        uint64_t _body_size = b0 - 128;
-        if(_head_size + _body_size > size) return 2;
-
-        *head_size = _head_size;
-        *body_size = _body_size;
+        ERR(rlp_get_size_1(head_size, body_size, b0 - 128, size), 2)
         return 0;
     }
     
     if(b0 < 192)
     {
-        uint64_t _size_size = b0 - 183;
-        uint64_t _head_size = 1 + _size_size;
-        if(_head_size > size) return 3;
-        
-        uint64_t _body_size = uint64_init_byte(&b[1], _size_size);
-        if(_body_size < 56) return 4;
-        if(_head_size + _body_size > size) return 5;
-
-        *head_size = _head_size;
-        *body_size = _body_size;
+        ERR(rlp_get_size_2(head_size, body_size, b, b0 - 183, size), 3);
         return 0;
     }
     
     if(b0 < 248)
     {
-        uint64_t _head_size = 1;
-        uint64_t _body_size = b0 - 192;
-        if(_head_size + _body_size > size) return 6;
-
-        *head_size = _head_size;
-        *body_size = _body_size;
+        ERR(rlp_get_size_1(head_size, body_size, b0 - 192, size), 4);
         return 0;
     }
 
-    uint64_t _size_size = b0 - 247;
-    uint64_t _head_size = 1 + _size_size;
-    if(_head_size > size) return 7;
-
-    uint64_t _body_size = uint64_init_byte(&b[1], _size_size);
-    if(_body_size < 56) return 8;
-    if(_head_size + _body_size > size) return 9;
-
-    *head_size = _head_size;
-    *body_size = _body_size;
+    ERR(rlp_get_size_2(head_size, body_size, b, b0 - 247, size), 5);
     return 0;
 }
 
