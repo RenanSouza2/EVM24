@@ -19,7 +19,6 @@ evm_rlp_t rlp_init_immed(uint64_t type, ...)
     va_list args;
     va_start(args, type);
     return rlp_init_immed_variadic(type, &args);
-
 }
 
 evm_rlp_t rlp_init_immed_variadic(uint64_t type, va_list *args)
@@ -58,7 +57,6 @@ byte_vec_t rlp_encode_immed(uint64_t type, ...)
 uint64_t rlp_decode_immed(evm_rlp_p r, char str[])
 {
     byte_vec_t b = byte_vec_init_immed(str);
-
     uint64_t res = rlp_decode(r, &b);
     byte_vec_free(&b);
     return res;
@@ -71,8 +69,7 @@ bool rlp_test_immed(evm_rlp_t r, uint64_t type, ...)
     va_list args;
     va_start(args, type);
     evm_rlp_t r_exp = rlp_init_immed_variadic(type, &args);
-    bool res = rlp_test(r, r_exp);
-    return res;
+    return rlp_test(r, r_exp);;
 }
 
 bool rlp_test(evm_rlp_t r, evm_rlp_t r_exp)
