@@ -57,8 +57,8 @@ VEC(byte);
 
 byte_vec_t byte_vec_init_zero();
 byte_vec_t byte_vec_init_uint64(uint64_t u);
-DECL_VEC_INIT(byte);
-DECL_VEC_INIT(uint64);
+byte_vec_t byte_vec_init(uint64_t size);
+uint64_vec_t uint64_vec_init(uint64_t size);
 
 void byte_vec_free(byte_vec_p b);
 void uint64_vec_free(uint64_vec_p u);

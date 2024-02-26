@@ -127,16 +127,6 @@ bool rlp_vec_test(evm_rlp_vec_t r, evm_rlp_vec_t r_exp)
 
 
 
-evm_rlp_t rlp_init(uint64_t type, uint64_t size)
-{
-    switch (type)
-    {
-        case BYTE: return (evm_rlp_t){type, {.b = byte_vec_init(size)}};
-        case LIST: return (evm_rlp_t){type, {.r = rlp_vec_init(size)}};
-    }
-    assert(false)
-}
-
 evm_rlp_vec_t rlp_vec_init(uint64_t size)
 {
     if(size == 0) return (evm_rlp_vec_t){0, NULL};
@@ -316,9 +306,10 @@ uint64_t rlp_get_sizes(uint64_vec_p r1_sizes, byte_p b, uint64_t list_size)
 
 evm_rlp_t rlp_decode_rec_b(byte_p b, uint64_t body_size)
 {
-    evm_rlp_t r = rlp_init(BYTE, body_size);
-    memcpy(r.vec.b.v, b, body_size);
-    return r;
+    byte_vec_t _b = byte_vec_init(body_size);
+    memcpy(_b.v, b, body_size);
+
+    return (evm_rlp_t){BYTE, {.b = _b}};
 }
 
 uint64_t rlp_decode_rec_l(evm_rlp_p r, byte_p b, uint64_t list_size)

@@ -203,15 +203,6 @@ uint64_t uint128_to_uint64(uint128_t res)
 
 
 
-#define VEC_INIT(TYPE)                                  \
-    TYPE##_vec_t TYPE##_vec_init(uint64_t size)         \
-    {                                                   \
-        if(size == 0) return (TYPE##_vec_t){0, NULL};   \
-        TYPE##_p v = calloc(size, sizeof(TYPE##_t));    \
-        assert(v);                                      \
-        return (TYPE##_vec_t){size, v};                 \
-    }
-
 byte_vec_t byte_vec_init_zero()
 {
     return (byte_vec_t){0, NULL};
@@ -226,8 +217,24 @@ byte_vec_t byte_vec_init_uint64(uint64_t u)
     return b;
 }
 
-VEC_INIT(byte);
-VEC_INIT(uint64);
+byte_vec_t byte_vec_init(uint64_t size)
+{
+    if(size == 0) return (byte_vec_t){0, NULL};
+    byte_p v = calloc(size, sizeof(byte_t));
+    assert(v);
+
+    return (byte_vec_t){size, v};
+}
+
+uint64_vec_t uint64_vec_init(uint64_t size)
+{
+    if(size == 0) return (uint64_vec_t){0, NULL};
+    uint64_p v = calloc(size, sizeof(uint64_t));
+    assert(v);
+
+    return (uint64_vec_t){size, v};
+}
+
 
 
 void byte_vec_free(byte_vec_p b)
