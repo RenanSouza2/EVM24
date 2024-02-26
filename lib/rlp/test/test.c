@@ -51,14 +51,13 @@ void test_rlp_encode(bool show)
     byte_vec_free(&b);
     
     if(show) printf("\n\t\t%s  9\t\t", __func__);
-    b = rlp_encode_immed(BYTE, 
-      "0x000102030405060708090a0b0c0d0e0f"
+    b = rlp_encode_immed(BYTE, "0x"
+        "000102030405060708090a0b0c0d0e0f"
         "101112131415161718191a1b1c1d1e1f"
         "202122232425262728292a2b2c2d2e2f"
         "30313233343536"
     );
-    assert(byte_vec_test_immed(b, 
-        "0xb7" 
+    assert(byte_vec_test_immed(b, "0xb7" 
         "000102030405060708090a0b0c0d0e0f"
         "101112131415161718191a1b1c1d1e1f"
         "202122232425262728292a2b2c2d2e2f"
@@ -67,14 +66,13 @@ void test_rlp_encode(bool show)
     byte_vec_free(&b);
     
     if(show) printf("\n\t\t%s 10\t\t", __func__);
-    b = rlp_encode_immed(BYTE, 
-      "0x000102030405060708090a0b0c0d0e0f"
+    b = rlp_encode_immed(BYTE, "0x"
+        "000102030405060708090a0b0c0d0e0f"
         "101112131415161718191a1b1c1d1e1f"
         "202122232425262728292a2b2c2d2e2f"
         "3031323334353637"
     );
-    assert(byte_vec_test_immed(b, 
-        "0xb838" 
+    assert(byte_vec_test_immed(b, "0xb838" 
         "000102030405060708090a0b0c0d0e0f"
         "101112131415161718191a1b1c1d1e1f"
         "202122232425262728292a2b2c2d2e2f"
@@ -83,8 +81,8 @@ void test_rlp_encode(bool show)
     byte_vec_free(&b);
 
     if(show) printf("\n\t\t%s 11\t\t", __func__);
-    b = rlp_encode_immed(BYTE, 
-      "0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+    b = rlp_encode_immed(BYTE, "0x"
+        "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
         "202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f"
         "404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f"
         "606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f"
@@ -93,8 +91,7 @@ void test_rlp_encode(bool show)
         "c0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedf"
         "e0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfe"
     );
-    assert(byte_vec_test_immed(b, 
-        "0xb8ff"
+    assert(byte_vec_test_immed(b, "0xb8ff"
         "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
         "202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f"
         "404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f"
@@ -107,8 +104,8 @@ void test_rlp_encode(bool show)
     byte_vec_free(&b);
 
     if(show) printf("\n\t\t%s 12\t\t", __func__);
-    b = rlp_encode_immed(BYTE, 
-      "0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+    b = rlp_encode_immed(BYTE, "0x"
+        "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
         "202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f"
         "404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f"
         "606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f"
@@ -117,8 +114,7 @@ void test_rlp_encode(bool show)
         "c0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedf"
         "e0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff"
     );
-    assert(byte_vec_test_immed(b, 
-        "0xb90100"
+    assert(byte_vec_test_immed(b, "0xb90100"
         "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
         "202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f"
         "404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f"
@@ -161,14 +157,13 @@ void test_rlp_encode(bool show)
     byte_vec_free(&b);
 
     if(show) printf("\n\t\t%s 19\t\t", __func__);
-    b = rlp_encode_immed(LIST, 1, BYTE, 
-      "0x000102030405060708090a0b0c0d0e0f"
+    b = rlp_encode_immed(LIST, 1, BYTE, "0x"
+        "000102030405060708090a0b0c0d0e0f"
         "101112131415161718191a1b1c1d1e1f"
         "202122232425262728292a2b2c2d2e2f"
         "303132333435"
     );
-    assert(byte_vec_test_immed(b,
-        "0xf7b6"
+    assert(byte_vec_test_immed(b, "0xf7b6"
         "000102030405060708090a0b0c0d0e0f"
         "101112131415161718191a1b1c1d1e1f"
         "202122232425262728292a2b2c2d2e2f"
@@ -177,14 +172,13 @@ void test_rlp_encode(bool show)
     byte_vec_free(&b);
     
     if(show) printf("\n\t\t%s 20\t\t", __func__);
-    b = rlp_encode_immed(LIST, 1, BYTE, 
-      "0x000102030405060708090a0b0c0d0e0f"
+    b = rlp_encode_immed(LIST, 1, BYTE, "0x"
+        "000102030405060708090a0b0c0d0e0f"
         "101112131415161718191a1b1c1d1e1f"
         "202122232425262728292a2b2c2d2e2f"
         "30313233343536"
     );
-    assert(byte_vec_test_immed(b,
-        "0xf838b7"
+    assert(byte_vec_test_immed(b, "0xf838b7"
         "000102030405060708090a0b0c0d0e0f"
         "101112131415161718191a1b1c1d1e1f"
         "202122232425262728292a2b2c2d2e2f"
@@ -193,8 +187,8 @@ void test_rlp_encode(bool show)
     byte_vec_free(&b);
     
     if(show) printf("\n\t\t%s 21\t\t", __func__);
-    b = rlp_encode_immed(LIST, 1, BYTE, 
-      "0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+    b = rlp_encode_immed(LIST, 1, BYTE, "0x"
+        "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
         "202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f"
         "404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f"
         "606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f"
@@ -203,8 +197,7 @@ void test_rlp_encode(bool show)
         "c0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedf"
         "e0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfc"
     );
-    assert(byte_vec_test_immed(b,
-        "0xf8ffb8fd"
+    assert(byte_vec_test_immed(b, "0xf8ffb8fd"
         "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
         "202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f"
         "404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f"
@@ -217,8 +210,8 @@ void test_rlp_encode(bool show)
     byte_vec_free(&b);
 
     if(show) printf("\n\t\t%s 22\t\t", __func__);
-    b = rlp_encode_immed(LIST, 1, BYTE, 
-      "0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+    b = rlp_encode_immed(LIST, 1, BYTE, "0x"
+        "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
         "202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f"
         "404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f"
         "606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f"
@@ -227,8 +220,7 @@ void test_rlp_encode(bool show)
         "c0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedf"
         "e0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfd"
     );
-    assert(byte_vec_test_immed(b,
-        "0xf90100b8fe"
+    assert(byte_vec_test_immed(b, "0xf90100b8fe"
         "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
         "202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f"
         "404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f"
@@ -303,8 +295,8 @@ void test_rlp_decode(bool show)
         "202122232425262728292a2b2c2d2e2f"
         "30313233343536"
     ), 0);
-    assert(rlp_test_immed(r, BYTE, 
-      "0x000102030405060708090a0b0c0d0e0f"
+    assert(rlp_test_immed(r, BYTE, "0x"
+        "000102030405060708090a0b0c0d0e0f"
         "101112131415161718191a1b1c1d1e1f"
         "202122232425262728292a2b2c2d2e2f"
         "30313233343536"
@@ -319,8 +311,8 @@ void test_rlp_decode(bool show)
         "202122232425262728292a2b2c2d2e2f"
         "3031323334353637"
     ), 0);
-    assert(rlp_test_immed(r, BYTE, 
-      "0x000102030405060708090a0b0c0d0e0f"
+    assert(rlp_test_immed(r, BYTE, "0x"
+        "000102030405060708090a0b0c0d0e0f"
         "101112131415161718191a1b1c1d1e1f"
         "202122232425262728292a2b2c2d2e2f"
         "3031323334353637"
@@ -339,8 +331,8 @@ void test_rlp_decode(bool show)
         "c0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedf"
         "e0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfe"
     ), 0);
-    assert(rlp_test_immed(r, BYTE, 
-      "0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+    assert(rlp_test_immed(r, BYTE, "0x"
+        "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
         "202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f"
         "404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f"
         "606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f"
@@ -363,8 +355,8 @@ void test_rlp_decode(bool show)
         "c0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedf"
         "e0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff"
     ), 0);
-    assert(rlp_test_immed(r, BYTE, 
-      "0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+    assert(rlp_test_immed(r, BYTE, "0x"
+        "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
         "202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f"
         "404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f"
         "606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f"
@@ -419,8 +411,8 @@ void test_rlp_decode(bool show)
         "202122232425262728292a2b2c2d2e2f"
         "303132333435"
     ), 0);
-    assert(rlp_test_immed(r, LIST, 1, BYTE, 
-      "0x000102030405060708090a0b0c0d0e0f"
+    assert(rlp_test_immed(r, LIST, 1, BYTE, "0x"
+        "000102030405060708090a0b0c0d0e0f"
         "101112131415161718191a1b1c1d1e1f"
         "202122232425262728292a2b2c2d2e2f"
         "303132333435"
@@ -435,8 +427,8 @@ void test_rlp_decode(bool show)
         "202122232425262728292a2b2c2d2e2f"
         "30313233343536"
     ), 0);
-    assert(rlp_test_immed(r, LIST, 1, BYTE, 
-      "0x000102030405060708090a0b0c0d0e0f"
+    assert(rlp_test_immed(r, LIST, 1, BYTE, "0x"
+        "000102030405060708090a0b0c0d0e0f"
         "101112131415161718191a1b1c1d1e1f"
         "202122232425262728292a2b2c2d2e2f"
         "30313233343536"
@@ -455,8 +447,8 @@ void test_rlp_decode(bool show)
         "c0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedf"
         "e0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfc"
     ), 0);
-    assert(rlp_test_immed(r, LIST, 1, BYTE, 
-      "0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+    assert(rlp_test_immed(r, LIST, 1, BYTE, "0x"
+        "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
         "202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f"
         "404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f"
         "606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f"
@@ -479,8 +471,8 @@ void test_rlp_decode(bool show)
         "c0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedf"
         "e0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfd"
     ), 0);
-    assert(rlp_test_immed(r, LIST, 1, BYTE, 
-      "0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+    assert(rlp_test_immed(r, LIST, 1, BYTE, "0x"
+        "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
         "202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f"
         "404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f"
         "606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f"
@@ -554,8 +546,8 @@ void test_rlp()
 {
     printf("\n%s\t\t", __func__);
 
-    test_rlp_encode(false);
-    test_rlp_decode(true);
+    test_rlp_encode(true);
+    test_rlp_decode(false);
 
     assert(clu_mem_empty());
 }
