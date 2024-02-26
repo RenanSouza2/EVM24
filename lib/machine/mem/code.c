@@ -49,7 +49,7 @@ bool mem_test_immed(evm_mem_t m, uint64_t n, ...)
 
 bool mem_test_variadic(evm_mem_t m, uint64_t n, va_list *args)
 {
-    if(!int_test(m.size, n << 5))
+    if(!uint64_test(m.size, n << 5))
     {
         printf("\n\tMEM ASSERTTION ERROR | LENGTH");
         return false;

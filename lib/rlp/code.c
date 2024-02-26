@@ -94,7 +94,7 @@ bool rlp_test(evm_rlp_t r, evm_rlp_t r_exp)
         case LIST:
         if(!rlp_vec_test(r.vec.r, r_exp.vec.r))
         {
-            printf("\n\tRLP ASSERTION ERROR | BYTE VEC");
+            printf("\n\tRLP ASSERTION ERROR | LIST VEC");
             return false;
         }
         return true;
@@ -224,119 +224,123 @@ byte_vec_t rlp_encode(evm_rlp_p r)
 
 
 
-uint64_t rlp_get_size_b(uint64_p size_size, uint64_p size_bytes, byte_p b, uint64_t size)
+uint64_t rlp_get_size(uint64_p head_size, uint64_p body_size, byte_p b, uint64_t size)
 {
+    if(size == 0) return 1;
+
     byte_t b0 = b[0];
     if(b0 < 128) 
     {
-        *size_size = 0;
-        *size_bytes = 1;
+        *head_size = 0;
+        *body_size = 1;
         return 0;
     }
 
     if(b0 < 184)
     {
-        if(b0 - 127 > size) return 1;
+        uint64_t _head_size = 1;
+        uint64_t _body_size = b0 - 128;
+        if(_head_size + _body_size > size) return 2;
 
-        *size_size = 1;
-        *size_bytes = b0 - 128;
+        *head_size = _head_size;
+        *body_size = _body_size;
         return 0;
     }
-
-    uint64_t size_1 = b0 - 183;
-    if(size_1 + 1 > size) return 2;
     
-    uint64_t _size_bytes = uint64_init_byte(size_1, &b[1]);
-    if(_size_bytes < 56) return 3;
-    if(1 + size_1 + _size_bytes > size) return 4;
+    if(b0 < 192)
+    {
+        uint64_t _size_size = b0 - 183;
+        uint64_t _head_size = 1 + _size_size;
+        if(_head_size > size) return 3;
+        
+        uint64_t _body_size = uint64_init_byte(&b[1], _size_size);
+        if(_body_size < 56) return 4;
+        if(_head_size + _body_size > size) return 5;
 
-    *size_size = 1 + size_1;
-    *size_bytes = _size_bytes;
-    return 0;
-}
-
-uint64_t rlp_get_size_l(uint64_p size_size, uint64_p size_list, byte_p b, uint64_t size)
-{
-    byte_t b0 = b[0];
+        *head_size = _head_size;
+        *body_size = _body_size;
+        return 0;
+    }
+    
     if(b0 < 248)
     {
-        if(b0 - 191 > size) return 1;
+        uint64_t _head_size = 1;
+        uint64_t _body_size = b0 - 192;
+        if(_head_size + _body_size > size) return 6;
 
-        *size_size = 1;
-        *size_list = b0 - 192;
+        *head_size = _head_size;
+        *body_size = _body_size;
         return 0;
     }
 
-    uint64_t size_1 = b0 - 247;
-    if(size_1 + 1 > size) return 2;
+    uint64_t _size_size = b0 - 247;
+    uint64_t _head_size = 1 + _size_size;
+    if(_head_size > size) return 7;
 
-    uint64_t _size_list = uint64_init_byte(size_1, &b[1]);
-    if(_size_list < 56) return 3;
-    if(1 + size_1 + _size_list > size) return 4;
+    uint64_t _body_size = uint64_init_byte(&b[1], _size_size);
+    if(_body_size < 56) return 8;
+    if(_head_size + _body_size > size) return 9;
 
-    *size_size = 1 + size_1;
-    *size_list = _size_list;
+    *head_size = _head_size;
+    *body_size = _body_size;
     return 0;
 }
 
-uint64_t rlp_get_size(uint64_p size_rlp, byte_p b, uint64_t size)
+uint64_t rlp_get_sizes_rec(uint64_vec_p r1_sizes, byte_p b, uint64_t list_size, uint64_t cnt)
 {
-    if(size == 0) return 1;
-
-    uint64_t size_size, _size_rlp;
-    if(b[0] < 192) ERR(rlp_get_size_b(&size_size, &_size_rlp, b, size), 2)
-    else           ERR(rlp_get_size_l(&size_size, &_size_rlp, b, size), 3)
-    *size_rlp = size_size + _size_rlp;
-
-    return 0;
-}
-
-uint64_t rlp_get_sizes_rec(uint64_vec_p r1_sizes, byte_p b, uint64_t size_list, uint64_t cnt)
-{
-    if(size_list == 0)
+    if(list_size == 0)
     {
-        *r1_sizes = uint64_vec_init(cnt);
+        *r1_sizes = uint64_vec_init(cnt << 1);
         return 0;
     }
 
-    uint64_t size_r1;
-    ERR(rlp_get_size(&size_r1, b, size_list), 1);
-    assert(size_r1 <= size_list);
+    uint64_t head_size, body_size;
+    ERR(rlp_get_size(&head_size, &body_size, b, list_size), 1);
 
-    ERR(rlp_get_sizes_rec(r1_sizes, &b[size_r1], size_list - size_r1, cnt + 1), 0);
-    r1_sizes->v[cnt] = size_r1;
-    
+    uint64_t r1_size = head_size + body_size;
+    assert(r1_size <= list_size);
+    ERR(rlp_get_sizes_rec(r1_sizes, &b[r1_size], list_size - r1_size, cnt + 1), 0);
+
+    uint64_t index = cnt << 1;
+    r1_sizes->v[index    ] = head_size;
+    r1_sizes->v[index + 1] = body_size;
     return 0;
 }
 
-uint64_t rlp_get_sizes(uint64_vec_p sizes_r1, byte_p b, uint64_t size_list)
+uint64_t rlp_get_sizes(uint64_vec_p r1_sizes, byte_p b, uint64_t list_size)
 {
-    uint64_vec_t _sizes_r1;
-    ERR(rlp_get_sizes_rec(&_sizes_r1, b, size_list, 0), 0)
+    uint64_vec_t _r1_sizes;
+    ERR(rlp_get_sizes_rec(&_r1_sizes, b, list_size, 0), 0)
 
-    *sizes_r1 = _sizes_r1;
+    *r1_sizes = _r1_sizes;
     return 0;
 }
 
 
 
-evm_rlp_t rlp_decode_rec_b(byte_p b, uint64_t size_bytes)
+evm_rlp_t rlp_decode_rec_b(byte_p b, uint64_t body_size)
 {
-    evm_rlp_t r = rlp_init(BYTE, size_bytes);
-    memcpy(r.vec.b.v, b, size_bytes);
+    evm_rlp_t r = rlp_init(BYTE, body_size);
+    memcpy(r.vec.b.v, b, body_size);
     return r;
 }
 
-uint64_t rlp_decode_rec_l(evm_rlp_p r, byte_p b, uint64_t size_list)
+uint64_t rlp_decode_rec_l(evm_rlp_p r, byte_p b, uint64_t list_size)
 {
     uint64_vec_t r1_sizes;
-    ERR(rlp_get_sizes(&r1_sizes, b, size_list), 1)
+    ERR(rlp_get_sizes(&r1_sizes, b, list_size), 1)
 
-    evm_rlp_vec_t r0_vec = rlp_vec_init(r1_sizes.size);
-    for(uint64_t i=0, ptr=0; i<r1_sizes.size; ptr += r1_sizes.v[i], i++)
+    uint64_t r_vec_size = r1_sizes.size >> 1;
+    evm_rlp_vec_t r0_vec = rlp_vec_init(r_vec_size);
+    for(uint64_t i=0, ptr=0; i<r_vec_size; i++)
     {
+        uint64_t index, head_size, body_size;
+        index = i << 1;
+        head_size = r1_sizes.v[index];
+        body_size = r1_sizes.v[index + 1];
+
         evm_rlp_t r1;
-        TRY(rlp_decode_rec(&r1, &b[ptr], r1_sizes.v[i]))
+        TRY(rlp_decode_rec(&r1, &b[ptr], head_size, body_size))
         {
             r0_vec.size = i;
             rlp_vec_free_full(&r0_vec);
@@ -346,6 +350,7 @@ uint64_t rlp_decode_rec_l(evm_rlp_p r, byte_p b, uint64_t size_list)
         CATCH
 
         r0_vec.v[i] = r1;
+        ptr += head_size + body_size;
     }
 
     uint64_vec_free(&r1_sizes);
@@ -355,37 +360,30 @@ uint64_t rlp_decode_rec_l(evm_rlp_p r, byte_p b, uint64_t size_list)
 
 
 
-uint64_t rlp_decode_rec(evm_rlp_p r, byte_p b, uint64_t size_rlp)
+uint64_t rlp_decode_rec(evm_rlp_p r, byte_p b, uint64_t head_size, uint64_t body_size)
 {
-    if(size_rlp == 0) return 1;
-
     byte_t b0 = b[0];
     if(b0 < 192)
     {
-        uint64_t size_size, size_bytes;
-        ERR(rlp_get_size_b(&size_size, &size_bytes, b, size_rlp), 2);
-        
-        *r = rlp_decode_rec_b(&b[size_size], size_bytes);
+        *r = rlp_decode_rec_b(&b[head_size], body_size);
         return 0;
     }
 
-    uint64_t size_size, size_list;
-    ERR(rlp_get_size_l(&size_size, &size_list, b, size_rlp), 3);
-    ERR(rlp_decode_rec_l(r, &b[size_size], size_list), 4);
-    
+    ERR(rlp_decode_rec_l(r, &b[head_size], body_size), 1);
     return 0;
 }
 
 uint64_t rlp_decode(evm_rlp_p r, byte_vec_p b)
 {
+    uint64_t head_size, body_size;
+    ERR(rlp_get_size(&head_size, &body_size, b->v, b->size), 1);
+
+    uint64_t rlp_size = head_size + body_size;
+    assert(rlp_size <= b->size);
+    if(rlp_size < b->size) return 2;
+
     evm_rlp_t _r;
-    uint64_t size_list;
-
-    ERR(rlp_get_size(&size_list, b->v, b->size), 1);
-    assert(size_list <= b->size);
-    if(size_list < b->size) return 2;
-
-    ERR(rlp_decode_rec(&_r, b->v, b->size), 3);
+    ERR(rlp_decode_rec(&_r, b->v, head_size, body_size), 3);
 
     *r = _r;
     return 0;

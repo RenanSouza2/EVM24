@@ -77,7 +77,7 @@ uint64_vec_t uint64_vec_init_immed(uint64_t n, ...)
 uint64_t uint64_init_byte_immed(char str[])
 {
     byte_vec_t b = byte_vec_init_immed(str);
-    uint64_t res = uint64_init_byte(b.size, b.v);
+    uint64_t res = uint64_init_byte(b.v, b.size);
     byte_vec_free(&b);
     return res;
 }
@@ -89,14 +89,6 @@ bool byte_test(byte_t u1, byte_t u2)
     if(u1 == u2) return true;
 
     printf("\n\n\tUCHAR ASSERTION ERROR | %d %d", u1, u2);
-    return false;
-}
-
-bool int_test(int i1, int i2)
-{
-    if(i1 == i2) return true;
-
-    printf("\n\n\tINT ASSERTION ERROR | %d %d", i1, i2);
     return false;
 }
 
@@ -116,7 +108,7 @@ bool uint64_test(uint64_t i1, uint64_t i2)
 
 bool byte_vec_test(byte_vec_t b, byte_vec_t b_exp)
 {
-    if(!int_test(b.size, b_exp.size)) 
+    if(!uint64_test(b.size, b_exp.size)) 
     {
         printf("\n\tBYTE VEC ASSERTION ERROR | LENGTH");
         byte_vec_free(&b_exp);
@@ -196,7 +188,7 @@ uint64_t uint64_get_size(uint64_t u)
     return 8;
 }
 
-uint64_t uint64_init_byte(uint64_t size, byte_p b)
+uint64_t uint64_init_byte(byte_p b, uint64_t size)
 {
     uint64_t u = 0;
     for(int i=0; i<size; i++)

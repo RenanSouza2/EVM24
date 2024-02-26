@@ -19,7 +19,6 @@
 #define IGN UINT64_MAX
 
 #define assert_byte(RES, EXP) assert(byte_test(RES, EXP))
-#define assert_int(RES, EXP) assert(int_test(RES, EXP))
 #define assert_64(RES, EXP) assert(uint64_test(RES, EXP))
 
 void byte_vec_display(byte_vec_t b);
@@ -30,7 +29,6 @@ uint64_vec_t uint64_vec_init_immed(uint64_t n, ...);
 uint64_t uint64_init_byte_immed(char str[]);
 
 bool byte_test(byte_t u1, byte_t u2);
-bool int_test(int i1, int i2);
 bool uint64_test(uint64_t i1, uint64_t i2);
 
 bool byte_vec_test(byte_vec_t b, byte_vec_t b_exp);

@@ -24,7 +24,7 @@ evm_rlp_vec_t rlp_vec_init(uint64_t size);
 void rlp_free(evm_rlp_p r);
 void rlp_vec_free(evm_rlp_vec_p r);
 
-uint64_t rlp_decode_rec(evm_rlp_p r, byte_p b, uint64_t size);
+uint64_t rlp_decode_rec(evm_rlp_p r, byte_p b, uint64_t head_size, uint64_t body_size);
 uint64_t rlp_decode(evm_rlp_p r, byte_vec_p b);
 
 #endif

@@ -13,7 +13,7 @@
 void stack_display(evm_stack_t s)
 {
     printf("\nstack");
-    printf("\n\tcount: %d", s.count);
+    printf("\n\tcount: " U64P, s.count);
     printf("\n");
     stack_l_display(s.sl);
     printf("\n");
@@ -36,7 +36,7 @@ bool stack_test_immed(evm_stack_t s, int n, ...)
 
 bool stack_test_variadic(evm_stack_t s, int n, va_list *args)
 {
-    if(!int_test(s.count, n))
+    if(!uint64_test(s.count, n))
     {
         printf("\n\tSTACK ASSERTION ERROR | COUNT");
         return false;

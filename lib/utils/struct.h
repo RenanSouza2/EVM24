@@ -40,7 +40,7 @@ typedef uint64_t * uint64_p;
 typedef __uint128_t uint128_t;
 
 uint64_t uint64_add(uint64_t u1, uint64_t u2);
-uint64_t uint64_init_byte(uint64_t size, byte_p b);
+uint64_t uint64_init_byte(byte_p b, uint64_t size);
 uint64_t uint128_to_uint64(uint128_t res);
 
 #define VEC(TYPE)       \
