@@ -261,23 +261,31 @@ uint64_t rlp_get_size(uint64_p head_size, uint64_p body_size, byte_p b, uint64_t
 
     if(b0 < 184) 
     {
-        ERR(rlp_get_size_1(head_size, body_size, b0 - 128, size), 2)
+        uint64_t _head_size, _body_size;
+        ERR(rlp_get_size_1(&_head_size, &_body_size, b0 - 128, size), 2);
+        if(_head_size == 1)
+        if(_body_size == 1)
+        if(b[1] < 128)
+            return 3;
+
+        *head_size = _head_size;
+        *body_size = _body_size;
         return 0;
     }
     
     if(b0 < 192)
     {
-        ERR(rlp_get_size_2(head_size, body_size, b, b0 - 183, size), 3);
+        ERR(rlp_get_size_2(head_size, body_size, b, b0 - 183, size), 4);
         return 0;
     }
     
     if(b0 < 248)
     {
-        ERR(rlp_get_size_1(head_size, body_size, b0 - 192, size), 4);
+        ERR(rlp_get_size_1(head_size, body_size, b0 - 192, size), 5);
         return 0;
     }
 
-    ERR(rlp_get_size_2(head_size, body_size, b, b0 - 247, size), 5);
+    ERR(rlp_get_size_2(head_size, body_size, b, b0 - 247, size), 6);
     return 0;
 }
 

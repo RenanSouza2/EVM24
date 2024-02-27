@@ -493,30 +493,31 @@ void test_rlp_decode(bool show)
     assert(clu_mem_empty());
 
     if(show) printf("\n\t\t%s 25\t\t", __func__);
-    assert_64(rlp_decode_immed(&r, "0xb8"), 0x131);
+    assert_64(rlp_decode_immed(&r, "0xb8"), 0x141);
     assert(clu_mem_empty());
 
     if(show) printf("\n\t\t%s 26\t\t", __func__);
-    assert_64(rlp_decode_immed(&r, "0xb801"), 0x231);
+    assert_64(rlp_decode_immed(&r, "0xb801"), 0x241);
     assert(clu_mem_empty());
 
     if(show) printf("\n\t\t%s 27\t\t", __func__);
-    assert_64(rlp_decode_immed(&r, "0xb838"), 0x331);
+    assert_64(rlp_decode_immed(&r, "0xb838"), 0x341);
+    assert(clu_mem_empty());
 
     if(show) printf("\n\t\t%s 28\t\t", __func__);
-    assert_64(rlp_decode_immed(&r, "0xc1"), 0x141);
+    assert_64(rlp_decode_immed(&r, "0xc1"), 0x151);
     assert(clu_mem_empty());
 
     if(show) printf("\n\t\t%s 29\t\t", __func__);
-    assert_64(rlp_decode_immed(&r, "0xf8"), 0x151);
+    assert_64(rlp_decode_immed(&r, "0xf8"), 0x161);
     assert(clu_mem_empty());
 
     if(show) printf("\n\t\t%s 30\t\t", __func__);
-    assert_64(rlp_decode_immed(&r, "0xf801"), 0x251);
+    assert_64(rlp_decode_immed(&r, "0xf801"), 0x261);
     assert(clu_mem_empty());
 
     if(show) printf("\n\t\t%s 31\t\t", __func__);
-    assert_64(rlp_decode_immed(&r, "0xf838"), 0x351);
+    assert_64(rlp_decode_immed(&r, "0xf838"), 0x361);
     assert(clu_mem_empty());
 
     if(show) printf("\n\t\t%s 32\t\t", __func__);
@@ -546,7 +547,7 @@ void test_rlp()
 {
     printf("\n%s\t\t", __func__);
 
-    test_rlp_encode(true);
+    test_rlp_encode(false);
     test_rlp_decode(false);
 
     assert(clu_mem_empty());
