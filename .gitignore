@@ -53,3 +53,4 @@ dkms.conf
 
 # VS code
 **/.vscode/settings.json
+lib/.vscode/*

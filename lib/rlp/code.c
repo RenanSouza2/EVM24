@@ -263,7 +263,7 @@ uint64_t rlp_get_size(uint64_p head_size, uint64_p body_size, byte_p b, uint64_t
     {
         uint64_t _head_size, _body_size;
         ERR(rlp_get_size_1(&_head_size, &_body_size, b0 - 128, size), 2);
-        if(_head_size == 1)
+
         if(_body_size == 1)
         if(b[1] < 128)
             return 3;
