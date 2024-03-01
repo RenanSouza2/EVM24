@@ -4,18 +4,18 @@ LIB_ROOT = $(word 1,$(subst lib, ,$(CURDIR)))lib
 LIB_FILES = $(foreach DIR,$(DIRS),$(dir $(DIR))lib.o)
 DGB_FILES = $(foreach DIR,$(DIRS),$(dir $(DIR))debug.o)
 
-DIR = $(shell basename $(CURDIR))
+DIR = lib$(word 2,$(subst lib, ,$(CURDIR)))
 
 build: lib.o
 
 
 
 lib.o: $(LIB_FILES)
-	echo "linking  object $(DIR)"
+	echo " linking object $(DIR)"
 	ld -r -o $@ $^
 	
 debug.o: $(DGB_FILES)
-	echo "linking  debug $(DIR)"
+	echo " linking debug $(DIR)"
 	ld -r -o $@ $^
 
 
