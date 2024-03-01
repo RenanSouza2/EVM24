@@ -243,7 +243,7 @@ void test_frame_push()
         sprintf(str, "0x%x", 0x5f + i);
         memset(&str[4], 'f', 2*i);
 
-        evm_word_t w = W1(0);
+        word_t w = W1(0);
         memset(w.v, 0xff, i);
         
         f = frame_init_immed(str, GAS_DEF);

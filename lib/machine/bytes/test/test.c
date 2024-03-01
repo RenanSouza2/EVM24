@@ -28,7 +28,7 @@ void test_bytes_get_word()
 
     // printf("\n\t\t%s 1", __func__);
     evm_bytes_t b = byte_vec_init_immed("0x");
-    evm_word_t w = bytes_get_word(&b, 0);
+    word_t w = bytes_get_word(&b, 0);
     assert(word_test(w, WORD(0, 0, 0, 0)));
     byte_vec_free(&b);
 

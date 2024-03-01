@@ -186,7 +186,7 @@ int frame_push_uint64(evm_frame_p f, uint64_t value)
     GAS_VERIFY(G_base, 1);
     GAS_CONSUME(G_base);
 
-    evm_word_t w = word_init_uint64(value);
+    word_t w = word_init_uint64(value);
     if(stack_push(&f->s, &w)) return 2;
     f->pc++;
 
@@ -209,11 +209,11 @@ evm_frame_o_t frame_halt(evm_frame_p f)
 
 int frame_add(evm_frame_p f) // TODO test
 {
-    evm_word_t w1, w2;
+    word_t w1, w2;
     if(stack_pop(&w1, &f->s)) return 1;
     if(stack_pop(&w2, &f->s)) return 2;
 
-    evm_word_t w = word_add(&w1, &w2);
+    word_t w = word_add(&w1, &w2);
     assert(!stack_push(&f->s, &w));
     f->pc++;
 
@@ -229,14 +229,14 @@ int frame_codesize(evm_frame_p f) // TODO test
     GAS_VERIFY(G_base, 1);
     GAS_CONSUME(G_base);
 
-    evm_word_t w = word_init_uint64(f->code.size);
+    word_t w = word_init_uint64(f->code.size);
     if(stack_push(&f->s, &w)) return 2;
     return 0;
 }
 
 int frame_codecopy(evm_frame_p f) // TODO test
 {
-    evm_word_t w_mem, w_code, w_size;
+    word_t w_mem, w_code, w_size;
     if(stack_pop(&w_mem , &f->s)) return 1;
     if(stack_pop(&w_code, &f->s)) return 2;
     if(stack_pop(&w_size, &f->s)) return 3;
@@ -287,14 +287,14 @@ int frame_pop(evm_frame_p f)
 
 int frame_mload(evm_frame_p f)
 {
-    evm_word_t w_pos;
+    word_t w_pos;
     if(stack_pop(&w_pos, &f->s)) return 1;
     uint64_t gas_expand = mem_dry_run(&f->m, w_pos, 32);
     uint64_t gas = uint64_add(G_very_low, gas_expand);
     GAS_VERIFY(gas, 2);
     GAS_CONSUME(gas);
 
-    evm_word_t w_value = mem_get_word(&f->m, w_pos.v[0]);
+    word_t w_value = mem_get_word(&f->m, w_pos.v[0]);
     assert(!stack_push(&f->s, &w_value));
     f->pc++;
 
@@ -303,7 +303,7 @@ int frame_mload(evm_frame_p f)
 
 int frame_mstore(evm_frame_p f)
 {
-    evm_word_t w_pos, w_value;
+    word_t w_pos, w_value;
     if(stack_pop(&w_pos, &f->s)) return 1;
     uint64_t gas_expand = mem_dry_run(&f->m, w_pos, 32);
     uint64_t gas = uint64_add(G_very_low, gas_expand);
@@ -320,7 +320,7 @@ int frame_mstore(evm_frame_p f)
 
 int frame_mstore8(evm_frame_p f)
 {
-    evm_word_t w_pos, w_value;
+    word_t w_pos, w_value;
     if(stack_pop(&w_pos, &f->s))   return 1;
     uint64_t gas_expand = mem_dry_run(&f->m, w_pos, 1);
     uint64_t gas = uint64_add(G_very_low, gas_expand);
@@ -340,7 +340,7 @@ int frame_mstore8(evm_frame_p f)
 
 int frame_jump(evm_frame_p f) // TODO test
 {
-    evm_word_t w_pos;
+    word_t w_pos;
     if(stack_pop(&w_pos, &f->s)) return 1;
     if(!word_is_uint64(&w_pos))  return 2;
     uint64_t pos = w_pos.v[0];
@@ -377,7 +377,7 @@ int frame_push(evm_frame_p f)
     GAS_VERIFY(gas, 1);
  
     evm_bytes_t b = bytes_get_bytes(&f->code, f->pc+1, size);
-    evm_word_t w = word_init_bytes(&b);
+    word_t w = word_init_bytes(&b);
     if(stack_push(&f->s, &w)) return 2;
     f->pc += 1 + size;
 
@@ -389,10 +389,10 @@ int frame_push(evm_frame_p f)
 
 evm_frame_o_t frame_return(evm_frame_p f)
 {
-    evm_word_t w_ptr;
+    word_t w_ptr;
     if(stack_pop(&w_ptr, &f->s)) return frame_halt(f);
     
-    evm_word_t w_size;
+    word_t w_size;
     if(stack_pop(&w_size, &f->s)) return frame_halt(f);
     if(!word_is_uint64(&w_size)) return frame_halt(f);
     uint64_t gas = mem_dry_run(&f->m, w_ptr, w_size.v[0]);

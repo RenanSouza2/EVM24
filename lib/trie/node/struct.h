@@ -22,7 +22,7 @@ STRUCT(evm_node_leaf)
 
 // STRUCT(evm_node_branch)
 // {
-//     evm_word_t
+//     word_t
 // }
 
 #endif

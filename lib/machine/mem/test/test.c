@@ -77,7 +77,7 @@ void test_mem_get_word()
     printf("\n\t%s", __func__);
 
     evm_mem_t m = byte_vec_init_zero();
-    evm_word_t w = mem_get_word(&m, 0);
+    word_t w = mem_get_word(&m, 0);
     assert(mem_test_immed(m, 1, W1(0)));
     assert(word_test(w, W1(0)));
     byte_vec_free(&m);
@@ -154,7 +154,7 @@ void test_mem_set_word()
     printf("\n\t%s", __func__);
 
     evm_mem_t m = byte_vec_init_zero();
-    evm_word_t w = WORD(U64_MAX, U64_MAX, U64_MAX, U64_MAX);
+    word_t w = WORD(U64_MAX, U64_MAX, U64_MAX, U64_MAX);
     mem_set_word(&m, 0, &w);
     assert(mem_test_immed(m, 1, WORD(U64_MAX, U64_MAX, U64_MAX, U64_MAX)));
 

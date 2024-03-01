@@ -14,7 +14,7 @@ evm_stack_t stack_init_immed_variadic(uint64_t n, va_list *args);
 bool stack_test_immed(evm_stack_t s, uint64_t n, ...);
 bool stack_test_variadic(evm_stack_t s, uint64_t n, va_list *args);
 
-uint64_t stack_push_immed(evm_stack_p s, evm_word_t w);
+uint64_t stack_push_immed(evm_stack_p s, word_t w);
 
 #endif
 

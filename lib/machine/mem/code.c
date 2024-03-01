@@ -31,7 +31,7 @@ evm_mem_t mem_init_immed_variadic(uint64_t n, va_list *arg)
     mem_expand(&m, n << 5);
     for(uint64_t i=0; i<n; i++)
     {
-        evm_word_t w = va_arg(*arg, evm_word_t);
+        word_t w = va_arg(*arg, word_t);
         for(int j=0; j<32; j++)
             m.v[(i << 5) + j] = word_get_byte(&w, 31 - j);
     }
@@ -69,7 +69,7 @@ bool mem_test_variadic(evm_mem_t m, uint64_t n, va_list *args)
 
 
 
-uint64_t mem_dry_run(evm_mem_p m, evm_word_t w_pos, uint64_t size)
+uint64_t mem_dry_run(evm_mem_p m, word_t w_pos, uint64_t size)
 {
     if(!size) return 0;
 
@@ -101,7 +101,7 @@ void mem_expand(evm_mem_p m, uint64_t pos)
 
 
 
-evm_word_t mem_get_word(evm_mem_p m, uint64_t pos)
+word_t mem_get_word(evm_mem_p m, uint64_t pos)
 {
     mem_expand(m, pos+32);
     return bytes_get_word(m, pos);
@@ -127,7 +127,7 @@ void mem_set_byte(evm_mem_p m, uint64_t pos, byte_t u)
     m->v[pos] = u;
 }
 
-void mem_set_word(evm_mem_p m, uint64_t pos, evm_word_p w)
+void mem_set_word(evm_mem_p m, uint64_t pos, word_p w)
 {
     mem_expand(m, pos+32);
     for(int i=0; i<32; i++)

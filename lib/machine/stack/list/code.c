@@ -30,7 +30,7 @@ evm_stack_l_p stack_l_init_immed_variadic(uint64_t n, va_list *args)
     evm_stack_l_p sl = NULL;
     for(uint64_t i=0; i<n; i++)
     {
-        evm_word_t w = va_arg(*args, evm_word_t);
+        word_t w = va_arg(*args, word_t);
         sl = stack_l_create(sl, &w);
     }
     return sl;
@@ -50,7 +50,7 @@ bool stack_l_test_variadic(evm_stack_l_p sl, uint64_t n, va_list *args)
     uint64_t i;
     for(i=0; sl && i < n; sl = sl->sl, i++)
     {
-        evm_word_t w = va_arg(*args, evm_word_t);
+        word_t w = va_arg(*args, word_t);
         if(!word_test(sl->w, w))
         {
             printf("\n\tSTACK LIST ASSERTION ERROR | WORD | " U64P, i);
@@ -77,7 +77,7 @@ bool stack_l_test_variadic(evm_stack_l_p sl, uint64_t n, va_list *args)
 
 
 
-evm_stack_l_p stack_l_create(evm_stack_l_p sl_next, evm_word_p w)
+evm_stack_l_p stack_l_create(evm_stack_l_p sl_next, word_p w)
 {
     evm_stack_l_p sl = malloc(sizeof(evm_stack_l_t));
     assert(sl);
@@ -86,7 +86,7 @@ evm_stack_l_p stack_l_create(evm_stack_l_p sl_next, evm_word_p w)
     return sl;
 }
 
-evm_stack_l_p stack_l_pop(evm_word_p w, evm_stack_l_p sl)
+evm_stack_l_p stack_l_pop(word_p w, evm_stack_l_p sl)
 {
     if(w) *w = sl->w;
 

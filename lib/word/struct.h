@@ -7,21 +7,21 @@
 
 #define V_MAX 4
 
-STRUCT(evm_word)
+STRUCT(word)
 {
     uint64_t v[V_MAX];
 };
 
-evm_word_t word_init();
-evm_word_t word_init_uint64(uint64_t num);
-evm_word_t word_init_bytes(byte_vec_p b);
+word_t word_init();
+word_t word_init_uint64(uint64_t num);
+word_t word_init_bytes(byte_vec_p b);
 
-bool word_is_uint64(evm_word_p w);
-bool word_eq_bool(evm_word_p w1, evm_word_p w2);
-void word_add_uint64(evm_word_p w, uint64_t i, uint64_t v);
-byte_t word_get_byte(evm_word_p w, uint64_t i);
-void word_set_byte(evm_word_p w, uint64_t i, byte_t u);
+bool word_is_uint64(word_p w);
+bool word_eq_bool(word_p w1, word_p w2);
+void word_add_uint64(word_p w, uint64_t i, uint64_t v);
+byte_t word_get_byte(word_p w, uint64_t i);
+void word_set_byte(word_p w, uint64_t i, byte_t u);
 
-evm_word_t word_add(evm_word_p w1, evm_word_p w2);
+word_t word_add(word_p w1, word_p w2);
 
 #endif
