@@ -1,15 +1,15 @@
 #include "debug.h"
-#include "../../../utils/assert.h"
+#include "../../utils/assert.h"
 
-#include "../bytes/struct.h"
+#include "../utils/struct.h"
 
 
 
 #ifdef DEBUG
 
-#include "../../../utils/clu/bin/header.h"
+#include "../../utils/clu/bin/header.h"
 
-#include "../../utils/debug.h"
+#include "../utils/debug.h"
 
 
 
@@ -61,10 +61,8 @@ evm_word_t word_init_bytes(byte_vec_p b)
 
     evm_word_t w = word_init();
     for(uint64_t i=0; i<size; i++)
-    {
-        byte_t u = bytes_get_byte(b, size-1-i);
-        word_set_byte(&w, i, u);
-    }
+        word_set_byte(&w, i, b->v[size-1-i]);
+        
     byte_vec_free(b);
     return w;
 }

@@ -7,7 +7,7 @@
 #include "../../stack/head/debug.h"
 #include "../../gas/header.h"
 #include "../../bytes/debug.h"
-#include "../../word/debug.h"
+#include "../../../word/debug.h"
 #include "../../../utils/debug.h"
 
 

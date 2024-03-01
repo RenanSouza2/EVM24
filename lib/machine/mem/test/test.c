@@ -2,7 +2,7 @@
 #include "../../../../utils/clu/bin/header.h"
 
 #include "../../bytes/debug.h"
-#include "../../word/debug.h"
+#include "../../../word/debug.h"
 #include "../../../utils/debug.h"
 
 
@@ -37,7 +37,7 @@ void test_mem_dry_run()
     assert_64(mem_dry_run(&m, W1(1023), 1), 28);
 
     assert_64(mem_dry_run(&m, W1(U64_MAX - 1), 1), U64_MAX);
-    assert_64(mem_dry_run(&m, W1(U64_MAX), 1), U64_MAX);
+    assert_64(mem_dry_run(&m, W1(U64_MAX    ), 1), U64_MAX);
     assert_64(mem_dry_run(&m, W1(0xfffffffffffe), 1), U64_MAX);
     assert_64(mem_dry_run(&m,   WORD(0, 0, 1, 0), 1), U64_MAX);
 

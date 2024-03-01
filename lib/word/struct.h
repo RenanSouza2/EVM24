@@ -3,7 +3,7 @@
 
 #include "header.h"
 
-#include "../../utils/struct.h"
+#include "../utils/struct.h"
 
 #define V_MAX 4
 

@@ -16,8 +16,13 @@ STRUCT(evm_node)
 
 STRUCT(evm_node_leaf)
 {
-    byte_p path;
-    byte_p val;
+    byte_vec_p path;
+    byte_vec_p val;
 };
+
+// STRUCT(evm_node_branch)
+// {
+//     evm_word_t
+// }
 
 #endif

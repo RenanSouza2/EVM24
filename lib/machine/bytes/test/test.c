@@ -1,7 +1,7 @@
 #include "../debug.h"
 #include "../../../../utils/clu/bin/header.h"
 
-#include "../../word/debug.h"
+#include "../../../word/debug.h"
 #include "../../../utils/debug.h"
 
 

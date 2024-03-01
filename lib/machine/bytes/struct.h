@@ -4,7 +4,7 @@
 #include "header.h"
 
 #include "../../utils/struct.h"
-#include "../word/struct.h"
+#include "../../word/struct.h"
 
 typedef byte_vec_p evm_bytes_p;
 typedef byte_vec_t evm_bytes_t;

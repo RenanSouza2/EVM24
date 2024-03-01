@@ -1,5 +1,5 @@
-#ifndef __EXAMPLE_DEBUG_H__
-#define __EXAMPLE_DEBUG_H__
+#ifndef __DATABASE_DEBUG_H__
+#define __DATABASE_DEBUG_H__
 
 #include "struct.h"
 

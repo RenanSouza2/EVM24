@@ -1,6 +1,6 @@
-#ifndef __EXAMPLE_H__
-#define __EXAMPLE_H__
+#ifndef __DATABASE_H__
+#define __DATABASE_H__
 
-#include "../../utils/struct.h"
+#include "../../../utils/struct.h"
 
 #endif

@@ -3,7 +3,7 @@
 
 #include "header.h"
 
-#include "../../word/struct.h"
+#include "../../../word/struct.h"
 
 #define S_MAX 1024
 

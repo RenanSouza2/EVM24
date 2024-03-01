@@ -3,6 +3,6 @@
 
 #include <stdbool.h>
 
-#include "../../../utils/struct.h"
+#include "../../utils/struct.h"
 
 #endif
