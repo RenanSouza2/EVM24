@@ -4,25 +4,40 @@
 #include "header.h"
 
 #include "../../utils/struct.h"
+#include "../../word/struct.h"
 
 #define LEAF        0
 #define BRANCH      1
 #define EXTENSION   2
 
-STRUCT(evm_node)
+#define NL(POINTER) ((node_leaf_p)(POINTER))
+#define NB(POINTER) ((node_branch_p)(POINTER))
+#define NE(POINTER) ((node_extension_p)(POINTER))
+
+STRUCT(node)
 {
     uint64_t type;
 };
 
-STRUCT(evm_node_leaf)
+STRUCT(node_leaf)
 {
-    byte_vec_p path;
-    byte_vec_p val;
+    node_t n;
+    byte_vec_t path;
+    byte_vec_t v;
 };
 
-// STRUCT(evm_node_branch)
-// {
-//     word_t
-// }
+STRUCT(evm_node_branch)
+{
+    node_t n;
+    word_t next[16];
+    byte_vec_p v;
+};
+
+STRUCT(evm_node_extension)
+{
+    node_t n;
+    byte_vec_t path;
+    word_t next;
+};
 
 #endif
