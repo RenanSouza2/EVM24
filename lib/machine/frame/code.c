@@ -152,7 +152,7 @@ uint64_vec_t frame_get_jumpdest(evm_bytes_p code) // TODO improve test
         byte_t op = bytes_get_byte(code, pc);
         switch (op)
         {
-            case JUMPDEST: vec.v[count++] = pc; break;
+            case JUMPDEST: vec.arr[count++] = pc; break;
             case PUSH0 ... PUSH32: pc += op - PUSH0; break;
         }
     }
@@ -242,15 +242,15 @@ int frame_codecopy(evm_frame_p f) // TODO test
     if(stack_pop(&w_size, &f->s)) return 3;
     if(!word_is_uint64(&w_size))  return 4;
 
-    uint64_t size = w_size.v[0];
+    uint64_t size = w_size.arr[0];
     uint64_t gas_mem = mem_dry_run(&f->m, w_mem, size);
     uint64_t gas_cpy = gas_copy(size);
     uint64_t gas = uint64_add(gas_mem, gas_cpy);
     GAS_VERIFY(gas, 4);
     GAS_CONSUME(gas);
 
-    evm_bytes_t b = bytes_get_bytes(&f->code, w_code.v[0], size);
-    mem_set_bytes(&f->m, w_mem.v[0], &b);
+    evm_bytes_t b = bytes_get_bytes(&f->code, w_code.arr[0], size);
+    mem_set_bytes(&f->m, w_mem.arr[0], &b);
     vec_free(VEC(&b));
     return 0;
 }
@@ -294,7 +294,7 @@ int frame_mload(evm_frame_p f)
     GAS_VERIFY(gas, 2);
     GAS_CONSUME(gas);
 
-    word_t w_value = mem_get_word(&f->m, w_pos.v[0]);
+    word_t w_value = mem_get_word(&f->m, w_pos.arr[0]);
     assert(!stack_push(&f->s, &w_value));
     f->pc++;
 
@@ -312,7 +312,7 @@ int frame_mstore(evm_frame_p f)
     if(stack_pop(&w_value, &f->s)) return 3;
     GAS_CONSUME(gas);
 
-    mem_set_word(&f->m, w_pos.v[0], &w_value);
+    mem_set_word(&f->m, w_pos.arr[0], &w_value);
     f->pc++;
     
     return 0;
@@ -330,7 +330,7 @@ int frame_mstore8(evm_frame_p f)
     GAS_CONSUME(gas);
     
     byte_t u = word_get_byte(&w_value, 0);
-    mem_set_byte(&f->m, w_pos.v[0], u);
+    mem_set_byte(&f->m, w_pos.arr[0], u);
     f->pc++;
     
     return 0;
@@ -343,7 +343,7 @@ int frame_jump(evm_frame_p f) // TODO test
     word_t w_pos;
     if(stack_pop(&w_pos, &f->s)) return 1;
     if(!word_is_uint64(&w_pos))  return 2;
-    uint64_t pos = w_pos.v[0];
+    uint64_t pos = w_pos.arr[0];
 
     if(!uint64_vec_has_uint64(&f->jumpdest, pos)) return 3;
 
@@ -395,11 +395,11 @@ evm_frame_o_t frame_return(evm_frame_p f)
     word_t w_size;
     if(stack_pop(&w_size, &f->s)) return frame_halt(f);
     if(!word_is_uint64(&w_size)) return frame_halt(f);
-    uint64_t gas = mem_dry_run(&f->m, w_ptr, w_size.v[0]);
+    uint64_t gas = mem_dry_run(&f->m, w_ptr, w_size.arr[0]);
     GAS_VERIFY(gas, frame_halt(f));
     GAS_CONSUME(gas);
 
-    return (evm_frame_o_t){true, f->gas, mem_get_bytes(&f->m, w_ptr.v[0], w_size.v[0])};
+    return (evm_frame_o_t){true, f->gas, mem_get_bytes(&f->m, w_ptr.arr[0], w_size.arr[0])};
 }
 
 

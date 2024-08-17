@@ -42,7 +42,7 @@ typedef __uint128_t uint128_t;
 STRUCT(vec)
 {
     uint64_t size;
-    handler_p v;
+    handler_p arr;
 };
 
 #define VEC(POINTER) ((vec_p)(POINTER))
@@ -51,7 +51,7 @@ STRUCT(vec)
     STRUCT(TYPE##_vec)      \
     {                       \
         uint64_t size;      \
-        TYPE##_p v;         \
+        TYPE##_p arr;       \
     }
 
 VEC_DEFINE(uint64);

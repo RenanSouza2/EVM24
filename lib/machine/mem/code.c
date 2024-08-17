@@ -33,7 +33,7 @@ evm_mem_t mem_init_immed_variadic(uint64_t n, va_list *arg)
     {
         word_t w = va_arg(*arg, word_t);
         for(int j=0; j<32; j++)
-            m.v[(i << 5) + j] = word_get_byte(&w, 31 - j);
+            m.arr[(i << 5) + j] = word_get_byte(&w, 31 - j);
     }
     return m;
 }
@@ -77,7 +77,7 @@ uint64_t mem_dry_run(evm_mem_p m, word_t w_pos, uint64_t size)
     word_add_uint64(&w_pos, 0, 0x1f);
     if(!word_is_uint64(&w_pos)) return UINT64_MAX;
 
-    uint64_t max = w_pos.v[0];
+    uint64_t max = w_pos.arr[0];
     uint64_t m_size_aft = (max > m->size ? max : m->size) >> 5;
     uint64_t m_size_bef = m->size >> 5;
     if(m_size_bef == m_size_aft) return 0;
@@ -95,8 +95,8 @@ void mem_expand(evm_mem_p m, uint64_t pos)
     if(size <= size_prev) return;
 
     m->size = size;
-    m->v = realloc(m->v, size);
-    memset(&m->v[size_prev], 0, size - size_prev);
+    m->arr = realloc(m->arr, size);
+    memset(&m->arr[size_prev], 0, size - size_prev);
 }
 
 
@@ -115,7 +115,7 @@ byte_vec_t mem_get_bytes(evm_mem_p m, uint64_t pos, uint64_t size)
     byte_t *v = malloc(size);
     assert(v);
 
-    memcpy(v, &m->v[pos], size);
+    memcpy(v, &m->arr[pos], size);
     return (byte_vec_t){size, v};
 }
 
@@ -124,14 +124,14 @@ byte_vec_t mem_get_bytes(evm_mem_p m, uint64_t pos, uint64_t size)
 void mem_set_byte(evm_mem_p m, uint64_t pos, byte_t u)
 {
     mem_expand(m, pos+1);
-    m->v[pos] = u;
+    m->arr[pos] = u;
 }
 
 void mem_set_word(evm_mem_p m, uint64_t pos, word_p w)
 {
     mem_expand(m, pos+32);
     for(int i=0; i<32; i++)
-        m->v[pos + i] = word_get_byte(w, 31-i);
+        m->arr[pos + i] = word_get_byte(w, 31-i);
 }
 
 void mem_set_bytes(evm_mem_p m, uint64_t pos, byte_vec_p b)
@@ -139,5 +139,5 @@ void mem_set_bytes(evm_mem_p m, uint64_t pos, byte_vec_p b)
     if(b->size == 0) return;
 
     mem_expand(m, pos + b->size);
-    memcpy(&m->v[pos], b->v, b->size);
+    memcpy(&m->arr[pos], b->arr, b->size);
 }

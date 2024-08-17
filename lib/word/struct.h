@@ -9,7 +9,7 @@
 
 STRUCT(word)
 {
-    uint64_t v[V_MAX];
+    uint64_t arr[V_MAX];
 };
 
 word_t word_init_zero();

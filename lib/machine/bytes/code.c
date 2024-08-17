@@ -16,7 +16,7 @@
 
 byte_t bytes_get_byte(evm_bytes_p b, uint64_t pos)
 {
-    return pos < b->size ? b->v[pos] : 0;
+    return pos < b->size ? b->arr[pos] : 0;
 }
 
 word_t bytes_get_word(evm_bytes_p b, uint64_t pos)

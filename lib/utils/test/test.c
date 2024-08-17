@@ -30,72 +30,72 @@ void test_byte_vec_init_immed()
 
     // printf("\n\t\t%s  1", __func__);
     byte_vec_t b = byte_vec_init_immed("0x");
-    assert(b.v == NULL);
+    assert(b.arr == NULL);
     assert(b.size == 0);
 
     // printf("\n\t\t%s  2", __func__);
     b = byte_vec_init_immed("0x00");
     assert(b.size == 1);
-    assert(b.v);
-    assert(b.v[0] == 0);
+    assert(b.arr);
+    assert(b.arr[0] == 0);
     vec_free(VEC(&b));
 
     // printf("\n\t\t%s  3", __func__);
     b = byte_vec_init_immed("0x01");
     assert(b.size == 1);
-    assert(b.v);
-    assert(b.v[0] == 1);
+    assert(b.arr);
+    assert(b.arr[0] == 1);
     vec_free(VEC(&b));
 
     // printf("\n\t\t%s  4", __func__);
     b = byte_vec_init_immed("0x0f");
     assert(b.size == 1);
-    assert(b.v);
-    assert(b.v[0] == 15);
+    assert(b.arr);
+    assert(b.arr[0] == 15);
     vec_free(VEC(&b));
 
     // printf("\n\t\t%s  5", __func__);
     b = byte_vec_init_immed("0x10");
     assert(b.size == 1);
-    assert(b.v);
-    assert(b.v[0] == 16);
+    assert(b.arr);
+    assert(b.arr[0] == 16);
     vec_free(VEC(&b));
 
     // printf("\n\t\t%s  6", __func__);
     b = byte_vec_init_immed("0x80");
     assert(b.size == 1);
-    assert(b.v);
-    assert(b.v[0] == 128);
+    assert(b.arr);
+    assert(b.arr[0] == 128);
     vec_free(VEC(&b));
 
     // printf("\n\t\t%s  7", __func__);
     b = byte_vec_init_immed("0xf0");
     assert(b.size == 1);
-    assert(b.v);
-    assert(b.v[0] == 240);
+    assert(b.arr);
+    assert(b.arr[0] == 240);
     vec_free(VEC(&b));
 
     // printf("\n\t\t%s  8", __func__);
     b = byte_vec_init_immed("0xff");
     assert(b.size == 1);
-    assert(b.v);
-    assert(b.v[0] == 255);
+    assert(b.arr);
+    assert(b.arr[0] == 255);
     vec_free(VEC(&b));
 
     // printf("\n\t\t%s  9", __func__);
     b = byte_vec_init_immed("0x0000");
     assert(b.size == 2);
-    assert(b.v);
-    assert(b.v[0] == 0);
-    assert(b.v[1] == 0);
+    assert(b.arr);
+    assert(b.arr[0] == 0);
+    assert(b.arr[1] == 0);
     vec_free(VEC(&b));
 
     // printf("\n\t\t%s 10", __func__);
     b = byte_vec_init_immed("0x1234");
     assert(b.size == 2);
-    assert(b.v);
-    assert(b.v[0] == 18);
-    assert(b.v[1] == 52);
+    assert(b.arr);
+    assert(b.arr[0] == 18);
+    assert(b.arr[1] == 52);
     vec_free(VEC(&b));
 
     assert(clu_mem_empty());

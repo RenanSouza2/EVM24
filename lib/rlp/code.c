@@ -36,7 +36,7 @@ evm_rlp_t rlp_init_immed_variadic(uint64_t type, va_list *args)
         for(uint64_t i=0; i<size; i++)
         {
             uint64_t r1_type = va_arg(*args, uint64_t);
-            r.v[i] = rlp_init_immed_variadic(r1_type, args);
+            r.arr[i] = rlp_init_immed_variadic(r1_type, args);
         }
         
         return rlp_init_list(&r);
@@ -112,7 +112,7 @@ bool rlp_vec_test(evm_rlp_vec_t r, evm_rlp_vec_t r_exp)
     }
     
     for(uint64_t i=0; i<r.size; i++)
-        if(!rlp_test(r.v[i], r_exp.v[i]))
+        if(!rlp_test(r.arr[i], r_exp.arr[i]))
         {
             printf("\n\tRLP VECTOR ASSERTION ERROR | ITEM | " U64P, i);
             return false;
@@ -149,14 +149,14 @@ evm_rlp_vec_t rlp_vec_init(uint64_t size)
 
 void rlp_vec_free(evm_rlp_vec_p r)
 {
-    if(r->v) free(r->v);
+    if(r->arr) free(r->arr);
 }
 
 void rlp_vec_free_full(evm_rlp_vec_p r)
 {
     for(uint64_t i=0; i<r->size; i++)
-        rlp_free(&r->v[i]);
-    if(r->v) free(r->v);
+        rlp_free(&r->arr[i]);
+    if(r->arr) free(r->arr);
 }
 
 void rlp_free(evm_rlp_p r)
@@ -183,7 +183,7 @@ byte_vec_t rlp_encode(evm_rlp_p r)
         case BYTE:;
         byte_vec_t b = r->vec.b;
         if(b.size == 1)
-        if(b.v[0] < 128)
+        if(b.arr[0] < 128)
             return b;
         
         if(b.size < 56)
@@ -202,7 +202,7 @@ byte_vec_t rlp_encode(evm_rlp_p r)
         b = byte_vec_init_zero();
         for(uint64_t i=0; i<_r.size; i++)
         {
-            byte_vec_t _b = rlp_encode(&_r.v[i]);
+            byte_vec_t _b = rlp_encode(&_r.arr[i]);
             b = byte_vec_concat(&b, &_b);
         }
         rlp_vec_free(&_r);
@@ -305,8 +305,8 @@ uint64_t rlp_get_sizes_rec(uint64_vec_p r1_sizes, byte_p b, uint64_t list_size, 
     ERR(rlp_get_sizes_rec(r1_sizes, &b[r1_size], list_size - r1_size, cnt + 1), 0);
 
     uint64_t index = cnt << 1;
-    r1_sizes->v[index    ] = head_size;
-    r1_sizes->v[index + 1] = body_size;
+    r1_sizes->arr[index    ] = head_size;
+    r1_sizes->arr[index + 1] = body_size;
     return 0;
 }
 
@@ -324,7 +324,7 @@ uint64_t rlp_get_sizes(uint64_vec_p r1_sizes, byte_p b, uint64_t list_size)
 evm_rlp_t rlp_decode_rec_b(byte_p b, uint64_t body_size)
 {
     byte_vec_t _b = byte_vec_init(body_size);
-    memcpy(_b.v, b, body_size);
+    memcpy(_b.arr, b, body_size);
 
     return rlp_init_byte(&_b);
 }
@@ -340,8 +340,8 @@ uint64_t rlp_decode_rec_l(evm_rlp_p r, byte_p b, uint64_t list_size)
     {
         uint64_t index, head_size, body_size;
         index = i << 1;
-        head_size = r1_sizes.v[index];
-        body_size = r1_sizes.v[index + 1];
+        head_size = r1_sizes.arr[index];
+        body_size = r1_sizes.arr[index + 1];
 
         evm_rlp_t r1;
         TRY(rlp_decode_rec(&r1, &b[ptr], head_size, body_size))
@@ -353,7 +353,7 @@ uint64_t rlp_decode_rec_l(evm_rlp_p r, byte_p b, uint64_t list_size)
         }
         CATCH
 
-        r_vec.v[i] = r1;
+        r_vec.arr[i] = r1;
         ptr += head_size + body_size;
     }
     vec_free(VEC(&r1_sizes));
@@ -380,14 +380,14 @@ uint64_t rlp_decode_rec(evm_rlp_p r, byte_p b, uint64_t head_size, uint64_t body
 uint64_t rlp_decode(evm_rlp_p r, byte_vec_p b)
 {
     uint64_t head_size, body_size;
-    ERR(rlp_get_size(&head_size, &body_size, b->v, b->size), 1);
+    ERR(rlp_get_size(&head_size, &body_size, b->arr, b->size), 1);
 
     uint64_t rlp_size = head_size + body_size;
     assert(rlp_size <= b->size);
     if(rlp_size < b->size) return 2;
 
     evm_rlp_t _r;
-    ERR(rlp_decode_rec(&_r, b->v, head_size, body_size), 3);
+    ERR(rlp_decode_rec(&_r, b->arr, head_size, body_size), 3);
 
     *r = _r;
     return 0;

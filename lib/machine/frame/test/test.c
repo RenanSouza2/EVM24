@@ -244,7 +244,7 @@ void test_frame_push()
         memset(&str[4], 'f', 2*i);
 
         word_t w = W1(0);
-        memset(w.v, 0xff, i);
+        memset(w.arr, 0xff, i);
         
         f = frame_init_immed(str, GAS_DEF);
         assert_64(frame_push(&f), 0);
