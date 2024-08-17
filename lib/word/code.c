@@ -44,7 +44,7 @@ bool word_test(word_t w1, word_t w2)
 
 
 
-word_t word_init()
+word_t word_init_zero()
 {
     return (word_t){{0, 0, 0, 0}};
 }
@@ -59,10 +59,10 @@ word_t word_init_bytes(byte_vec_p b)
     uint64_t size = b->size;
     assert(size <= 32);
 
-    word_t w = word_init();
+    word_t w = word_init_zero();
     for(uint64_t i=0; i<size; i++)
     {
-        byte_t u = bytes_get_byte(b, size-1-i);
+        byte_t u = b->v[size-1-i];
         word_set_byte(&w, i, u);
     }
     vec_free(VEC(b));

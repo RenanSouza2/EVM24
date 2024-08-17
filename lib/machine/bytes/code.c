@@ -16,13 +16,12 @@
 
 byte_t bytes_get_byte(evm_bytes_p b, uint64_t pos)
 {
-    assert(pos >= 0);
     return pos < b->size ? b->v[pos] : 0;
 }
 
 word_t bytes_get_word(evm_bytes_p b, uint64_t pos)
 {
-    word_t w = word_init();
+    word_t w = word_init_zero();
     for(int i=0; i<32; i++)
     {
         byte_t u = bytes_get_byte(b, pos+i);

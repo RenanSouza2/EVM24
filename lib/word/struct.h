@@ -12,7 +12,7 @@ STRUCT(word)
     uint64_t v[V_MAX];
 };
 
-word_t word_init();
+word_t word_init_zero();
 word_t word_init_uint64(uint64_t num);
 word_t word_init_bytes(byte_vec_p b);
 
