@@ -111,7 +111,7 @@ bool byte_vec_test(byte_vec_t b, byte_vec_t b_exp)
     if(!uint64_test(b.size, b_exp.size)) 
     {
         printf("\n\tBYTE VEC ASSERTION ERROR | LENGTH");
-        byte_vec_free(&b_exp);
+        vec_free(VEC(&b_exp));
         return false;
     }
 
@@ -120,12 +120,12 @@ bool byte_vec_test(byte_vec_t b, byte_vec_t b_exp)
         if(!byte_test(b.arr[i], b_exp.arr[i]))
         {
             printf("\n\tBYTE VEC ASSERTION ERROR | BYTE | " U64P, i);
-            byte_vec_free(&b_exp);
+            vec_free(VEC(&b_exp));
             return false;
         }
     }
 
-    byte_vec_free(&b_exp);
+    vec_free(VEC(&b_exp));
     return true;
 }
 

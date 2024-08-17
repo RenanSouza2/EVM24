@@ -73,12 +73,12 @@ void test_bytes_get_bytes()
 
     b1 = bytes_get_bytes(&b0, 0, 6);
     assert(byte_vec_test_immed(b1, "0x000102030400"));
-    byte_vec_free(&b1);
+    vec_free(VEC(&b1));
 
     b1 = bytes_get_bytes(&b0, 2, 2);
     assert(byte_vec_test_immed(b1, "0x0203"));
-    byte_vec_free(&b0);
-    byte_vec_free(&b1);
+    vec_free(VEC(&b0));
+    vec_free(VEC(&b1));
 
     assert(clu_mem_empty());
 }

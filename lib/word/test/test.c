@@ -21,7 +21,7 @@ void test_word_init()
 {
     printf("\n\t%s", __func__);
     
-    word_t w = word_init();
+    word_t w = word_init_zero();
     assert(word_test(w, W1(0)));
 
     assert(clu_mem_empty());
@@ -78,7 +78,7 @@ void test_word_is_uint_64()
 {
     printf("\n\t%s", __func__);
     
-    word_t w = word_init();
+    word_t w = word_init_zero();
     assert(word_is_uint64(&w) == true);
 
     w = W1(U64_MAX);

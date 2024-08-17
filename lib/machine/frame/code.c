@@ -45,7 +45,7 @@ uint64_vec_t frame_get_jumpdest_immed(char str_code[])
 {
     evm_bytes_t code = byte_vec_init_immed(str_code);
     uint64_vec_t jumpdest = frame_get_jumpdest(&code);
-    byte_vec_free(&code);
+    vec_free(VEC(&code));
     return jumpdest;
 }
 
