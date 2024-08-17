@@ -13,42 +13,42 @@ void test_rlp_encode(bool show)
     if(show) printf("\n\t\t%s  1\t\t", __func__);
     byte_vec_t b = rlp_encode_immed(BYTE, "0x");
     assert(byte_vec_test_immed(b, "0x80"));
-    vec_free(VEC(&b));
+    vec_free(&b);
 
     if(show) printf("\n\t\t%s  2\t\t", __func__);
     b = rlp_encode_immed(BYTE, "0x00");
     assert(byte_vec_test_immed(b, "0x00"));
-    vec_free(VEC(&b));
+    vec_free(&b);
     
     if(show) printf("\n\t\t%s  3\t\t", __func__);
     b = rlp_encode_immed(BYTE, "0x01");
     assert(byte_vec_test_immed(b, "0x01"));
-    vec_free(VEC(&b));
+    vec_free(&b);
 
     if(show) printf("\n\t\t%s  4\t\t", __func__);
     b = rlp_encode_immed(BYTE, "0x7f");
     assert(byte_vec_test_immed(b, "0x7f"));
-    vec_free(VEC(&b));
+    vec_free(&b);
 
     if(show) printf("\n\t\t%s  5\t\t", __func__);
     b = rlp_encode_immed(BYTE, "0x80");
     assert(byte_vec_test_immed(b, "0x8180"));
-    vec_free(VEC(&b));
+    vec_free(&b);
     
     if(show) printf("\n\t\t%s  6\t\t", __func__);
     b = rlp_encode_immed(BYTE, "0x80");
     assert(byte_vec_test_immed(b, "0x8180"));
-    vec_free(VEC(&b));
+    vec_free(&b);
     
     if(show) printf("\n\t\t%s  7\t\t", __func__);
     b = rlp_encode_immed(BYTE, "0xff");
     assert(byte_vec_test_immed(b, "0x81ff"));
-    vec_free(VEC(&b));
+    vec_free(&b);
     
     if(show) printf("\n\t\t%s  8\t\t", __func__);
     b = rlp_encode_immed(BYTE, "0x0000");
     assert(byte_vec_test_immed(b, "0x820000"));
-    vec_free(VEC(&b));
+    vec_free(&b);
     
     if(show) printf("\n\t\t%s  9\t\t", __func__);
     b = rlp_encode_immed(BYTE, "0x"
@@ -63,7 +63,7 @@ void test_rlp_encode(bool show)
         "202122232425262728292a2b2c2d2e2f"
         "30313233343536"
     ));
-    vec_free(VEC(&b));
+    vec_free(&b);
     
     if(show) printf("\n\t\t%s 10\t\t", __func__);
     b = rlp_encode_immed(BYTE, "0x"
@@ -78,7 +78,7 @@ void test_rlp_encode(bool show)
         "202122232425262728292a2b2c2d2e2f"
         "3031323334353637"
     ));
-    vec_free(VEC(&b));
+    vec_free(&b);
 
     if(show) printf("\n\t\t%s 11\t\t", __func__);
     b = rlp_encode_immed(BYTE, "0x"
@@ -101,7 +101,7 @@ void test_rlp_encode(bool show)
         "c0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedf"
         "e0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfe"
     ));
-    vec_free(VEC(&b));
+    vec_free(&b);
 
     if(show) printf("\n\t\t%s 12\t\t", __func__);
     b = rlp_encode_immed(BYTE, "0x"
@@ -124,37 +124,37 @@ void test_rlp_encode(bool show)
         "c0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedf"
         "e0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff"
     ));
-    vec_free(VEC(&b));
+    vec_free(&b);
 
     if(show) printf("\n\t\t%s 13\t\t", __func__);
     b = rlp_encode_immed(LIST, 0);
     assert(byte_vec_test_immed(b, "0xc0"));
-    vec_free(VEC(&b));
+    vec_free(&b);
 
     if(show) printf("\n\t\t%s 14\t\t", __func__);
     b = rlp_encode_immed(LIST, 1, BYTE, "0x00");
     assert(byte_vec_test_immed(b, "0xc100"));
-    vec_free(VEC(&b));
+    vec_free(&b);
 
     if(show) printf("\n\t\t%s 15\t\t", __func__);
     b = rlp_encode_immed(LIST, 1, BYTE, "0x80");
     assert(byte_vec_test_immed(b, "0xc28180"));
-    vec_free(VEC(&b));
+    vec_free(&b);
 
     if(show) printf("\n\t\t%s 16\t\t", __func__);
     b = rlp_encode_immed(LIST, 2, BYTE, "0x00", BYTE, "0x01");
     assert(byte_vec_test_immed(b, "0xc20001"));
-    vec_free(VEC(&b));
+    vec_free(&b);
 
     if(show) printf("\n\t\t%s 17\t\t", __func__);
     b = rlp_encode_immed(LIST, 2, LIST, 0, BYTE, "0x01");
     assert(byte_vec_test_immed(b, "0xc2c001"));
-    vec_free(VEC(&b));
+    vec_free(&b);
 
     if(show) printf("\n\t\t%s 18\t\t", __func__);
     b = rlp_encode_immed(LIST, 2, LIST, 1, BYTE, "0x00", BYTE, "0x01");
     assert(byte_vec_test_immed(b, "0xc3c10001"));
-    vec_free(VEC(&b));
+    vec_free(&b);
 
     if(show) printf("\n\t\t%s 19\t\t", __func__);
     b = rlp_encode_immed(LIST, 1, BYTE, "0x"
@@ -169,7 +169,7 @@ void test_rlp_encode(bool show)
         "202122232425262728292a2b2c2d2e2f"
         "303132333435"
     ));
-    vec_free(VEC(&b));
+    vec_free(&b);
     
     if(show) printf("\n\t\t%s 20\t\t", __func__);
     b = rlp_encode_immed(LIST, 1, BYTE, "0x"
@@ -184,7 +184,7 @@ void test_rlp_encode(bool show)
         "202122232425262728292a2b2c2d2e2f"
         "30313233343536"
     ));
-    vec_free(VEC(&b));
+    vec_free(&b);
     
     if(show) printf("\n\t\t%s 21\t\t", __func__);
     b = rlp_encode_immed(LIST, 1, BYTE, "0x"
@@ -207,7 +207,7 @@ void test_rlp_encode(bool show)
         "c0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedf"
         "e0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfc"
     ));
-    vec_free(VEC(&b));
+    vec_free(&b);
 
     if(show) printf("\n\t\t%s 22\t\t", __func__);
     b = rlp_encode_immed(LIST, 1, BYTE, "0x"
@@ -230,7 +230,7 @@ void test_rlp_encode(bool show)
         "c0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedf"
         "e0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfd"
     ));
-    vec_free(VEC(&b));
+    vec_free(&b);
 
     assert(clu_mem_empty());
 }

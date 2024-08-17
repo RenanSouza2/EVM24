@@ -68,7 +68,7 @@ byte_vec_t byte_vec_init_uint64(uint64_t u);
 byte_vec_t byte_vec_init(uint64_t size);
 uint64_vec_t uint64_vec_init_clean(uint64_t size);
 
-void vec_free(vec_p v);
+void vec_free(handler_p v);
 
 byte_vec_t byte_vec_concat(byte_vec_p b1, byte_vec_p b2);
 bool uint64_vec_has_uint64(uint64_vec_p vec, uint64_t v);

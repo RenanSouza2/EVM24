@@ -56,14 +56,14 @@ void test_mem_expand()
         evm_mem_t m = byte_vec_init_zero();
         mem_expand(&m, 32 * i);
         assert(m.size == 32 * i);
-        vec_free(VEC(&m));
+        vec_free(&m);
 
         for(uint64_t j=1; j<32; j++)
         {
             evm_mem_t m = byte_vec_init_zero();
             mem_expand(&m, 32 * i + j);
             assert(m.size == 32 * (i + 1));
-            vec_free(VEC(&m));
+            vec_free(&m);
         }
     }
 
@@ -80,7 +80,7 @@ void test_mem_get_word()
     word_t w = mem_get_word(&m, 0);
     assert(mem_test_immed(m, 1, W1(0)));
     assert(word_test(w, W1(0)));
-    vec_free(VEC(&m));
+    vec_free(&m);
     
     m = mem_init_immed(1, W1(0xff));
     w = mem_get_word(&m, 0);
@@ -94,7 +94,7 @@ void test_mem_get_word()
     w = mem_get_word(&m, 32);
     assert(mem_test_immed(m, 2, W1(0xff), W1(0)));
     assert(word_test(w, W1(0)));
-    vec_free(VEC(&m));
+    vec_free(&m);
     
     assert(clu_mem_empty());
 }
@@ -107,18 +107,18 @@ void test_mem_get_bytes()
     evm_bytes_t b = mem_get_bytes(&m, 0x1e, 2);
     assert(byte_vec_test_immed(b, "0x1234"));
     assert(mem_test_immed(m, 1, W1(0x1234)));
-    vec_free(VEC(&b));
+    vec_free(&b);
 
     b = mem_get_bytes(&m, 0x40, 0);
     assert(byte_vec_test_immed(b, "0x"));
     assert(mem_test_immed(m, 1, W1(0x1234)));
-    vec_free(VEC(&b));
+    vec_free(&b);
 
     b = mem_get_bytes(&m, 0x1e, 3);
     assert(byte_vec_test_immed(b, "0x123400"));
     assert(mem_test_immed(m, 2, W1(0x1234), W1(0)));
-    vec_free(VEC(&b));
-    vec_free(VEC(&m));
+    vec_free(&b);
+    vec_free(&m);
     
     assert(clu_mem_empty());
 }
@@ -144,7 +144,7 @@ void test_mem_set_byte()
         WORD(0xff00ee0000000000, 0, 0, 0xdd),
         WORD(0xcc00000000000000, 0, 0, 0)
     ));
-    vec_free(VEC(&m));
+    vec_free(&m);
 
     assert(clu_mem_empty());
 }
@@ -164,7 +164,7 @@ void test_mem_set_word()
         WORD(0xffeeeeeeeeeeeeee, 0xeeeeeeeeeeeeeeee, 0xeeeeeeeeeeeeeeee, 0xeeeeeeeeeeeeeeee),
         WORD(0xee00000000000000, 0, 0, 0)
     ));
-    vec_free(VEC(&m));
+    vec_free(&m);
 
     assert(clu_mem_empty());
 }
@@ -181,20 +181,20 @@ void test_mem_set_bytes()
     b = byte_vec_init_immed("0x1234");
     mem_set_bytes(&m, 0, &b);
     assert(mem_test_immed(m, 1, WORD(0x1234000000000000, 0, 0, 0)));
-    vec_free(VEC(&b));
+    vec_free(&b);
     
     b = byte_vec_init_immed("0x5678");
     mem_set_bytes(&m, 1, &b);
     assert(mem_test_immed(m, 1, WORD(0x1256780000000000, 0, 0, 0)));
-    vec_free(VEC(&b));
-    vec_free(VEC(&m));
+    vec_free(&b);
+    vec_free(&m);
 
     m = byte_vec_init_zero();
     b = byte_vec_init_immed("0x1234");
     mem_set_bytes(&m, 0x1f, &b);
     assert(mem_test_immed(m, 2, W1(0x12),  WORD(0x3400000000000000, 0, 0, 0)));
-    vec_free(VEC(&b));
-    vec_free(VEC(&m));
+    vec_free(&b);
+    vec_free(&m);
 
     assert(clu_mem_empty());
 }

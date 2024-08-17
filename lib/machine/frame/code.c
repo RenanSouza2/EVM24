@@ -45,7 +45,7 @@ uint64_vec_t frame_get_jumpdest_immed(char str_code[])
 {
     evm_bytes_t code = byte_vec_init_immed(str_code);
     uint64_vec_t jumpdest = frame_get_jumpdest(&code);
-    vec_free(VEC(&code));
+    vec_free(&code);
     return jumpdest;
 }
 
@@ -163,15 +163,15 @@ uint64_vec_t frame_get_jumpdest(evm_bytes_p code) // TODO improve test
 
 void frame_free(evm_frame_p f)
 {
-    vec_free(VEC(&f->code));
-    vec_free(VEC(&f->jumpdest));
+    vec_free(&f->code);
+    vec_free(&f->jumpdest);
     stack_free(&f->s);
-    vec_free(VEC(&f->m));
+    vec_free(&f->m);
 }
 
 void frame_o_free(evm_frame_o_p fo)
 {
-    vec_free(VEC(&fo->returndata));
+    vec_free(&fo->returndata);
 }
 
 
@@ -251,7 +251,7 @@ int frame_codecopy(evm_frame_p f) // TODO test
 
     evm_bytes_t b = bytes_get_bytes(&f->code, w_code.arr[0], size);
     mem_set_bytes(&f->m, w_mem.arr[0], &b);
-    vec_free(VEC(&b));
+    vec_free(&b);
     return 0;
 }
 

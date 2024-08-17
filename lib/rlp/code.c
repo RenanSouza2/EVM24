@@ -58,7 +58,7 @@ uint64_t rlp_decode_immed(evm_rlp_p r, char str[])
 {
     byte_vec_t b = byte_vec_init_immed(str);
     uint64_t res = rlp_decode(r, &b);
-    vec_free(VEC(&b));
+    vec_free(&b);
     return res;
 }
 
@@ -164,7 +164,7 @@ void rlp_free(evm_rlp_p r)
     switch (r->type)
     {
         case BYTE:
-        vec_free(VEC(&r->vec.b));
+        vec_free(&r->vec.b);
         return;
     
         case LIST:
@@ -348,7 +348,7 @@ uint64_t rlp_decode_rec_l(evm_rlp_p r, byte_p b, uint64_t list_size)
         {
             r_vec.size = i;
             rlp_vec_free_full(&r_vec);
-            vec_free(VEC(&r1_sizes));
+            vec_free(&r1_sizes);
             return ERR_CONCAT(res, 2);
         }
         CATCH
@@ -356,7 +356,7 @@ uint64_t rlp_decode_rec_l(evm_rlp_p r, byte_p b, uint64_t list_size)
         r_vec.arr[i] = r1;
         ptr += head_size + body_size;
     }
-    vec_free(VEC(&r1_sizes));
+    vec_free(&r1_sizes);
 
     *r = rlp_init_list(&r_vec);
     return 0;

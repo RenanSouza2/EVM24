@@ -38,49 +38,49 @@ void test_byte_vec_init_immed()
     assert(b.size == 1);
     assert(b.arr);
     assert(b.arr[0] == 0);
-    vec_free(VEC(&b));
+    vec_free(&b);
 
     // printf("\n\t\t%s  3", __func__);
     b = byte_vec_init_immed("0x01");
     assert(b.size == 1);
     assert(b.arr);
     assert(b.arr[0] == 1);
-    vec_free(VEC(&b));
+    vec_free(&b);
 
     // printf("\n\t\t%s  4", __func__);
     b = byte_vec_init_immed("0x0f");
     assert(b.size == 1);
     assert(b.arr);
     assert(b.arr[0] == 15);
-    vec_free(VEC(&b));
+    vec_free(&b);
 
     // printf("\n\t\t%s  5", __func__);
     b = byte_vec_init_immed("0x10");
     assert(b.size == 1);
     assert(b.arr);
     assert(b.arr[0] == 16);
-    vec_free(VEC(&b));
+    vec_free(&b);
 
     // printf("\n\t\t%s  6", __func__);
     b = byte_vec_init_immed("0x80");
     assert(b.size == 1);
     assert(b.arr);
     assert(b.arr[0] == 128);
-    vec_free(VEC(&b));
+    vec_free(&b);
 
     // printf("\n\t\t%s  7", __func__);
     b = byte_vec_init_immed("0xf0");
     assert(b.size == 1);
     assert(b.arr);
     assert(b.arr[0] == 240);
-    vec_free(VEC(&b));
+    vec_free(&b);
 
     // printf("\n\t\t%s  8", __func__);
     b = byte_vec_init_immed("0xff");
     assert(b.size == 1);
     assert(b.arr);
     assert(b.arr[0] == 255);
-    vec_free(VEC(&b));
+    vec_free(&b);
 
     // printf("\n\t\t%s  9", __func__);
     b = byte_vec_init_immed("0x0000");
@@ -88,7 +88,7 @@ void test_byte_vec_init_immed()
     assert(b.arr);
     assert(b.arr[0] == 0);
     assert(b.arr[1] == 0);
-    vec_free(VEC(&b));
+    vec_free(&b);
 
     // printf("\n\t\t%s 10", __func__);
     b = byte_vec_init_immed("0x1234");
@@ -96,7 +96,7 @@ void test_byte_vec_init_immed()
     assert(b.arr);
     assert(b.arr[0] == 18);
     assert(b.arr[1] == 52);
-    vec_free(VEC(&b));
+    vec_free(&b);
 
     assert(clu_mem_empty());
 }
@@ -194,27 +194,27 @@ void test_utils_byte_vec_init_uint64()
 
     byte_vec_t b = byte_vec_init_uint64(0);
     assert(byte_vec_test_immed(b, "0x"));
-    vec_free(VEC(&b));
+    vec_free(&b);
 
     b = byte_vec_init_uint64(1);
     assert(byte_vec_test_immed(b, "0x01"));
-    vec_free(VEC(&b));
+    vec_free(&b);
 
     b = byte_vec_init_uint64(0xff);
     assert(byte_vec_test_immed(b, "0xff"));
-    vec_free(VEC(&b));
+    vec_free(&b);
 
     b = byte_vec_init_uint64(0x100);
     assert(byte_vec_test_immed(b, "0x0100"));
-    vec_free(VEC(&b));
+    vec_free(&b);
 
     b = byte_vec_init_uint64(U64_FF);
     assert(byte_vec_test_immed(b, "0xff00000000000000"));
-    vec_free(VEC(&b));
+    vec_free(&b);
 
     b = byte_vec_init_uint64(U64_MAX);
     assert(byte_vec_test_immed(b, "0xffffffffffffffff"));
-    vec_free(VEC(&b));
+    vec_free(&b);
 
     
     assert(clu_mem_empty());
@@ -227,20 +227,20 @@ void test_utils_uint64_vec_has_uint64()
     uint64_vec_t vec = uint64_vec_init_immed(0);
     assert(uint64_vec_has_uint64(&vec, 0) == false);
     assert(uint64_vec_has_uint64(&vec, 1) == false);
-    vec_free(VEC(&vec));
+    vec_free(&vec);
     
     vec = uint64_vec_init_immed(1, 1);
     assert(uint64_vec_has_uint64(&vec, 0) == false);
     assert(uint64_vec_has_uint64(&vec, 1) == true);
     assert(uint64_vec_has_uint64(&vec, 2) == false);
-    vec_free(VEC(&vec));
+    vec_free(&vec);
     
     vec = uint64_vec_init_immed(2, 0, 2);
     assert(uint64_vec_has_uint64(&vec, 0) == true);
     assert(uint64_vec_has_uint64(&vec, 1) == false);
     assert(uint64_vec_has_uint64(&vec, 2) == true);
     assert(uint64_vec_has_uint64(&vec, 3) == false);
-    vec_free(VEC(&vec));
+    vec_free(&vec);
 
     assert(clu_mem_empty());
 }

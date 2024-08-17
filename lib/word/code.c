@@ -65,7 +65,7 @@ word_t word_init_bytes(byte_vec_p b)
         byte_t u = b->arr[size-1-i];
         word_set_byte(&w, i, u);
     }
-    vec_free(VEC(b));
+    vec_free(b);
     return w;
 }
 

@@ -78,7 +78,7 @@ uint64_t uint64_init_byte_immed(char str[])
 {
     byte_vec_t b = byte_vec_init_immed(str);
     uint64_t res = uint64_init_byte_vec(b.arr, b.size);
-    vec_free(VEC(&b));
+    vec_free(&b);
     return res;
 }
 
@@ -111,7 +111,7 @@ bool byte_vec_test(byte_vec_t b, byte_vec_t b_exp)
     if(!uint64_test(b.size, b_exp.size)) 
     {
         printf("\n\tBYTE VEC ASSERTION ERROR | LENGTH");
-        vec_free(VEC(&b_exp));
+        vec_free(&b_exp);
         return false;
     }
 
@@ -120,12 +120,12 @@ bool byte_vec_test(byte_vec_t b, byte_vec_t b_exp)
         if(!byte_test(b.arr[i], b_exp.arr[i]))
         {
             printf("\n\tBYTE VEC ASSERTION ERROR | BYTE | " U64P, i);
-            vec_free(VEC(&b_exp));
+            vec_free(&b_exp);
             return false;
         }
     }
 
-    vec_free(VEC(&b_exp));
+    vec_free(&b_exp);
     return true;
 }
 
@@ -242,9 +242,9 @@ uint64_vec_t uint64_vec_init_clean(uint64_t size)
 
 
 
-void vec_free(vec_p v)
+void vec_free(handler_p v)
 {
-    if(v->arr) free(v->arr);
+    if(VEC(v)->arr) free(VEC(v)->arr);
 }
 
 byte_vec_t byte_vec_concat(byte_vec_p b1, byte_vec_p b2) // TODO test
@@ -255,7 +255,7 @@ byte_vec_t byte_vec_concat(byte_vec_p b1, byte_vec_p b2) // TODO test
     b1->arr = realloc(b1->arr, b1->size + b2->size);
     memcpy(&b1->arr[b1->size], b2->arr, b2->size);
     b1->size += b2->size;
-    vec_free(VEC(b2));
+    vec_free(b2);
     return *b1;
 }
 bool uint64_vec_has_uint64(uint64_vec_p vec, uint64_t v)
