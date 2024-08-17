@@ -67,7 +67,7 @@ uint64_vec_t uint64_vec_init_immed(uint64_t n, ...)
 {
     va_list args;
     va_start(args, n);
-    uint64_vec_t vec = uint64_vec_init(n);
+    uint64_vec_t vec = uint64_vec_init_clean(n);
     for(uint64_t i=0; i<n; i++)
         vec.v[i] = va_arg(args, uint64_t);
 
@@ -77,8 +77,8 @@ uint64_vec_t uint64_vec_init_immed(uint64_t n, ...)
 uint64_t uint64_init_byte_immed(char str[])
 {
     byte_vec_t b = byte_vec_init_immed(str);
-    uint64_t res = uint64_init_byte(b.v, b.size);
-    byte_vec_free(&b);
+    uint64_t res = uint64_init_byte_vec(b.v, b.size);
+    vec_free(VEC(&b));
     return res;
 }
 
@@ -162,6 +162,9 @@ bool uint64_vec_test_immed(uint64_vec_t vec, uint64_t n, ...)
 
 
 
+// questions
+//      why this return?
+//      where it is used?
 uint64_t uint64_add(uint64_t u1, uint64_t u2)
 {
     uint64_t sum = u1 + u2;
@@ -188,7 +191,7 @@ uint64_t uint64_get_size(uint64_t u)
     return 8;
 }
 
-uint64_t uint64_init_byte(byte_p b, uint64_t size)
+uint64_t uint64_init_byte_vec(byte_p b, uint64_t size)
 {
     uint64_t u = 0;
     for(uint64_t i=0; i<size; i++)
@@ -196,6 +199,8 @@ uint64_t uint64_init_byte(byte_p b, uint64_t size)
     return u;
 }
 
+// questions
+//      again why the uint64
 uint64_t uint128_to_uint64(uint128_t res)
 {
     return (res >> 64) ? UINT64_MAX : (uint64_t) res;
@@ -219,14 +224,14 @@ byte_vec_t byte_vec_init_uint64(uint64_t u)
 
 byte_vec_t byte_vec_init(uint64_t size)
 {
-    if(size == 0) return (byte_vec_t){0, NULL};
+    if(size == 0) return byte_vec_init_zero();
     byte_p v = calloc(size, sizeof(byte_t));
     assert(v);
 
     return (byte_vec_t){size, v};
 }
 
-uint64_vec_t uint64_vec_init(uint64_t size)
+uint64_vec_t uint64_vec_init_clean(uint64_t size)
 {
     if(size == 0) return (uint64_vec_t){0, NULL};
     uint64_p v = calloc(size, sizeof(uint64_t));
@@ -237,14 +242,9 @@ uint64_vec_t uint64_vec_init(uint64_t size)
 
 
 
-void byte_vec_free(byte_vec_p b)
+void vec_free(vec_p v)
 {
-    if(b->v) free(b->v);
-}
-
-void uint64_vec_free(uint64_vec_p u)
-{
-    if(u->v) free(u->v);
+    if(v->v) free(v->v);
 }
 
 byte_vec_t byte_vec_concat(byte_vec_p b1, byte_vec_p b2) // TODO test
@@ -255,7 +255,7 @@ byte_vec_t byte_vec_concat(byte_vec_p b1, byte_vec_p b2) // TODO test
     b1->v = realloc(b1->v, b1->size + b2->size);
     memcpy(&b1->v[b1->size], b2->v, b2->size);
     b1->size += b2->size;
-    byte_vec_free(b2);
+    vec_free(VEC(b2));
     return *b1;
 }
 bool uint64_vec_has_uint64(uint64_vec_p vec, uint64_t v)

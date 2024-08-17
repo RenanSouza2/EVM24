@@ -65,7 +65,7 @@ evm_word_t word_init_bytes(byte_vec_p b)
         byte_t u = bytes_get_byte(b, size-1-i);
         word_set_byte(&w, i, u);
     }
-    byte_vec_free(b);
+    vec_free(VEC(b));
     return w;
 }
 

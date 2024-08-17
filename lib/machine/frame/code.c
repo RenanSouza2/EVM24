@@ -143,9 +143,9 @@ uint64_vec_t frame_get_jumpdest(evm_bytes_p code) // TODO improve test
             case PUSH0 ... PUSH32: pc += op - PUSH0;
         }
     }
-    if(count == 0) return uint64_vec_init(0);
+    if(count == 0) return uint64_vec_init_clean(0);
 
-    uint64_vec_t vec = uint64_vec_init(count);
+    uint64_vec_t vec = uint64_vec_init_clean(count);
     count = 1;
     for(uint64_t pc=0; pc<code->size; pc++)
     {
@@ -163,15 +163,15 @@ uint64_vec_t frame_get_jumpdest(evm_bytes_p code) // TODO improve test
 
 void frame_free(evm_frame_p f)
 {
-    byte_vec_free(&f->code);
-    uint64_vec_free(&f->jumpdest);
+    vec_free(VEC(&f->code));
+    vec_free(VEC(&f->jumpdest));
     stack_free(&f->s);
-    byte_vec_free(&f->m);
+    vec_free(VEC(&f->m));
 }
 
 void frame_o_free(evm_frame_o_p fo)
 {
-    byte_vec_free(&fo->returndata);
+    vec_free(VEC(&fo->returndata));
 }
 
 
@@ -251,7 +251,7 @@ int frame_codecopy(evm_frame_p f) // TODO test
 
     evm_bytes_t b = bytes_get_bytes(&f->code, w_code.v[0], size);
     mem_set_bytes(&f->m, w_mem.v[0], &b);
-    byte_vec_free(&b);
+    vec_free(VEC(&b));
     return 0;
 }
 

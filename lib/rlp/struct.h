@@ -10,7 +10,7 @@
 
 PLACEHOLDER(evm_rlp);
 
-VEC(evm_rlp);
+VEC_DEFINE(evm_rlp);
 
 STRUCT(evm_rlp)
 {

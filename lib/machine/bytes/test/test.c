@@ -17,7 +17,7 @@ void test_bytes_get_byte()
     for(int i=0; i<32; i++)
         assert(bytes_get_byte(&b, i) == i);
     assert(bytes_get_byte(&b, 64) == 0);
-    byte_vec_free(&b);
+    vec_free(VEC(&b));
 
     assert(clu_mem_empty());
 }
@@ -30,7 +30,7 @@ void test_bytes_get_word()
     evm_bytes_t b = byte_vec_init_immed("0x");
     evm_word_t w = bytes_get_word(&b, 0);
     assert(word_test(w, WORD(0, 0, 0, 0)));
-    byte_vec_free(&b);
+    vec_free(VEC(&b));
 
     // printf("\n\t\t%s 2", __func__);
     b = byte_vec_init_immed("0xff");
@@ -40,7 +40,7 @@ void test_bytes_get_word()
     // printf("\n\t\t%s 3", __func__);
     w = bytes_get_word(&b, 1);
     assert(word_test(w, WORD(0, 0, 0, 0)));
-    byte_vec_free(&b);
+    vec_free(VEC(&b));
 
     // printf("\n\t\t%s 4", __func__);
     b = byte_vec_init_immed("0x00000000000000000000000000000000000000000000000000000000000000ff");
@@ -58,7 +58,7 @@ void test_bytes_get_word()
     // printf("\n\t\t%s 7", __func__);
     w = bytes_get_word(&b, 32);
     assert(word_test(w, WORD(0, 0, 0, 0)));
-    byte_vec_free(&b);
+    vec_free(VEC(&b));
 
     assert(clu_mem_empty());
 }

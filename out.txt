@@ -1,4 +1,0 @@
-/Applications/Xcode.app/Contents/Developer/usr/bin/make test --directory=lib -s
-linking  debug stack
-linking  debug machine
-building debug rlp
