@@ -61,9 +61,11 @@ word_t word_init_bytes(byte_vec_p b)
 
     word_t w = word_init();
     for(uint64_t i=0; i<size; i++)
-        word_set_byte(&w, i, b->v[size-1-i]);
-        
-    byte_vec_free(b);
+    {
+        byte_t u = bytes_get_byte(b, size-1-i);
+        word_set_byte(&w, i, u);
+    }
+    vec_free(VEC(b));
     return w;
 }
 

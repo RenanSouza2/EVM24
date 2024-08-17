@@ -17,7 +17,7 @@ STRUCT(evm_frame)
     evm_stack_t s;
 };
 
-STRUCT(evm_frame_o) // cbAIH%cV45dOiIP1&uAi
+STRUCT(evm_frame_o)
 {
     bool success;
     uint64_t gas;
