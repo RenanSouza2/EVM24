@@ -1,7 +1,7 @@
 #include "../debug.h"
 #include "../../../utils/clu/bin/header.h"
 
-
+#pragma region debug_toolss
 
 void test_utils_cton()
 {
@@ -100,6 +100,8 @@ void test_byte_vec_init_immed()
 
     assert(clu_mem_empty());
 }
+
+#pragma endregion debug_toolss
 
 
 
