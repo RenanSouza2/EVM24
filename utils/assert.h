@@ -4,24 +4,24 @@
 #include <stdio.h>
 #include <assert.h>
 
-#undef  assert
+#undef assert
 
 #ifdef __linux__
 
-#define assert(COND)        \
-    if(!(COND))             \
-    {                       \
-        printf("\n\n");     \
-        __assert_fail(#COND, __FILE__, __LINE__, __ASSERT_FUNCTION);    \
+#define assert(COND)                                                 \
+    if (!(COND))                                                     \
+    {                                                                \
+        printf("\n\n");                                              \
+        __assert_fail(#COND, __FILE__, __LINE__, __ASSERT_FUNCTION); \
     }
 
 #elif defined __APPLE__
 
-#define assert(COND)        \
-    if(!(COND))             \
-    {                       \
-        printf("\n\n");     \
-        __assert_rtn(__func__, __ASSERT_FILE_NAME, __LINE__, #COND);    \
+#define assert(COND)                                                 \
+    if (!(COND))                                                     \
+    {                                                                \
+        printf("\n\n");                                              \
+        __assert_rtn(__func__, __ASSERT_FILE_NAME, __LINE__, #COND); \
     }
 
 #endif

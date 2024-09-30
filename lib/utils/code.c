@@ -158,9 +158,6 @@ bool uint64_vec_test_immed(uint64_vec_t vec, uint64_t n, ...)
 
 #pragma region uint
 
-// questions
-//      why this return?
-//      where it is used?
 uint64_t uint64_add(uint64_t u1, uint64_t u2)
 {
     uint64_t sum = u1 + u2;
@@ -198,8 +195,6 @@ uint64_t uint64_init_byte_vec(byte_p b, uint64_t size)
     return u;
 }
 
-// questions
-//      again why the uint64 cap
 uint64_t uint128_to_uint64(uint128_t res)
 {
     return (res >> 64) ? UINT64_MAX : (uint64_t)res;
