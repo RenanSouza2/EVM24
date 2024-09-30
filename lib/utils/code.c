@@ -167,13 +167,15 @@ uint64_t uint64_add(uint64_t u1, uint64_t u2)
     return sum < u1 ? UINT64_MAX : sum;
 }
 
-byte_t uint64_get_byte(uint64_t u, uint64_t i)
+byte_t uint64_get_byte(uint64_t u, uint64_t index)
 {
-    return (byte_t)(u >> (i << 3));
+    assert(index < 8);
+    return (byte_t)(u >> (index << 3));
 }
 
 uint64_t uint64_set_byte(uint64_t u, uint64_t index, byte_t b)
 {
+    assert(index < 8);
     uint64_t offset = index << 3;
     return (u & ~((uint64_t)0xff << offset)) | ((uint64_t)b << offset);
 }
@@ -189,6 +191,7 @@ uint64_t uint64_get_size(uint64_t u)
 
 uint64_t uint64_init_byte_vec(byte_p b, uint64_t size)
 {
+    assert(size <= 8);
     uint64_t u = 0;
     for (uint64_t i = 0; i < size; i++)
         u = uint64_set_byte(u, i, b[size - 1 - i]);
@@ -196,7 +199,7 @@ uint64_t uint64_init_byte_vec(byte_p b, uint64_t size)
 }
 
 // questions
-//      again why the uint64
+//      again why the uint64 cap
 uint64_t uint128_to_uint64(uint128_t res)
 {
     return (res >> 64) ? UINT64_MAX : (uint64_t)res;

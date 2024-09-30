@@ -37,7 +37,7 @@ bool uint64_vec_test_immed(uint64_vec_t vec, uint64_t n, ...);
 
 #endif
 
-byte_t uint64_get_byte(uint64_t u, uint64_t i);
+byte_t uint64_get_byte(uint64_t u, uint64_t index);
 uint64_t uint64_set_byte(uint64_t u, uint64_t index, byte_t b);
 uint64_t uint64_get_size(uint64_t u);
 
