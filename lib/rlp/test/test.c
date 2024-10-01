@@ -491,15 +491,15 @@ void test_rlp_decode(bool show)
     assert(clu_mem_empty());
 
     if(show) printf("\n\t\t%s 30\t\t", __func__);
-    assert_64(rlp_decode_immed(&r, "0xf8"), 0x161);
+    assert_64(rlp_decode_immed(&r, "0xf8"), 0x151);
     assert(clu_mem_empty());
 
     if(show) printf("\n\t\t%s 31\t\t", __func__);
-    assert_64(rlp_decode_immed(&r, "0xf801"), 0x261);
+    assert_64(rlp_decode_immed(&r, "0xf801"), 0x251);
     assert(clu_mem_empty());
 
     if(show) printf("\n\t\t%s 32\t\t", __func__);
-    assert_64(rlp_decode_immed(&r, "0xf838"), 0x361);
+    assert_64(rlp_decode_immed(&r, "0xf838"), 0x61);
     assert(clu_mem_empty());
 
     if(show) printf("\n\t\t%s 33\t\t", __func__);
