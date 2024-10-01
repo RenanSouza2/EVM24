@@ -257,6 +257,15 @@ uint64_t rlp_get_size(
         type = BYTES;
         head_size = 1;
         body_size = b0 - 128;
+
+        if(body_size == 1)
+        {
+            if(size == 1)
+                return 2;
+            
+            if(b[1] < 128)
+                return 3;
+        }
         break;
 
         case 184 ... 191:

@@ -467,7 +467,7 @@ void test_rlp_decode(bool show)
     assert(clu_mem_empty());
 
     if(show) printf("\n\t\t%s 24\t\t", __func__);
-    assert_64(rlp_decode_immed(&r, "0x81"), 0x41);
+    assert_64(rlp_decode_immed(&r, "0x81"), 0x21);
     assert(clu_mem_empty());
 
     if(show) printf("\n\t\t%s 25\t\t", __func__);
