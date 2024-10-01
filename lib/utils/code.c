@@ -156,7 +156,7 @@ bool uint64_vec_test_immed(uint64_vec_t vec, uint64_t n, ...)
 
 #endif
 
-#pragma region uint
+// #pragma region uint
 
 uint64_t uint64_add(uint64_t u1, uint64_t u2)
 {
@@ -200,9 +200,9 @@ uint64_t uint128_to_uint64(uint128_t res)
     return (res >> 64) ? UINT64_MAX : (uint64_t)res;
 }
 
-#pragma endregion uint
+// #pragma endregion uint
 
-#pragma region vec
+// #pragma region vec
 
 byte_vec_t byte_vec_init_zero()
 {
@@ -222,6 +222,7 @@ byte_vec_t byte_vec_init(uint64_t size)
 {
     if (size == 0)
         return byte_vec_init_zero();
+
     byte_p v = calloc(size, sizeof(byte_t));
     assert(v);
 
@@ -232,6 +233,7 @@ uint64_vec_t uint64_vec_init_clean(uint64_t size)
 {
     if (size == 0)
         return (uint64_vec_t){0, NULL};
+
     uint64_p v = calloc(size, sizeof(uint64_t));
     assert(v);
 
@@ -248,6 +250,7 @@ byte_vec_t byte_vec_concat(byte_vec_p b1, byte_vec_p b2) // TODO test
 {
     if (b2->size == 0)
         return *b1;
+        
     if (b1->size == 0)
         return *b2;
 
@@ -279,4 +282,4 @@ bool uint64_vec_has_uint64(uint64_vec_p vec, uint64_t v)
     return vec->arr[min] == v;
 }
 
-#pragma endregion vec
+// #pragma endregion vec
