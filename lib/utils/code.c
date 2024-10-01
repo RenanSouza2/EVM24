@@ -65,7 +65,7 @@ uint64_vec_t uint64_vec_init_immed(uint64_t n, ...)
 {
     va_list args;
     va_start(args, n);
-    uint64_vec_t vec = uint64_vec_init_clean(n);
+    uint64_vec_t vec = uint64_vec_init(n);
     for (uint64_t i = 0; i < n; i++)
         vec.arr[i] = va_arg(args, uint64_t);
 
@@ -75,7 +75,7 @@ uint64_vec_t uint64_vec_init_immed(uint64_t n, ...)
 uint64_t uint64_init_byte_immed(char str[])
 {
     byte_vec_t b = byte_vec_init_immed(str);
-    uint64_t res = uint64_init_byte_vec(b.arr, b.size);
+    uint64_t res = uint64_init_byte_arr(b.arr, b.size);
     vec_free(&b);
     return res;
 }
@@ -186,7 +186,7 @@ uint64_t uint64_get_size(uint64_t u)
     return 8;
 }
 
-uint64_t uint64_init_byte_vec(byte_p b, uint64_t size)
+uint64_t uint64_init_byte_arr(byte_p b, uint64_t size)
 {
     assert(size <= 8);
     uint64_t u = 0;
@@ -204,17 +204,19 @@ uint64_t uint128_to_uint64(uint128_t res)
 
 // #pragma region vec
 
+// #pragma region byte_vec
+
 byte_vec_t byte_vec_init_zero()
 {
     return (byte_vec_t){0, NULL};
 }
 
-byte_vec_t byte_vec_init_uint64(uint64_t u)
+byte_vec_t byte_vec_init_uint64(uint64_t num)
 {
-    uint64_t size = uint64_get_size(u);
+    uint64_t size = uint64_get_size(num);
     byte_vec_t b = byte_vec_init(size);
     for (uint64_t i = 0; i < size; i++)
-        b.arr[size - 1 - i] = uint64_get_byte(u, i);
+        b.arr[size - 1 - i] = uint64_get_byte(num, i);
     return b;
 }
 
@@ -229,21 +231,12 @@ byte_vec_t byte_vec_init(uint64_t size)
     return (byte_vec_t){size, v};
 }
 
-uint64_vec_t uint64_vec_init_clean(uint64_t size)
+byte_vec_t byte_vec_init_byte_arr(byte_p b, uint64_t size) // TODO: test
 {
-    if (size == 0)
-        return (uint64_vec_t){0, NULL};
+    byte_vec_t _b = byte_vec_init(size);
+    memcpy(_b.arr, b, size);
 
-    uint64_p v = calloc(size, sizeof(uint64_t));
-    assert(v);
-
-    return (uint64_vec_t){size, v};
-}
-
-void vec_free(handler_p v)
-{
-    if (VEC(v)->arr)
-        free(VEC(v)->arr);
+    return _b;
 }
 
 byte_vec_t byte_vec_concat(byte_vec_p b1, byte_vec_p b2) // TODO test
@@ -259,6 +252,26 @@ byte_vec_t byte_vec_concat(byte_vec_p b1, byte_vec_p b2) // TODO test
     b1->size += b2->size;
     vec_free(b2);
     return *b1;
+}
+
+// #pragma endregion byte_vec
+
+// #pragma region uint64_vec
+
+uint64_vec_t uint64_vec_init_zero() // TODO test
+{
+    return (uint64_vec_t){0, NULL};
+}
+
+uint64_vec_t uint64_vec_init(uint64_t size)
+{
+    if (size == 0)
+        uint64_vec_init_zero();
+
+    uint64_p v = calloc(size, sizeof(uint64_t));
+    assert(v);
+
+    return (uint64_vec_t){size, v};
 }
 
 bool uint64_vec_has_uint64(uint64_vec_p vec, uint64_t v)
@@ -280,6 +293,14 @@ bool uint64_vec_has_uint64(uint64_vec_p vec, uint64_t v)
             min = mid;
     }
     return vec->arr[min] == v;
+}
+
+// #pragma endregion uint64_vec
+
+void vec_free(handler_p v)
+{
+    if (VEC(v)->arr)
+        free(VEC(v)->arr);
 }
 
 // #pragma endregion vec

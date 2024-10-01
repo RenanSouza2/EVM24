@@ -5,7 +5,7 @@
 
 #include "../utils/struct.h"
 
-#define BYTE 0
+#define BYTES 0
 #define LIST 1
 
 PLACEHOLDER(evm_rlp);

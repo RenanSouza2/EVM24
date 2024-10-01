@@ -143,9 +143,9 @@ uint64_vec_t frame_get_jumpdest(evm_bytes_p code) // TODO improve test
             case PUSH0 ... PUSH32: pc += op - PUSH0;
         }
     }
-    if(count == 0) return uint64_vec_init_clean(0);
+    if(count == 0) return uint64_vec_init(0);
 
-    uint64_vec_t vec = uint64_vec_init_clean(count);
+    uint64_vec_t vec = uint64_vec_init(count);
     count = 1;
     for(uint64_t pc=0; pc<code->size; pc++)
     {

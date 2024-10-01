@@ -30,7 +30,7 @@ void word_display_immed(word_t w)
 
 bool word_test(word_t w1, word_t w2)
 {
-    if(word_eq_bool(&w1, &w2)) return true;
+    if(word_eq(&w1, &w2)) return true;
 
     printf("\n");
     printf("\n\t");word_display(w1);
@@ -80,7 +80,7 @@ bool word_is_uint64(word_p w)
     return true;
 }
 
-bool word_eq_bool(word_p w1, word_p w2)
+bool word_eq(word_p w1, word_p w2)
 {
     for(uint64_t i=0; i<V_MAX; i++)
         if(w1->arr[i] != w2->arr[i])
@@ -97,16 +97,16 @@ void word_add_uint64(word_p w, uint64_t i, uint64_t v)
     if(res < v) word_add_uint64(w, i+1, 1);
 }
 
-byte_t word_get_byte(word_p w, uint64_t i)
+byte_t word_get_byte(word_p w, uint64_t index)
 {
-    assert(i<32);
-    return ((byte_t*)w->arr)[i];
+    assert(index<32);
+    return ((byte_t*)w->arr)[index];
 }
 
-void word_set_byte(word_p w, uint64_t i, byte_t u)
+void word_set_byte(word_p w, uint64_t index, byte_t u)
 {
-    assert(i<32);
-    ((byte_t*)w->arr)[i] = u;
+    assert(index<32);
+    ((byte_t*)w->arr)[index] = u;
 }
 
 
