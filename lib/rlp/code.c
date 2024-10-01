@@ -270,7 +270,7 @@ uint64_t rlp_get_size(
 
         case 184 ... 191:
         type = BYTES;
-        ERR(rlp_get_size_long(&head_size, &body_size, b0 - 183, b, size), 2);
+        ERR(rlp_get_size_long(&head_size, &body_size, b0 - 183, b, size), 4);
         break;
 
         case 192 ... 247:
@@ -281,12 +281,12 @@ uint64_t rlp_get_size(
 
         case 248 ... 255:
         type = LIST;
-        ERR(rlp_get_size_long(&head_size, &body_size, b0 - 247, b, size), 3);
+        ERR(rlp_get_size_long(&head_size, &body_size, b0 - 247, b, size), 5);
         break;
     }
 
     if(head_size + body_size > size)
-        return 4;
+        return 6;
     
     *out_type = type;
     *out_head_size = head_size;
