@@ -258,12 +258,12 @@ uint64_t rlp_get_size(
         body_size = b0 - 128;
         break;
 
-        case 184 ... 192:
+        case 184 ... 191:
         type = BYTES;
         ERR(rlp_get_size_long(&head_size, &body_size, b0 - 183, b, size), 2);
         break;
 
-        case 193 ... 247:
+        case 192 ... 247:
         type = LIST;
         head_size = 1;
         body_size = b0 - 192;
