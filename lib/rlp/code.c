@@ -61,8 +61,9 @@ bool rlp_test_immed(evm_rlp_t r, uint64_t type, ...)
     va_list args;
     va_start(args, type);
     evm_rlp_t r_exp = rlp_init_immed_variadic(type, &args);
-    return rlp_test(r, r_exp);
-    ;
+    bool res = rlp_test(r, r_exp);
+    rlp_free(&r);
+    return res;
 }
 
 bool rlp_test(evm_rlp_t r, evm_rlp_t r_exp)
@@ -75,7 +76,7 @@ bool rlp_test(evm_rlp_t r, evm_rlp_t r_exp)
 
     switch (r.type)
     {
-    case BYTES:
+        case BYTES:
         if (!byte_vec_test(r.vec.b, r_exp.vec.b))
         {
             printf("\n\tRLP ASSERTION ERROR | BYTE VEC");
@@ -83,7 +84,7 @@ bool rlp_test(evm_rlp_t r, evm_rlp_t r_exp)
         }
         return true;
 
-    case LIST:
+        case LIST:
         if (!rlp_vec_test(r.vec.r, r_exp.vec.r))
         {
             printf("\n\tRLP ASSERTION ERROR | LIST VEC");
@@ -105,13 +106,13 @@ bool rlp_vec_test(evm_rlp_vec_t r, evm_rlp_vec_t r_exp)
     }
 
     for (uint64_t i = 0; i < r.size; i++)
-        if (!rlp_test(r.arr[i], r_exp.arr[i]))
-        {
-            printf("\n\tRLP VECTOR ASSERTION ERROR | ITEM | " U64P, i);
-            return false;
-        }
+    if (!rlp_test(r.arr[i], r_exp.arr[i]))
+    {
+        printf("\n\tRLP VECTOR ASSERTION ERROR | ITEM | " U64P, i);
+        return false;
+    }
 
-    rlp_vec_free_rec(&r_exp);
+    vec_free(&r_exp);
     return true;
 }
 
@@ -217,8 +218,8 @@ uint64_t rlp_get_size_long(
     uint64_p out_body_size,
     uint64_t size_size,
     byte_p b,
-    uint64_t size)
-{
+    uint64_t size
+) {
     uint64_t head_size = 1 + size_size;
     if (head_size > size)
         return 1;
