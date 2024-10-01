@@ -5,12 +5,12 @@
 
 #include "../utils/struct.h"
 
-#define BYTE 0
+#define BYTES 0
 #define LIST 1
 
 PLACEHOLDER(evm_rlp);
 
-VEC(evm_rlp);
+VEC_DEFINE(evm_rlp);
 
 STRUCT(evm_rlp)
 {

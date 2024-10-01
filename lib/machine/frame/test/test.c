@@ -7,7 +7,7 @@
 #include "../../stack/head/debug.h"
 #include "../../gas/header.h"
 #include "../../bytes/debug.h"
-#include "../../word/debug.h"
+#include "../../../word/debug.h"
 #include "../../../utils/debug.h"
 
 
@@ -41,19 +41,19 @@ void test_frame_get_jumpdest()
 
     uint64_vec_t jumpdest = frame_get_jumpdest_immed("0x");
     assert(uint64_vec_test_immed(jumpdest, 0));
-    uint64_vec_free(&jumpdest);
+    vec_free(&jumpdest);
 
     jumpdest = frame_get_jumpdest_immed("0x00");
     assert(uint64_vec_test_immed(jumpdest, 0));
-    uint64_vec_free(&jumpdest);
+    vec_free(&jumpdest);
 
     jumpdest = frame_get_jumpdest_immed("0x5b");
     assert(uint64_vec_test_immed(jumpdest, 1, 0));
-    uint64_vec_free(&jumpdest);
+    vec_free(&jumpdest);
 
     jumpdest = frame_get_jumpdest_immed("0x605b");
     assert(uint64_vec_test_immed(jumpdest, 0));
-    uint64_vec_free(&jumpdest);
+    vec_free(&jumpdest);
 
     assert(clu_mem_empty());
 }
@@ -243,8 +243,8 @@ void test_frame_push()
         sprintf(str, "0x%x", 0x5f + i);
         memset(&str[4], 'f', 2*i);
 
-        evm_word_t w = W1(0);
-        memset(w.v, 0xff, i);
+        word_t w = W1(0);
+        memset(w.arr, 0xff, i);
         
         f = frame_init_immed(str, GAS_DEF);
         assert_64(frame_push(&f), 0);

@@ -1,37 +1,37 @@
 #include <stdio.h>
 
 #include "../debug.h"
-#include "../../../../utils/clu/bin/header.h"
+#include "../../../utils/clu/bin/header.h"
 
-#include "../../bytes/debug.h"
-#include "../../../utils/debug.h"
+#include "../../machine/bytes/debug.h"
+#include "../../utils/debug.h"
 
 
 
-void test_word_size()
+void test_word_mem_size()
 {
     printf("\n\t%s", __func__);
     
-    assert(sizeof(evm_word_t) == 32);
+    assert(sizeof(word_t) == 32);
 
     assert(clu_mem_empty());
 }
 
-void test_word_init()
+void test_word_init_zero()
 {
     printf("\n\t%s", __func__);
     
-    evm_word_t w = word_init();
+    word_t w = word_init_zero();
     assert(word_test(w, W1(0)));
 
     assert(clu_mem_empty());
 }
 
-void test_word_init_uint_64()
+void test_word_init_uint64()
 {
     printf("\n\t%s", __func__);
     
-    evm_word_t w = word_init_uint64(0);
+    word_t w = word_init_uint64(0);
     assert(word_test(w, W1(0)));
     
     w = word_init_uint64(1);
@@ -54,7 +54,7 @@ void test_word_init_bytes()
     printf("\n\t%s", __func__);
     
     evm_bytes_t b = byte_vec_init_immed("0x");
-    evm_word_t w = word_init_bytes(&b);
+    word_t w = word_init_bytes(&b);
     assert(word_test(w, W1(0)));
 
     b = byte_vec_init_immed("0xff");
@@ -78,7 +78,7 @@ void test_word_is_uint_64()
 {
     printf("\n\t%s", __func__);
     
-    evm_word_t w = word_init();
+    word_t w = word_init_zero();
     assert(word_is_uint64(&w) == true);
 
     w = W1(U64_MAX);
@@ -93,25 +93,25 @@ void test_word_is_uint_64()
     assert(clu_mem_empty());
 }
 
-void test_word_eq_bool()
+void test_word_eq()
 {
     printf("\n\t%s", __func__);
     
-    evm_word_t w1 = WORD(4, 3, 2, 1);
-    evm_word_t w2 = WORD(4, 3, 2, 1);
-    assert(word_eq_bool(&w1, &w2) == true);
+    word_t w1 = WORD(4, 3, 2, 1);
+    word_t w2 = WORD(4, 3, 2, 1);
+    assert(word_eq(&w1, &w2) == true);
     
     w2 = WORD(4, 3, 2, 0);
-    assert(word_eq_bool(&w1, &w2) == false);
+    assert(word_eq(&w1, &w2) == false);
     
     w2 = WORD(4, 3, 0, 1);
-    assert(word_eq_bool(&w1, &w2) == false);
+    assert(word_eq(&w1, &w2) == false);
     
     w2 = WORD(4, 0, 2, 1);
-    assert(word_eq_bool(&w1, &w2) == false);
+    assert(word_eq(&w1, &w2) == false);
     
     w2 = WORD(0, 3, 2, 1);
-    assert(word_eq_bool(&w1, &w2) == false);
+    assert(word_eq(&w1, &w2) == false);
 
     assert(clu_mem_empty());
 }
@@ -120,7 +120,7 @@ void test_word_add_uint64()
 {
     printf("\n\t%s", __func__);
     
-    evm_word_t w = WORD(4, 3, 2, 1);
+    word_t w = WORD(4, 3, 2, 1);
     word_add_uint64(&w, 0, 1);
     assert(word_test(w, WORD(4, 3, 2, 2)));
 
@@ -155,11 +155,11 @@ void test_word_add_uint64()
     assert(clu_mem_empty());
 }
 
-void test_word_set_bytes()
+void test_word_set_byte()
 {
     printf("\n\t%s", __func__);
     
-    evm_word_t w = W1(0);
+    word_t w = W1(0);
     word_set_byte(&w, 0, 0xff);
     assert(word_test(w, W1(0xff)));
 
@@ -188,9 +188,9 @@ void test_word_add()
 {
     printf("\n\t%s", __func__);
     
-    evm_word_t w1 = WORD(4, 3, 2, 1);
-    evm_word_t w2 = WORD(1, 2, 3, 4);
-    evm_word_t w = word_add(&w1, &w2);
+    word_t w1 = WORD(4, 3, 2, 1);
+    word_t w2 = WORD(1, 2, 3, 4);
+    word_t w = word_add(&w1, &w2);
     assert(word_test(w, WORD(5, 5, 5, 5)));
     
     w1 = WORD(U64_MAX, U64_MAX, U64_MAX, U64_MAX);
@@ -212,15 +212,15 @@ void test_word()
 {
     printf("\n%s", __func__);
 
-    test_word_size();
-    test_word_init();
-    test_word_init_uint_64();
+    test_word_mem_size();
+    test_word_init_zero();
+    test_word_init_uint64();
     test_word_init_bytes();
 
     test_word_is_uint_64();
-    test_word_eq_bool();
+    test_word_eq();
     test_word_add_uint64();
-    test_word_set_bytes();
+    test_word_set_byte();
 
     test_word_add();
 

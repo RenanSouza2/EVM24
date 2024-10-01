@@ -3,14 +3,18 @@
 
 #include "header.h"
 
-#include "../../word/struct.h"
+#include "../../../word/struct.h"
 
 #define S_MAX 1024
 
 STRUCT(evm_stack_l)
 {
     evm_stack_l_p sl;
-    evm_word_t w;
+    word_t w;
 };
+
+evm_stack_l_p stack_l_create(evm_stack_l_p sl_next, word_p w);
+evm_stack_l_p stack_l_pop(word_p w, evm_stack_l_p sl);
+void stack_l_free(evm_stack_l_p sl);
 
 #endif
