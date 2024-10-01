@@ -530,7 +530,7 @@ void test_rlp()
     printf("\n%s\t\t", __func__);
 
     test_rlp_encode(false);
-    test_rlp_decode(true);
+    test_rlp_decode(false);
 
     assert(clu_mem_empty());
 }
