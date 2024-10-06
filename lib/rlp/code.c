@@ -224,6 +224,9 @@ uint64_t rlp_get_size_long(
     if (head_size > size)
         return 1;
 
+    if(b[1] == 0x00)
+        return 2;
+
     uint64_t body_size = uint64_init_byte_arr(&b[1], size_size);
     if (body_size < 56)
         return 3;
