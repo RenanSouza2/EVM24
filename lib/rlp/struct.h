@@ -23,5 +23,6 @@ STRUCT(evm_rlp)
 };
 
 byte_vec_t rlp_encode(evm_rlp_p r);
+uint64_t rlp_decode(evm_rlp_p out_r, byte_vec_p b);
 
 #endif

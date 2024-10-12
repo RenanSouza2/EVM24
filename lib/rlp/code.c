@@ -17,7 +17,7 @@ evm_rlp_t rlp_init_immed_variadic(uint64_t type, va_list *args)
     case BYTES:;
         char *str = va_arg(*args, char *);
         byte_vec_t b = byte_vec_init_immed(str);
-        return rlp_init_byte_vec(&b);
+        return rlp_init_byte_vec(b);
 
     case LIST:;
         uint64_t size = va_arg(*args, uint64_t);
@@ -28,7 +28,7 @@ evm_rlp_t rlp_init_immed_variadic(uint64_t type, va_list *args)
             r.arr[i] = rlp_init_immed_variadic(r1_type, args);
         }
 
-        return rlp_init_list(&r);
+        return rlp_init_list(r);
     }
     assert(false);
 }
@@ -118,14 +118,14 @@ bool rlp_vec_test(evm_rlp_vec_t r, evm_rlp_vec_t r_exp)
 
 #endif
 
-evm_rlp_t rlp_init_byte_vec(byte_vec_p b)
+evm_rlp_t rlp_init_byte_vec(byte_vec_t b)
 {
-    return (evm_rlp_t){BYTES, {.b = *b}};
+    return (evm_rlp_t){BYTES, {.b = b}};
 }
 
-evm_rlp_t rlp_init_list(evm_rlp_vec_p r)
+evm_rlp_t rlp_init_list(evm_rlp_vec_t r)
 {
-    return (evm_rlp_t){LIST, {.r = *r}};
+    return (evm_rlp_t){LIST, {.r = r}};
 }
 
 evm_rlp_vec_t rlp_vec_init(uint64_t size)
@@ -327,7 +327,7 @@ uint64_t rlp_get_r1_sizes(
 evm_rlp_t rlp_decode_bytes(byte_p b, uint64_t body_size)
 {
     byte_vec_t _b = byte_vec_init_byte_arr(b, body_size);
-    return rlp_init_byte_vec(&_b);
+    return rlp_init_byte_vec(_b);
 }
 
 uint64_t rlp_decode_list(evm_rlp_p out_r, byte_p b, uint64_t size)
@@ -359,7 +359,7 @@ uint64_t rlp_decode_list(evm_rlp_p out_r, byte_p b, uint64_t size)
     }
     vec_free(&r1_sizes);
 
-    *out_r = rlp_init_list(&r_vec);
+    *out_r = rlp_init_list(r_vec);
     return 0;
 }
 
@@ -397,3 +397,4 @@ uint64_t rlp_decode(evm_rlp_p out_r, byte_vec_p b)
     *out_r = _r;
     return 0;
 }
+
