@@ -30,7 +30,7 @@ STRUCT(evm_node_branch)
 {
     evm_node_t n;
     word_t next[16];
-    byte_vec_p v;
+    byte_vec_t v;
 };
 
 STRUCT(evm_node_extension)

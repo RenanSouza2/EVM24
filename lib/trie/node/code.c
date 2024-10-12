@@ -20,6 +20,18 @@ evm_rlp_t rlp_init_node_leaf(evm_node_leaf_p n)
     return rlp_init_list(r_vec);
 }
 
+evm_rlp_t rlp_init_node_branch(evm_node_branch_p n)
+{
+    evm_rlp_vec_t r_vec = rlp_vec_init(2);
+    for(uint64_t i=0; i<16; i++)
+    {
+        byte_vec_t v = byte_vec_init_word(&n->next[i]);
+        r_vec.arr[i] = rlp_init_byte_vec(v);
+    }
+    r_vec.arr[16] = rlp_init_byte_vec(n->v);
+    return rlp_init_list(r_vec);
+}
+
 evm_rlp_t rlp_init_node(evm_node_p n)
 {
     switch (n->type)

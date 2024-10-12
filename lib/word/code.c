@@ -109,6 +109,27 @@ void word_set_byte(word_p w, uint64_t index, byte_t u)
     ((byte_t*)w->arr)[index] = u;
 }
 
+// TODO test
+uint64_t word_get_size(word_p w)
+{
+    for(uint64_t i=64; i>0; i--)
+        if(word_get_byte(w, i-1) != 0x00)
+            return i;
+
+    return 0;
+}
+
+// TODO test
+byte_vec_t byte_vec_init_word(word_p w)
+{
+    uint64_t size = word_get_size(w);
+    byte_vec_t b = byte_vec_init(size);
+    for(uint64_t i=0; i<size; i++)
+        b.arr[size-1 - i] = word_get_byte(w, i);
+        
+    return b;
+}
+
 
 
 word_t word_add(word_p w1, word_p w2)
