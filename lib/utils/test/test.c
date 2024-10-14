@@ -24,7 +24,7 @@ void test_utils_cton()
     assert(clu_mem_empty());
 }
 
-void test_byte_vec_init_immed()
+void test_utils_byte_vec_init_immed()
 {
     printf("\n\t\t%s", __func__);
 
@@ -113,7 +113,7 @@ void test_utils_debug()
     printf("\n\t%s", __func__);
 
     test_utils_cton();
-    test_byte_vec_init_immed();
+    test_utils_byte_vec_init_immed();
 
     assert(clu_mem_empty());
 }
