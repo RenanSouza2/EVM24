@@ -2,6 +2,7 @@
 #include <string.h>
 
 #include "debug.h"
+#include "../../mods/clu/header.h"
 #include "../../mods/macros/assert.h"
 #include "../utils/header.h"
 

@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "debug.h"
+#include "../../../mods/clu/header.h"
 #include "../../../mods/macros/assert.h"
 
 #include "../gas/header.h"
@@ -113,7 +114,7 @@ bool frame_o_test_immed(evm_frame_o_t fo, bool success, uint64_t gas, char str_r
 
 
 
-#define GAS_VERIFY(GAS, CODE) if(f->gas < (GAS)) return CODE
+#define GAS_VERIFY(GAS, CODE) if(f->gas < U64(GAS)) return CODE
 #define GAS_CONSUME(GAS) f->gas -= (GAS);
 
 

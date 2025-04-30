@@ -1,4 +1,5 @@
 #include "debug.h"
+#include "../../mods/clu/header.h"
 #include "../../mods/macros/assert.h"
 
 #include "../utils/header.h"
@@ -14,7 +15,7 @@
 void word_display(word_t w)
 {
     printf("0x");
-    for(uint64_t i=V_MAX-1; i>=0; i--)
+    for(int64_t i=V_MAX-1; i>=0; i--)
         printf(U64PX, w.arr[i]);
 }
 
