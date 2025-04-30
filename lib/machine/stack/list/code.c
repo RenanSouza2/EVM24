@@ -1,13 +1,11 @@
 #include <stdlib.h>
 
 #include "debug.h"
-#include "../../../../utils/assert.h"
+#include "../../../../mods/macros/assert.h"
 
 
 
 #ifdef DEBUG
-
-#include "../../../../utils/clu/bin/header.h"
 
 #include "../../../word/debug.h"
 
@@ -17,7 +15,7 @@ void stack_l_display(evm_stack_l_p sl)
 {
     for(uint64_t i=0; sl; i++, sl = sl->sl)
     {
-        printf("\n\tword " U64P ": ", i);
+        printf("\n\tword " U64P() ": ", i);
         word_display(sl->w);
     }
     printf("\n");
@@ -53,20 +51,20 @@ bool stack_l_test_variadic(evm_stack_l_p sl, uint64_t n, va_list *args)
         word_t w = va_arg(*args, word_t);
         if(!word_test(sl->w, w))
         {
-            printf("\n\tSTACK LIST ASSERTION ERROR | WORD | " U64P, i);
+            printf("\n\tSTACK LIST ASSERTION ERROR | WORD | " U64P(), i);
             return false;
         }
     }
 
     if(i < n)
     {
-        printf("\n\n\tSTACK LIST ASSERTION ERROR | FEWER WORDS | " U64P " " U64P, i, n);
+        printf("\n\n\tSTACK LIST ASSERTION ERROR | FEWER WORDS | " U64P() " " U64P() "", i, n);
         return false;
     }
 
     if(sl != NULL)
     {
-        printf("\n\n\tSTACK LIST ASSERTION ERROR | MORE WORDS | " U64P, n);
+        printf("\n\n\tSTACK LIST ASSERTION ERROR | MORE WORDS | " U64P() "", n);
         return false;
     }
 

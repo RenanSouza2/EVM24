@@ -13,7 +13,7 @@
 void stack_display(evm_stack_t s)
 {
     printf("\nstack");
-    printf("\n\tcount: " U64P, s.count);
+    printf("\n\tcount: " U64P() "", s.count);
     printf("\n");
     stack_l_display(s.sl);
     printf("\n");

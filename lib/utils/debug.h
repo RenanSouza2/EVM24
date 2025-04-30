@@ -1,13 +1,11 @@
 #ifndef __UTILS_DEBUG_H__
 #define __UTILS_DEBUG_H__
 
-#include "struct.h"
+#include "header.h"
 
 #ifdef DEBUG
 
-#include <stdbool.h>
-
-#include "../../utils/assert.h"
+#include "../../mods/macros/assert.h"
 
 #define U128(U641, U642) ((((uint128_t)(U641)) << 64) | (uint128_t)(U642))
 

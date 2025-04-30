@@ -2,14 +2,13 @@
 #include <stdlib.h>
 
 #include "debug.h"
-#include "../../../utils/assert.h"
+#include "../../../mods/macros/assert.h"
+
+#include "../../utils/header.h"
 
 
 
 #ifdef DEBUG
-
-#include "../../../utils/clu/bin/header.h"
-
 #endif
 
 
@@ -32,7 +31,8 @@ word_t bytes_get_word(evm_bytes_p b, uint64_t pos)
 
 evm_bytes_t bytes_get_bytes(evm_bytes_p b, uint64_t pos, uint64_t size)
 {
-    if(size == 0) return byte_vec_init_zero();
+    if(size == 0)
+        return byte_vec_init_zero();
     
     byte_t *v = malloc(size);
     assert(v);

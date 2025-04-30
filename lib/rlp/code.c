@@ -2,11 +2,12 @@
 #include <string.h>
 
 #include "debug.h"
-#include "../../utils/assert.h"
+#include "../../mods/macros/assert.h"
+#include "../utils/header.h"
+
+
 
 #ifdef DEBUG
-
-#include "../../utils/clu/bin/header.h"
 
 #include "../utils/debug.h"
 
@@ -108,7 +109,7 @@ bool rlp_vec_test(evm_rlp_vec_t r, evm_rlp_vec_t r_exp)
     for (uint64_t i = 0; i < r.size; i++)
     if (!rlp_test(r.arr[i], r_exp.arr[i]))
     {
-        printf("\n\tRLP VECTOR ASSERTION ERROR | ITEM | " U64P, i);
+        printf("\n\tRLP VECTOR ASSERTION ERROR | ITEM | " U64P() "", i);
         return false;
     }
 
@@ -157,12 +158,16 @@ void rlp_free(evm_rlp_p r)
 
     switch (r->type)
     {
-    case BYTES:
-        vec_free(&r->vec.b);
+        case BYTES:
+        {
+            vec_free(&r->vec.b);
+        }
         return;
-
-    case LIST:
-        rlp_vec_free_rec(&r->vec.r);
+        
+        case LIST:
+        {
+            rlp_vec_free_rec(&r->vec.r);
+        }
         return;
     }
     assert(false);

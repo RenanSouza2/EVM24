@@ -1,11 +1,12 @@
 #ifndef __RLP_DEBUG_H__
 #define __RLP_DEBUG_H__
 
-#include "struct.h"
+#include "header.h"
 
 #ifdef DEBUG
 
 #include <stdarg.h>
+#include <stdbool.h>
 
 evm_rlp_t rlp_init_immed(uint64_t type, ...);
 

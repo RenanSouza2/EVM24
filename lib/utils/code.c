@@ -2,17 +2,15 @@
 #include <string.h>
 
 #include "debug.h"
-#include "../../utils/assert.h"
+#include "../../mods/macros/assert.h"
 
 #ifdef DEBUG
 
 #include <stdarg.h>
 
-#include "../../utils/clu/bin/header.h"
-
 void byte_vec_display(byte_vec_t b)
 {
-    printf("\n\nbytes (" U64P "):", b.size);
+    printf("\n\nbytes (" U64P() "):", b.size);
     printf("\n");
     for (uint64_t i = 0; i < b.size >> 5; i++)
     {
@@ -115,7 +113,7 @@ bool byte_vec_test(byte_vec_t b, byte_vec_t b_exp)
     {
         if (!byte_test(b.arr[i], b_exp.arr[i]))
         {
-            printf("\n\tBYTE VEC ASSERTION ERROR | BYTE | " U64P, i);
+            printf("\n\tBYTE VEC ASSERTION ERROR | BYTE | " U64P() "", i);
             vec_free(&b_exp);
             return false;
         }
@@ -146,7 +144,7 @@ bool uint64_vec_test_immed(uint64_vec_t vec, uint64_t n, ...)
         uint64_t jumpdest = va_arg(args, uint64_t);
         if (!uint64_test(vec.arr[i], jumpdest))
         {
-            printf("\n\tUINT64 VEC TEST ASSERTION ERROR | UINT64 | " U64P, i);
+            printf("\n\tUINT64 VEC TEST ASSERTION ERROR | UINT64 | " U64P() "", i);
             return false;
         }
     }

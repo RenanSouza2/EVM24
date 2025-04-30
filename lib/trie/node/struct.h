@@ -1,9 +1,6 @@
 #ifndef __NODE_STRUCT_H__
 #define __NODE_STRUCT_H__
 
-#include "header.h"
-
-#include "../../utils/struct.h"
 #include "../../word/struct.h"
 
 #define LEAF        0

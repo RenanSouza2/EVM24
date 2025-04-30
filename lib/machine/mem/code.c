@@ -3,14 +3,15 @@
 #include <string.h>
 
 #include "debug.h"
-#include "../../../utils/assert.h"
+#include "../../../mods/macros/assert.h"
 
 #include "../gas/header.h"
-#include "../bytes/struct.h"
+#include "../bytes/header.h"
+#include "../../utils/header.h"
+
+
 
 #ifdef DEBUG
-
-#include "../../../utils/clu/bin/header.h"
 
 #include "../../utils/debug.h"
 
