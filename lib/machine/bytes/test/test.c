@@ -1,4 +1,5 @@
 #include "../debug.h"
+#include "../../../../testrc.h"
 
 #include "../../../word/debug.h"
 #include "../../../utils/debug.h"
@@ -18,7 +19,7 @@ void test_bytes_get_byte()
     assert(bytes_get_byte(&b, 64) == 0);
     vec_free(&b);
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 void test_bytes_get_word()
@@ -59,7 +60,7 @@ void test_bytes_get_word()
     assert(word_test(w, WORD(0, 0, 0, 0)));
     vec_free(&b);
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 void test_bytes_get_bytes()
@@ -79,7 +80,7 @@ void test_bytes_get_bytes()
     vec_free(&b0);
     vec_free(&b1);
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 
@@ -92,7 +93,7 @@ void test_bytes()
     test_bytes_get_word();
     test_bytes_get_bytes();
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 

@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 #include "../debug.h"
-#include "../../../../../utils/clu/bin/header.h"
+#include "../../../../../testrc.h"
 
 #include "../../../../word/debug.h"
 #include "../../../../utils/debug.h"
@@ -22,7 +22,7 @@ void test_stack_list_create()
     assert(sl->sl == NULL);
     free(sl);
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 void test_stack_list_pop()
@@ -41,7 +41,7 @@ void test_stack_list_pop()
     assert(word_test(w_out, WORD(4, 3, 2, 1)));
     assert(sl == (evm_stack_l_p)1);
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 
@@ -53,7 +53,7 @@ void test_stack_list()
     test_stack_list_create();
     test_stack_list_pop();
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 

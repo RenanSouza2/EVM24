@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 #include "../debug.h"
-#include "../../../../../utils/clu/bin/header.h"
+#include "../../../../../testrc.h"
 
 #include "../../../../word/debug.h"
 #include "../../../../utils/debug.h"
@@ -15,7 +15,7 @@ void test_stack_init()
     evm_stack_t s = stack_init();
     assert(stack_test_immed(s, 0) == true);
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 void test_stack_evm_push()
@@ -42,7 +42,7 @@ void test_stack_evm_push()
     assert_64(stack_push(&s, &w), 1);
     stack_free(&s);
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 void test_stack_evm_pop()
@@ -66,7 +66,7 @@ void test_stack_evm_pop()
 
     assert_64(stack_pop(&w, &s), 1);
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 
@@ -80,7 +80,7 @@ void test_stack()
     test_stack_evm_push();
     test_stack_evm_pop();
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 

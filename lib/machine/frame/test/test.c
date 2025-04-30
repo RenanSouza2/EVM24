@@ -1,7 +1,7 @@
 #include <string.h>
 
 #include "../debug.h"
-#include "../../../../utils/clu/bin/header.h"
+#include "../../../../testrc.h"
 
 #include "../../mem/debug.h"
 #include "../../stack/head/debug.h"
@@ -32,7 +32,7 @@ void test_frame_init()
     assert(mem_test_immed(f.m, 0));
     frame_free(&f);
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 void test_frame_get_jumpdest()
@@ -55,7 +55,7 @@ void test_frame_get_jumpdest()
     assert(uint64_vec_test_immed(jumpdest, 0));
     vec_free(&jumpdest);
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 
@@ -69,7 +69,7 @@ void test_frame_stop()
     assert(frame_o_test_immed(fo, true, GAS_DEF, "0x"));
     frame_free(&f);
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 
@@ -98,7 +98,7 @@ void test_frame_pop()
     assert(frame_test_immed(f, IGN, 1, IGN, IGN));
     frame_free(&f);
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 void test_frame_mload()
@@ -132,7 +132,7 @@ void test_frame_mload()
     ));
     frame_free(&f);
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 void test_frame_mstore()
@@ -177,7 +177,7 @@ void test_frame_mstore()
     assert(frame_test_immed(f, IGN, GAS_DEF - 104, IGN, IGN));
     frame_free(&f);
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 void test_frame_mstore8()
@@ -222,7 +222,7 @@ void test_frame_mstore8()
     assert(frame_test_immed(f, IGN, GAS_DEF - 101, IGN, IGN));
     frame_free(&f);
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 
@@ -272,7 +272,7 @@ void test_frame_push()
     assert(frame_test_immed(f, IGN, GAS_DEF - 2, IGN, IGN));
     frame_free(&f);
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 
@@ -348,7 +348,7 @@ void test_frame_return()
     frame_free(&f);
     frame_o_free(&fo);
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 
@@ -371,7 +371,7 @@ void test_frame()
 
     test_frame_return();
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 

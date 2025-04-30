@@ -1,4 +1,5 @@
 #include "../debug.h"
+#include "../../../../testrc.h"
 
 #include "../../bytes/debug.h"
 #include "../../../word/debug.h"
@@ -43,7 +44,7 @@ void test_mem_dry_run()
     m.size = U64_MAX;
     assert_64(mem_dry_run(&m, W1(U64_MAX), 1), U64_MAX);
 
-    assert(clu_mem_empty()); 
+    assert(clu_mem_is_empty()); 
 }
 
 void test_mem_expand()
@@ -66,7 +67,7 @@ void test_mem_expand()
         }
     }
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 
@@ -95,7 +96,7 @@ void test_mem_get_word()
     assert(word_test(w, W1(0)));
     vec_free(&m);
     
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 void test_mem_get_bytes()
@@ -119,7 +120,7 @@ void test_mem_get_bytes()
     vec_free(&b);
     vec_free(&m);
     
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 
@@ -145,7 +146,7 @@ void test_mem_set_byte()
     ));
     vec_free(&m);
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 void test_mem_set_word()
@@ -165,7 +166,7 @@ void test_mem_set_word()
     ));
     vec_free(&m);
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 void test_mem_set_bytes()
@@ -195,7 +196,7 @@ void test_mem_set_bytes()
     vec_free(&b);
     vec_free(&m);
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 
@@ -214,7 +215,7 @@ void test_mem()
     test_mem_set_word();
     test_mem_set_bytes();
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 

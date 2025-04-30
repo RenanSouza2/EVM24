@@ -20,7 +20,7 @@ void test_utils_cton()
     for (uint64_t i = 0; i < 6; i++)
         assert_byte(cton(ASCII[i]), i + 10);
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 void test_utils_byte_vec_init_immed()
@@ -104,7 +104,7 @@ void test_utils_byte_vec_init_immed()
     assert(b.arr[1] == 52);
     vec_free(&b);
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 void test_utils_debug()
@@ -114,7 +114,7 @@ void test_utils_debug()
     test_utils_cton();
     test_utils_byte_vec_init_immed();
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 
@@ -126,7 +126,7 @@ void test_utils_uint64_add()
     assert_64(uint64_add(1, 2), 3);
     assert_64(uint64_add(UINT64_MAX, 2), UINT64_MAX);
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 void test_utils_uint64_get_byte()
@@ -136,7 +136,7 @@ void test_utils_uint64_get_byte()
     for (uint64_t i = 0; i < 8; i++)
         assert_byte(uint64_get_byte(0x0807060504030201, i), i + 1);
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 void test_utils_uint64_set_byte()
@@ -156,7 +156,7 @@ void test_utils_uint64_set_byte()
         u = uint64_set_byte(u, i, i + 1);
     assert_64(u, 0x0807060504030201);
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 void test_utils_uint64_get_size()
@@ -170,7 +170,7 @@ void test_utils_uint64_get_size()
     assert_64(uint64_get_size(U64_FF), 8);
     assert_64(uint64_get_size(U64_MAX), 8);
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 void test_utils_uint64_init_byte()
@@ -186,7 +186,7 @@ void test_utils_uint64_init_byte()
     // printf("\n\t\t\t%s 4", __func__);
     assert_64(uint64_init_byte_immed("0x0807060504030201"), 0x0807060504030201);
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 void test_utils_uint128_to_uint64()
@@ -200,7 +200,7 @@ void test_utils_uint128_to_uint64()
     assert_64(uint128_to_uint64(U128_1), U64_MAX);
     assert_64(uint128_to_uint64(U128_MAX), U64_MAX);
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 void test_utils_uint()
@@ -214,7 +214,7 @@ void test_utils_uint()
     test_utils_uint64_init_byte();
     test_utils_uint128_to_uint64();
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 // #pragma endregion uint
@@ -229,7 +229,7 @@ void tet_utils_vec_init_zero()
     assert(b.arr == NULL);
     assert(b.size == 0);
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 void test_utils_byte_vec_init_uint64()
@@ -260,7 +260,7 @@ void test_utils_byte_vec_init_uint64()
     assert(byte_vec_test_immed(b, "0xffffffffffffffff"));
     vec_free(&b);
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 void test_utils_uint64_vec_has_uint64()
@@ -285,7 +285,7 @@ void test_utils_uint64_vec_has_uint64()
     assert(uint64_vec_has_uint64(&vec, 3) == false);
     vec_free(&vec);
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 void test_utils_vec()
@@ -296,7 +296,7 @@ void test_utils_vec()
     test_utils_byte_vec_init_uint64();
     test_utils_uint64_vec_has_uint64();
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 
@@ -309,7 +309,7 @@ void test_utils()
     test_utils_uint();
     test_utils_vec();
 
-    assert(clu_mem_empty());
+    assert(clu_mem_is_empty());
 }
 
 
