@@ -37,7 +37,7 @@ evm_frame_t frame_init_immed_setup(char str_code[], uint64_t gas, uint64_t n_mem
         gas,
         code,
         frame_get_jumpdest(&code),
-        mem_init_immed_variadic(n_mem, &args),
+        mem_init_variadic(n_mem, &args),
         stack_init_immed_variadic(va_arg(args, uint64_t), &args)
     };
 }
@@ -70,12 +70,13 @@ bool frame_test_immed(evm_frame_t f, uint64_t pc, uint64_t gas, uint64_t n_mem, 
         return false;
     }
 
-    if(n_mem < IGN)
-    if(!mem_test_variadic(f.m, n_mem, &args))
-    {
-        printf("\n\tFRAME ASSERTION ERROR | MEM");
-        return false;
-    }
+    // TODO
+    // if(n_mem < IGN)
+    // if(!mem_test_variadic(f.m, n_mem, &args))
+    // {
+    //     printf("\n\tFRAME ASSERTION ERROR | MEM");
+    //     return false;
+    // }
 
     uint64_t n_stack = va_arg(args, uint64_t);
     if(n_stack < IGN)

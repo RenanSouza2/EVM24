@@ -21,7 +21,7 @@ void test_frame_init()
     assert_64(f.gas, GAS_DEF);
     assert(byte_vec_test_immed(f.code, "0x"));
     assert(stack_test_immed(f.s, 0));
-    assert(mem_test_immed(f.m, 0));
+    assert(mem_immed(f.m, 0));
     frame_free(&f);
 
     f = frame_init_immed("0xff", GAS_DEF);
@@ -29,7 +29,7 @@ void test_frame_init()
     assert_64(f.gas, GAS_DEF);
     assert(byte_vec_test_immed(f.code, "0xff"));
     assert(stack_test_immed(f.s, 0));
-    assert(mem_test_immed(f.m, 0));
+    assert(mem_immed(f.m, 0));
     frame_free(&f);
 
     assert(clu_mem_is_empty());

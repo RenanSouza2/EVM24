@@ -7,11 +7,10 @@
 
 #include <stdarg.h>
 
+evm_mem_t mem_init_variadic(uint64_t n, va_list *arg);
 evm_mem_t mem_init_immed(uint64_t n, ...);
-evm_mem_t mem_init_immed_variadic(uint64_t n, va_list *arg);
 
-bool mem_test_immed(evm_mem_t m, uint64_t n, ...);
-bool mem_test_variadic(evm_mem_t m, uint64_t n, va_list *args);
+bool mem_immed(evm_mem_t m, uint64_t n, ...);
 
 #endif
 

@@ -13,17 +13,17 @@ void byte_vec_display(byte_vec_t b)
 {
     printf("\n\nbytes (" U64P() "):", b.size);
     printf("\n");
-    for (uint64_t i = 0; i < b.size >> 5; i++)
+    for(uint64_t i = 0; i < b.size >> 5; i++)
     {
         printf("\n\t0x");
-        for (uint64_t j = 0; j < 32; j++)
+        for(uint64_t j = 0; j < 32; j++)
             printf("%02x", b.arr[(i << 5) + j]);
     }
-    if (b.size % 32)
+    if(b.size % 32)
     {
         uint64_t i = b.size & ~31;
         printf("\n\t0x");
-        for (uint64_t j = i; j < b.size; j++)
+        for(uint64_t j = i; j < b.size; j++)
             printf("%02x", b.arr[j]);
     }
     printf("\n");
@@ -49,12 +49,12 @@ byte_vec_t byte_vec_init_immed(char str[])
     assert(len > 1);
     assert(str[0] == '0');
     assert(str[1] == 'x');
-    if (len == 2)
+    if(len == 2)
         return byte_vec_init(0);
 
     uint64_t size = len / 2 - 1;
     byte_t *b = malloc(size);
-    for (uint64_t i = 0; i < size; i++)
+    for(uint64_t i = 0; i < size; i++)
         b[i] = (cton(str[2 * i + 2]) << 4) | cton(str[2 * i + 3]);
 
     return (byte_vec_t){size, b};
@@ -65,7 +65,7 @@ uint64_vec_t uint64_vec_init_immed(uint64_t n, ...)
     va_list args;
     va_start(args, n);
     uint64_vec_t vec = uint64_vec_init(n);
-    for (uint64_t i = 0; i < n; i++)
+    for(uint64_t i = 0; i < n; i++)
         vec.arr[i] = va_arg(args, uint64_t);
 
     return vec;
@@ -81,7 +81,7 @@ uint64_t uint64_init_byte_immed(char str[])
 
 bool byte_test(byte_t u1, byte_t u2)
 {
-    if (u1 == u2)
+    if(u1 == u2)
         return true;
 
     printf("\n\n\tUCHAR ASSERTION ERROR | %d %d", u1, u2);
@@ -90,7 +90,7 @@ bool byte_test(byte_t u1, byte_t u2)
 
 bool uint64_test(uint64_t i1, uint64_t i2)
 {
-    if (i1 == i2)
+    if(i1 == i2)
         return true;
 
     printf("\n");
@@ -103,16 +103,16 @@ bool uint64_test(uint64_t i1, uint64_t i2)
 
 bool byte_vec_test(byte_vec_t b, byte_vec_t b_exp)
 {
-    if (!uint64_test(b.size, b_exp.size))
+    if(!uint64_test(b.size, b_exp.size))
     {
         printf("\n\tBYTE VEC ASSERTION ERROR | LENGTH");
         vec_free(&b_exp);
         return false;
     }
 
-    for (uint64_t i = 0; i < b.size; i++)
+    for(uint64_t i = 0; i < b.size; i++)
     {
-        if (!byte_test(b.arr[i], b_exp.arr[i]))
+        if(!byte_test(b.arr[i], b_exp.arr[i]))
         {
             printf("\n\tBYTE VEC ASSERTION ERROR | BYTE | " U64P() "", i);
             vec_free(&b_exp);
@@ -132,7 +132,7 @@ bool byte_vec_test_immed(byte_vec_t b, char str[])
 
 bool uint64_vec_test_immed(uint64_vec_t vec, uint64_t n, ...)
 {
-    if (!uint64_test(vec.size, n))
+    if(!uint64_test(vec.size, n))
     {
         printf("\n\tUINT64 VEC TEST ASSERTION ERROR | COUNT");
         return false;
@@ -140,10 +140,10 @@ bool uint64_vec_test_immed(uint64_vec_t vec, uint64_t n, ...)
 
     va_list args;
     va_start(args, n);
-    for (uint64_t i = 0; i < n; i++)
+    for(uint64_t i = 0; i < n; i++)
     {
         uint64_t jumpdest = va_arg(args, uint64_t);
-        if (!uint64_test(vec.arr[i], jumpdest))
+        if(!uint64_test(vec.arr[i], jumpdest))
         {
             printf("\n\tUINT64 VEC TEST ASSERTION ERROR | UINT64 | " U64P() "", i);
             return false;
@@ -178,8 +178,8 @@ uint64_t uint64_set_byte(uint64_t u, uint64_t index, byte_t b)
 
 uint64_t uint64_get_size(uint64_t u)
 {
-    for (uint64_t i = 0; i < 8; i++, u >>= 8)
-        if (u == 0)
+    for(uint64_t i = 0; i < 8; i++, u >>= 8)
+        if(u == 0)
             return i;
 
     return 8;
@@ -189,7 +189,7 @@ uint64_t uint64_init_byte_arr(byte_p b, uint64_t size)
 {
     assert(size <= 8);
     uint64_t u = 0;
-    for (uint64_t i = 0; i < size; i++)
+    for(uint64_t i = 0; i < size; i++)
         u = uint64_set_byte(u, i, b[size - 1 - i]);
     return u;
 }
@@ -214,14 +214,14 @@ byte_vec_t byte_vec_init_uint64(uint64_t num)
 {
     uint64_t size = uint64_get_size(num);
     byte_vec_t b = byte_vec_init(size);
-    for (uint64_t i = 0; i < size; i++)
+    for(uint64_t i = 0; i < size; i++)
         b.arr[size - 1 - i] = uint64_get_byte(num, i);
     return b;
 }
 
 byte_vec_t byte_vec_init(uint64_t size)
 {
-    if (size == 0)
+    if(size == 0)
         return byte_vec_init_zero();
 
     byte_p v = calloc(size, sizeof(byte_t));
@@ -240,10 +240,10 @@ byte_vec_t byte_vec_init_byte_arr(byte_p b, uint64_t size) // TODO: test
 
 byte_vec_t byte_vec_concat(byte_vec_p b1, byte_vec_p b2) // TODO test
 {
-    if (b2->size == 0)
+    if(b2->size == 0)
         return *b1;
         
-    if (b1->size == 0)
+    if(b1->size == 0)
         return *b2;
 
     b1->arr = realloc(b1->arr, b1->size + b2->size);
@@ -264,7 +264,7 @@ uint64_vec_t uint64_vec_init_zero() // TODO test
 
 uint64_vec_t uint64_vec_init(uint64_t size)
 {
-    if (size == 0)
+    if(size == 0)
         uint64_vec_init_zero();
 
     uint64_p v = calloc(size, sizeof(uint64_t));
@@ -275,18 +275,18 @@ uint64_vec_t uint64_vec_init(uint64_t size)
 
 bool uint64_vec_has_uint64(uint64_vec_p vec, uint64_t v)
 {
-    if (vec->size == 0)
+    if(vec->size == 0)
         return false;
 
     uint64_t min = 0;
-    for (uint64_t max = vec->size; max - min > 1;)
+    for(uint64_t max = vec->size; max - min > 1;)
     {
         uint64_t mid = (min + max) >> 1;
         uint64_t _v = vec->arr[mid];
-        if (_v == v)
+        if(_v == v)
             return true;
 
-        if (_v > v)
+        if(_v > v)
             max = mid;
         else
             min = mid;
@@ -298,7 +298,7 @@ bool uint64_vec_has_uint64(uint64_vec_p vec, uint64_t v)
 
 void vec_free(handler_p v)
 {
-    if (VEC(v)->arr)
+    if(VEC(v)->arr)
         free(VEC(v)->arr);
 }
 
