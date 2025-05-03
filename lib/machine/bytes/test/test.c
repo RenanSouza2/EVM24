@@ -31,6 +31,7 @@ void test_bytes_get_byte(bool show)
         TEST_CASE_CLOSE
     }
 
+<<<<<<< HEAD
     TEST_CASE_OPEN(34)
     {
         evm_bytes_t b = byte_vec_init_immed("0xff");
@@ -40,6 +41,8 @@ void test_bytes_get_byte(bool show)
     }
     TEST_CASE_CLOSE
 
+=======
+>>>>>>> origin/trie
     TEST_FN_CLOSE
 }
 
