@@ -5,6 +5,8 @@
 #include "../../mods/clu/header.h"
 #include "../../mods/macros/assert.h"
 
+
+
 #ifdef DEBUG
 
 #include <stdarg.h>
@@ -60,15 +62,20 @@ byte_vec_t byte_vec_init_immed(char str[])
     return (byte_vec_t){size, b};
 }
 
+uint64_vec_t uint64_vec_init_variadic(uint64_t n, va_list *args)
+{
+    uint64_vec_t vec = uint64_vec_init(n);
+    for(uint64_t i = 0; i < n; i++)
+        vec.arr[i] = va_arg(*args, uint64_t);
+
+    return vec;
+}
+
 uint64_vec_t uint64_vec_init_immed(uint64_t n, ...)
 {
     va_list args;
     va_start(args, n);
-    uint64_vec_t vec = uint64_vec_init(n);
-    for(uint64_t i = 0; i < n; i++)
-        vec.arr[i] = va_arg(args, uint64_t);
-
-    return vec;
+    return uint64_vec_init_variadic(n, &args);
 }
 
 uint64_t uint64_init_byte_immed(char str[])
@@ -78,6 +85,7 @@ uint64_t uint64_init_byte_immed(char str[])
     vec_free(&b);
     return res;
 }
+
 
 bool byte_test(byte_t u1, byte_t u2)
 {
@@ -101,49 +109,60 @@ bool uint64_test(uint64_t i1, uint64_t i2)
     return false;
 }
 
-bool byte_vec_test(byte_vec_t b, byte_vec_t b_exp)
+bool byte_vec_test_inner(byte_vec_t b_1, byte_vec_t b_2)
 {
-    if(!uint64_test(b.size, b_exp.size))
+    if(!uint64_test(b_1.size, b_2.size))
     {
-        printf("\n\tBYTE VEC ASSERTION ERROR | LENGTH");
-        vec_free(&b_exp);
+        printf("\n\tBYTE VEC ASSERTION ERROR\t| LENGTH");
         return false;
     }
 
-    for(uint64_t i = 0; i < b.size; i++)
+    if(b_1.size == 0)
     {
-        if(!byte_test(b.arr[i], b_exp.arr[i]))
+        if(b_1.arr != NULL)
         {
-            printf("\n\tBYTE VEC ASSERTION ERROR | BYTE | " U64P() "", i);
-            vec_free(&b_exp);
+            printf("\n\n\tBYTE VEC ASSERTION ERROR\t| LENGTH IS ZERO BUT ARR IS NOT NULL");
             return false;
         }
     }
 
-    vec_free(&b_exp);
+    for(uint64_t i = 0; i < b_1.size; i++)
+    {
+        if(!byte_test(b_1.arr[i], b_2.arr[i]))
+        {
+            printf("\n\tBYTE VEC ASSERTION ERROR\t| BYTE | " U64P() "", i);
+            return false;
+        }
+    }
+
     return true;
 }
 
-bool byte_vec_test_immed(byte_vec_t b, char str[])
+bool byte_vec_test(byte_vec_t b_1, byte_vec_t b_2)
 {
-    byte_vec_t b_exp = byte_vec_init_immed(str);
-    return byte_vec_test(b, b_exp);
+    if(!byte_vec_test_inner(b_1, b_2))
+    {
+        printf("\n");
+        // TODO display
+        return false;
+    }
+
+    vec_free(&b_1);
+    vec_free(&b_2);
+    return true;
 }
 
-bool uint64_vec_test_immed(uint64_vec_t vec, uint64_t n, ...)
+bool uint64_vec_test(uint64_vec_t vec_1, uint64_vec_t vec_2)
 {
-    if(!uint64_test(vec.size, n))
+    if(!uint64_test(vec_1.size, vec_2.size))
     {
         printf("\n\tUINT64 VEC TEST ASSERTION ERROR | COUNT");
         return false;
     }
 
-    va_list args;
-    va_start(args, n);
-    for(uint64_t i = 0; i < n; i++)
+    for(uint64_t i = 0; i < vec_1.size; i++)
     {
-        uint64_t jumpdest = va_arg(args, uint64_t);
-        if(!uint64_test(vec.arr[i], jumpdest))
+        if(!uint64_test(vec_1.arr[i], vec_2.arr[i]))
         {
             printf("\n\tUINT64 VEC TEST ASSERTION ERROR | UINT64 | " U64P() "", i);
             return false;
@@ -152,10 +171,23 @@ bool uint64_vec_test_immed(uint64_vec_t vec, uint64_t n, ...)
 
     return true;
 }
+bool byte_vec_test_immed(byte_vec_t b, char str[])
+{
+    byte_vec_t b_exp = byte_vec_init_immed(str);
+    return byte_vec_test(b, b_exp);
+}
+
+bool uint64_vec_test_immed(uint64_vec_t vec, uint64_t n, ...)
+{
+    va_list args;
+    va_start(args, n);
+    uint64_vec_t vec_2 = uint64_vec_init_immed(n, *args);
+    return uint64_vec_test(vec, vec_2);
+}
 
 #endif
 
-// #pragma region uint
+
 
 uint64_t uint64_add(uint64_t u1, uint64_t u2)
 {
@@ -199,11 +231,7 @@ uint64_t uint128_to_uint64(uint128_t res)
     return (res >> 64) ? UINT64_MAX : (uint64_t)res;
 }
 
-// #pragma endregion uint
 
-// #pragma region vec
-
-// #pragma region byte_vec
 
 byte_vec_t byte_vec_init_zero()
 {
@@ -253,9 +281,7 @@ byte_vec_t byte_vec_concat(byte_vec_p b1, byte_vec_p b2) // TODO test
     return *b1;
 }
 
-// #pragma endregion byte_vec
 
-// #pragma region uint64_vec
 
 uint64_vec_t uint64_vec_init_zero() // TODO test
 {
@@ -294,13 +320,11 @@ bool uint64_vec_has_uint64(uint64_vec_p vec, uint64_t v)
     return vec->arr[min] == v;
 }
 
-// #pragma endregion uint64_vec
+
 
 void vec_free(handler_p v)
 {
     if(VEC(v)->arr)
         free(VEC(v)->arr);
 }
-
-// #pragma endregion vec
  

@@ -1,10 +1,11 @@
 #include "../debug.h"
+#include "../../../testrc.h"
+#include "../../../mods/macros/test.h"
 
 
-
-void test_utils_cton()
+void test_utils_cton(bool show)
 {
-    printf("\n\t\t%s", __func__);
+    TEST_FN_OPEN
 
     char ascii[] = {
         '0', '1', '2', '3',
@@ -14,302 +15,310 @@ void test_utils_cton()
     };
 
     for(uint64_t i = 0; i < 16; i++)
-        assert_byte(cton(ascii[i]), i);
+    {
+        TEST_CASE_OPEN(i)
+        {
+            assert_byte(cton(ascii[i]), i);
+        }
+        TEST_CASE_CLOSE
+    }
 
     char ASCII[] = {'A', 'B', 'C', 'D', 'E', 'F'};
     for(uint64_t i = 0; i < 6; i++)
-        assert_byte(cton(ASCII[i]), i + 10);
+    {
+        TEST_CASE_OPEN(17 + i)
+        {
+            assert_byte(cton(ASCII[i]), i + 10);
+        }
+        TEST_CASE_CLOSE
+    }
 
-    assert(clu_mem_is_empty());
+    TEST_FN_CLOSE
 }
 
-void test_utils_byte_vec_init_immed()
+void test_utils_byte_vec_init_immed(bool show)
 {
-    printf("\n\t\t%s", __func__);
+    TEST_FN_OPEN
 
-    // printf("\n\t\t%s  1", __func__);
-    byte_vec_t b = byte_vec_init_immed("0x");
-    assert(b.arr == NULL);
-    assert(b.size == 0);
+    #define TEST_UTILS_BYTRE_VEC_INIT_IMMED(TAG, BYTES, SIZE, RES)  \
+    {                                                               \
+        TEST_CASE_OPEN(TAG)                                         \
+        {                                                           \
+            byte_vec_t b = byte_vec_init_immed(BYTES);              \
+            byte_t arr[] = {ARG_OPEN RES};                          \
+            byte_vec_t b_2 = (byte_vec_t)                           \
+            {                                                       \
+                .size = SIZE,                                       \
+                .arr = arr                                          \
+            };                                                      \
+            assert(byte_vec_test_inner(b, b_2));                    \
+            vec_free(&b);                                           \
+        }                                                           \
+        TEST_CASE_CLOSE                                             \
+    }
 
-    // printf("\n\t\t%s  2", __func__);
-    b = byte_vec_init_immed("0x00");
-    assert(b.size == 1);
-    assert(b.arr);
-    assert(b.arr[0] == 0);
-    vec_free(&b);
+    TEST_UTILS_BYTRE_VEC_INIT_IMMED(1, "0x", 0, ());
+    TEST_UTILS_BYTRE_VEC_INIT_IMMED(2, "0x00", 1, (0));
+    TEST_UTILS_BYTRE_VEC_INIT_IMMED(3, "0x01", 1, (1));
+    TEST_UTILS_BYTRE_VEC_INIT_IMMED(4, "0x0f", 1, (0xf));
+    TEST_UTILS_BYTRE_VEC_INIT_IMMED(5, "0x10", 1, (0x10));
+    TEST_UTILS_BYTRE_VEC_INIT_IMMED(6, "0x80", 1, (0x80));
+    TEST_UTILS_BYTRE_VEC_INIT_IMMED(7, "0xf0", 1, (0xf0));
+    TEST_UTILS_BYTRE_VEC_INIT_IMMED(8, "0xff", 1, (0xff));
+    TEST_UTILS_BYTRE_VEC_INIT_IMMED(9, "0x0000", 2, (0, 0));
+    TEST_UTILS_BYTRE_VEC_INIT_IMMED(10, "0x1234", 2, (0x12, 0x34));
 
-    // printf("\n\t\t%s  3", __func__);
-    b = byte_vec_init_immed("0x01");
-    assert(b.size == 1);
-    assert(b.arr);
-    assert(b.arr[0] == 1);
-    vec_free(&b);
-
-    // printf("\n\t\t%s  4", __func__);
-    b = byte_vec_init_immed("0x0f");
-    assert(b.size == 1);
-    assert(b.arr);
-    assert(b.arr[0] == 15);
-    vec_free(&b);
-
-    // printf("\n\t\t%s  5", __func__);
-    b = byte_vec_init_immed("0x10");
-    assert(b.size == 1);
-    assert(b.arr);
-    assert(b.arr[0] == 16);
-    vec_free(&b);
-
-    // printf("\n\t\t%s  6", __func__);
-    b = byte_vec_init_immed("0x80");
-    assert(b.size == 1);
-    assert(b.arr);
-    assert(b.arr[0] == 128);
-    vec_free(&b);
-
-    // printf("\n\t\t%s  7", __func__);
-    b = byte_vec_init_immed("0xf0");
-    assert(b.size == 1);
-    assert(b.arr);
-    assert(b.arr[0] == 240);
-    vec_free(&b);
-
-    // printf("\n\t\t%s  8", __func__);
-    b = byte_vec_init_immed("0xff");
-    assert(b.size == 1);
-    assert(b.arr);
-    assert(b.arr[0] == 255);
-    vec_free(&b);
-
-    // printf("\n\t\t%s  9", __func__);
-    b = byte_vec_init_immed("0x0000");
-    assert(b.size == 2);
-    assert(b.arr);
-    assert(b.arr[0] == 0);
-    assert(b.arr[1] == 0);
-    vec_free(&b);
-
-    // printf("\n\t\t%s 10", __func__);
-    b = byte_vec_init_immed("0x1234");
-    assert(b.size == 2);
-    assert(b.arr);
-    assert(b.arr[0] == 18);
-    assert(b.arr[1] == 52);
-    vec_free(&b);
-
-    b = byte_vec_init_immed("0x1234");
-    assert(b.size == 2);
-    assert(b.arr);
-    assert(b.arr[0] == 18);
-    assert(b.arr[1] == 52);
-    vec_free(&b);
-
-    assert(clu_mem_is_empty());
-}
-
-void test_utils_debug()
-{
-    printf("\n\t%s", __func__);
-
-    test_utils_cton();
-    test_utils_byte_vec_init_immed();
-
-    assert(clu_mem_is_empty());
+    TEST_FN_CLOSE
 }
 
 
 
-void test_utils_uint64_add()
+void test_utils_uint64_add(bool show)
 {
-    printf("\n\t\t%s", __func__);
+    TEST_FN_OPEN
 
-    assert_64(uint64_add(1, 2), 3);
-    assert_64(uint64_add(UINT64_MAX, 2), UINT64_MAX);
+    TEST_CASE_OPEN(1)
+    {
+        uint64_t res = uint64_add(1, 2);
+        assert_64(res, 3);
+    }
+    TEST_CASE_CLOSE
+    
+    TEST_CASE_OPEN(2)
+    {
+        uint64_t res = uint64_add(UINT64_MAX, 2);
+        assert_64(res, UINT64_MAX);
+    }
+    TEST_CASE_CLOSE
 
-    assert(clu_mem_is_empty());
+    TEST_FN_CLOSE
 }
 
-void test_utils_uint64_get_byte()
+void test_utils_uint64_get_byte(bool show)
 {
-    printf("\n\t\t%s", __func__);
+    TEST_FN_OPEN
 
     for(uint64_t i = 0; i < 8; i++)
-        assert_byte(uint64_get_byte(0x0807060504030201, i), i + 1);
+    {
+        TEST_CASE_OPEN(i + 1)
+        {
+            assert_byte(uint64_get_byte(0x0807060504030201, i), i + 1);
+        }
+        TEST_CASE_CLOSE
+    }
 
-    assert(clu_mem_is_empty());
+    TEST_FN_CLOSE
 }
 
-void test_utils_uint64_set_byte()
+void test_utils_uint64_set_byte(bool show)
 {
-    printf("\n\t\t%s", __func__);
+    TEST_FN_OPEN
 
-    assert_64(uint64_set_byte(0, 0, 0xff), 0xff);
-    assert_64(uint64_set_byte(0xff, 0, 0xee), 0xee);
-    assert_64(uint64_set_byte(0, 1, 0xff), 0xff00);
-    assert_64(uint64_set_byte(0xff, 1, 0xee), 0xeeff);
+    #define TEST_UTILS_UINT64_SET_BYTE(TAG, U, INDEX, B, RES)   \
+    {                                                           \
+        TEST_CASE_OPEN(TAG)                                     \
+        {                                                       \
+            uint64_t res = uint64_set_byte(U, INDEX, B);        \
+            assert_64(res, RES);                                \
+        }                                                       \
+        TEST_CASE_CLOSE                                         \
+    }
+
+    TEST_UTILS_UINT64_SET_BYTE(1, 0, 0, 0xff, 0xff);
+    TEST_UTILS_UINT64_SET_BYTE(2, 0xff, 0, 0xee, 0xee);
+    TEST_UTILS_UINT64_SET_BYTE(3, 0, 1, 0xff, 0xff00);
+    TEST_UTILS_UINT64_SET_BYTE(4, 0xff, 1, 0xee, 0xeeff);
 
     for(uint64_t i = 0; i < 8; i++)
-        assert_64(uint64_set_byte(0, i, 0xff), (uint64_t)0xff << (i << 3));
+        TEST_UTILS_UINT64_SET_BYTE(5 + i, 0, i, 0xff, (uint64_t)0xff << (i << 3));
+    
+    #undef TEST_UTILS_UINT64_SET_BYTE
 
-    uint64_t u = 0;
-    for(uint64_t i = 0; i < 8; i++)
-        u = uint64_set_byte(u, i, i + 1);
-    assert_64(u, 0x0807060504030201);
+    TEST_CASE_OPEN(13)
+    {
+        uint64_t u = 0;
+        for(uint64_t i = 0; i < 8; i++)
+            u = uint64_set_byte(u, i, i + 1);
+        assert_64(u, 0x0807060504030201);
+    }
+    TEST_CASE_CLOSE
 
-    assert(clu_mem_is_empty());
+    TEST_FN_CLOSE
 }
 
-void test_utils_uint64_get_size()
+void test_utils_uint64_get_size(bool show)
 {
-    printf("\n\t\t%s", __func__);
+    TEST_FN_OPEN
 
-    assert_64(uint64_get_size(0), 0);
-    assert_64(uint64_get_size(1), 1);
-    assert_64(uint64_get_size(0xff), 1);
-    assert_64(uint64_get_size(0x100), 2);
-    assert_64(uint64_get_size(U64_FF), 8);
-    assert_64(uint64_get_size(U64_MAX), 8);
+    #define TEST_UTILS_UINT64_GET_SIZE(TAG, VALUE, RES) \
+    {                                                   \
+        TEST_CASE_OPEN(TAG)                             \
+        {                                               \
+            uint64_t res = uint64_get_size(VALUE);      \
+            assert_64(res, RES);                        \
+        }                                               \
+        TEST_CASE_CLOSE                                 \
+    }
 
-    assert(clu_mem_is_empty());
+    TEST_UTILS_UINT64_GET_SIZE(1, 0, 0);
+    TEST_UTILS_UINT64_GET_SIZE(2, 1, 1);
+    TEST_UTILS_UINT64_GET_SIZE(3, 0xff, 1);
+    TEST_UTILS_UINT64_GET_SIZE(4, 0x100, 2);
+    TEST_UTILS_UINT64_GET_SIZE(5, U64_FF, 8);
+    TEST_UTILS_UINT64_GET_SIZE(6, U64_MAX, 8);
+
+    #undef TEST_UTILS_UINT64_GET_SIZE
+
+    TEST_FN_CLOSE
 }
 
-void test_utils_uint64_init_byte()
+void test_utils_uint64_init_byte(bool show)
 {
-    printf("\n\t\t%s", __func__);
+    TEST_FN_OPEN
 
-    // printf("\n\t\t\t%s 1", __func__);
-    assert_64(uint64_init_byte_immed("0xff"), 0xff);
-    // printf("\n\t\t\t%s 2", __func__);
-    assert_64(uint64_init_byte_immed("0xffee"), 0xffee);
-    // printf("\n\t\t\t%s 3", __func__);
-    assert_64(uint64_init_byte_immed("0xffffffffffffffff"), U64_MAX);
-    // printf("\n\t\t\t%s 4", __func__);
-    assert_64(uint64_init_byte_immed("0x0807060504030201"), 0x0807060504030201);
+    #define TEST_UTILS_UINT64_INIT_BYTE(TAG, BYTES, RES)    \
+    {                                                       \
+        TEST_CASE_OPEN(TAG)                                 \
+        {                                                   \
+            uint64_t res = uint64_init_byte_immed(BYTES);   \
+            assert_64(res, RES);                            \
+        }                                                   \
+        TEST_CASE_CLOSE                                     \
+    }
 
-    assert(clu_mem_is_empty());
+    TEST_UTILS_UINT64_INIT_BYTE(1, "0xff", 0xff);
+    TEST_UTILS_UINT64_INIT_BYTE(2, "0xffee", 0xffee);
+    TEST_UTILS_UINT64_INIT_BYTE(3, "0xffffffffffffffff", U64_MAX);
+    TEST_UTILS_UINT64_INIT_BYTE(4, "0x0807060504030201", 0x0807060504030201);
+
+    #undef TEST_UTILS_UINT64_INIT_BYTE
+
+    TEST_FN_CLOSE
 }
 
-void test_utils_uint128_to_uint64()
+void test_utils_uint128_to_uint64(bool show)
 {
-    printf("\n\t\t%s", __func__);
+    TEST_FN_OPEN
 
-    assert_64(uint128_to_uint64(0), 0);
-    assert_64(uint128_to_uint64(1), 1);
-    assert_64(uint128_to_uint64(U64_MAX - 1), U64_MAX - 1);
-    assert_64(uint128_to_uint64(U64_MAX), U64_MAX);
-    assert_64(uint128_to_uint64(U128_1), U64_MAX);
-    assert_64(uint128_to_uint64(U128_MAX), U64_MAX);
+    #define TEST_UTILS_UINT128_TO_UINT64(TAG, U128, RES)    \
+    {                                                       \
+        TEST_CASE_OPEN(TAG)                                 \
+        {                                                   \
+            uint64_t res = uint128_to_uint64(U128);         \
+            assert_64(res, RES);                            \
+        }                                                   \
+        TEST_CASE_CLOSE                                     \
+    }
 
-    assert(clu_mem_is_empty());
+    TEST_UTILS_UINT128_TO_UINT64(1, 0, 0);
+    TEST_UTILS_UINT128_TO_UINT64(2, 1, 1);
+    TEST_UTILS_UINT128_TO_UINT64(3, U64_MAX - 1, U64_MAX - 1);
+    TEST_UTILS_UINT128_TO_UINT64(4, U64_MAX, U64_MAX);
+    TEST_UTILS_UINT128_TO_UINT64(5, U128_1, U64_MAX);
+    TEST_UTILS_UINT128_TO_UINT64(6, U128_MAX, U64_MAX);
+
+    #undef TEST_UTILS_UINT128_TO_UINT64
+
+    TEST_FN_CLOSE
 }
 
-void test_utils_uint()
+
+
+void tet_utils_vec_init_zero(bool show)
 {
-    printf("\n\t%s", __func__);
+    TEST_FN_OPEN
 
-    test_utils_uint64_add();
-    test_utils_uint64_get_byte();
-    test_utils_uint64_set_byte();
-    test_utils_uint64_get_size();
-    test_utils_uint64_init_byte();
-    test_utils_uint128_to_uint64();
+    TEST_CASE_OPEN(1)
+    {
+        byte_vec_t b = byte_vec_init_zero();
+        assert(b.arr == NULL);
+        assert(b.size == 0);
+    }
+    TEST_CASE_CLOSE
 
-    assert(clu_mem_is_empty());
+    TEST_FN_CLOSE
 }
 
-// #pragma endregion uint
-
-// #pragma region vec
-
-void tet_utils_vec_init_zero()
+void test_utils_byte_vec_init_uint64(bool show)
 {
-    printf("\n\t\t%s", __func__);
+    TEST_FN_OPEN
 
-    byte_vec_t b = byte_vec_init_zero();
-    assert(b.arr == NULL);
-    assert(b.size == 0);
+    #define TEST_UTILS_BYTE_VEC_INIT_UINT64(TAG, U64, RES)  \
+    {                                                       \
+        TEST_CASE_OPEN(TAG)                                 \
+        {                                                   \
+            byte_vec_t b = byte_vec_init_uint64(U64);       \
+            assert(byte_vec_test_immed(b, RES));            \
+        }                                                   \
+        TEST_CASE_CLOSE                                     \
+    }
 
-    assert(clu_mem_is_empty());
+    TEST_UTILS_BYTE_VEC_INIT_UINT64(1, 0, "0x");
+    TEST_UTILS_BYTE_VEC_INIT_UINT64(2, 1, "0x01");
+    TEST_UTILS_BYTE_VEC_INIT_UINT64(3, 0xff, "0xff");
+    TEST_UTILS_BYTE_VEC_INIT_UINT64(4, 0x100, "0x0100");
+    TEST_UTILS_BYTE_VEC_INIT_UINT64(5, U64_FF, "0xff00000000000000");
+    TEST_UTILS_BYTE_VEC_INIT_UINT64(6, U64_MAX, "0xffffffffffffffff");
+
+    #undef TEST_UTILS_BYTE_VEC_INIT_UINT64
+
+    TEST_FN_CLOSE
 }
 
-void test_utils_byte_vec_init_uint64()
+void test_utils_uint64_vec_has_uint64(bool show)
 {
-    printf("\n\t\t%s", __func__);
+    TEST_FN_OPEN
+    
+    #define TEST_UTILS_UINT64_VEC_HAS_UINT64(TAG, VEC, U64, RES)    \
+    {                                                               \
+        TEST_CASE_OPEN(TAG)                                         \
+        {                                                           \
+            uint64_vec_t vec = uint64_vec_init_immed(ARG_OPEN VEC); \
+            bool res = uint64_vec_has_uint64(&vec, U64);            \
+            assert(res == RES);                                     \
+            vec_free(&vec);                                         \
+        }                                                           \
+        TEST_CASE_CLOSE                                             \
+    }
 
-    byte_vec_t b = byte_vec_init_uint64(0);
-    assert(byte_vec_test_immed(b, "0x"));
-    vec_free(&b);
+    
+    TEST_UTILS_UINT64_VEC_HAS_UINT64(1, (1, 1), 0, false);
+    TEST_UTILS_UINT64_VEC_HAS_UINT64(2, (1, 1), 1, true);
+    TEST_UTILS_UINT64_VEC_HAS_UINT64(3, (1, 1), 2, false);
 
-    b = byte_vec_init_uint64(1);
-    assert(byte_vec_test_immed(b, "0x01"));
-    vec_free(&b);
+    TEST_UTILS_UINT64_VEC_HAS_UINT64(4, (2, 0, 2), 0, true);
+    TEST_UTILS_UINT64_VEC_HAS_UINT64(5, (2, 0, 2), 1, false);
+    TEST_UTILS_UINT64_VEC_HAS_UINT64(6, (2, 0, 2), 2, true);
+    TEST_UTILS_UINT64_VEC_HAS_UINT64(7, (2, 0, 2), 3, false);
 
-    b = byte_vec_init_uint64(0xff);
-    assert(byte_vec_test_immed(b, "0xff"));
-    vec_free(&b);
+    #undef TEST_UTILS_UINT64_VEC_HAS_UINT64
 
-    b = byte_vec_init_uint64(0x100);
-    assert(byte_vec_test_immed(b, "0x0100"));
-    vec_free(&b);
-
-    b = byte_vec_init_uint64(U64_FF);
-    assert(byte_vec_test_immed(b, "0xff00000000000000"));
-    vec_free(&b);
-
-    b = byte_vec_init_uint64(U64_MAX);
-    assert(byte_vec_test_immed(b, "0xffffffffffffffff"));
-    vec_free(&b);
-
-    assert(clu_mem_is_empty());
-}
-
-void test_utils_uint64_vec_has_uint64()
-{
-    printf("\n\t\t%s", __func__);
-
-    uint64_vec_t vec = uint64_vec_init_immed(0);
-    assert(uint64_vec_has_uint64(&vec, 0) == false);
-    assert(uint64_vec_has_uint64(&vec, 1) == false);
-    vec_free(&vec);
-
-    vec = uint64_vec_init_immed(1, 1);
-    assert(uint64_vec_has_uint64(&vec, 0) == false);
-    assert(uint64_vec_has_uint64(&vec, 1) == true);
-    assert(uint64_vec_has_uint64(&vec, 2) == false);
-    vec_free(&vec);
-
-    vec = uint64_vec_init_immed(2, 0, 2);
-    assert(uint64_vec_has_uint64(&vec, 0) == true);
-    assert(uint64_vec_has_uint64(&vec, 1) == false);
-    assert(uint64_vec_has_uint64(&vec, 2) == true);
-    assert(uint64_vec_has_uint64(&vec, 3) == false);
-    vec_free(&vec);
-
-    assert(clu_mem_is_empty());
-}
-
-void test_utils_vec()
-{
-    printf("\n\t%s", __func__);
-
-    tet_utils_vec_init_zero();
-    test_utils_byte_vec_init_uint64();
-    test_utils_uint64_vec_has_uint64();
-
-    assert(clu_mem_is_empty());
+    TEST_FN_CLOSE
 }
 
 
 
 void test_utils()
 {
-    printf("\n%s", __func__);
+    TEST_LIB
 
-    test_utils_debug();
-    test_utils_uint();
-    test_utils_vec();
+    bool show = false;
 
-    assert(clu_mem_is_empty());
+    test_utils_cton(show);
+    test_utils_byte_vec_init_immed(show);
+    
+    test_utils_uint64_add(show);
+    test_utils_uint64_get_byte(show);
+    test_utils_uint64_set_byte(show);
+    test_utils_uint64_get_size(show);
+    test_utils_uint64_init_byte(show);
+    test_utils_uint128_to_uint64(show);
+
+    tet_utils_vec_init_zero(show);
+    test_utils_byte_vec_init_uint64(show);
+    test_utils_uint64_vec_has_uint64(show);
+
+    TEST_ASSERT_MEM_EMPTY
 }
 
 
