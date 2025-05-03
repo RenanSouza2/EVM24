@@ -43,22 +43,12 @@ bool word_test(word_t w1, word_t w2)
 
 
 
-word_t word_init_zero()
-{
-    return (word_t){{0, 0, 0, 0}};
-}
-
-word_t word_init_uint64(uint64_t num)
-{
-    return (word_t){{num, 0, 0, 0}};
-}
-
 word_t word_init_bytes(byte_vec_p b)
 {
     uint64_t size = b->size;
     assert(size <= 32);
 
-    word_t w = word_init_zero();
+    word_t w = W1(0);
     for(uint64_t i=0; i<size; i++)
     {
         byte_t u = b->arr[size-1-i];

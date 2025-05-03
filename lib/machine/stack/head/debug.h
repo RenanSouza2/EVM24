@@ -5,6 +5,8 @@
 
 #ifdef DEBUG
 
+#include <stdbool.h>
+
 #include "../../../word/struct.h"
 
 void stack_display(evm_stack_t s);

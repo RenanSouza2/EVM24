@@ -1,6 +1,8 @@
 #ifndef __FRAME_STRUCT_H__
 #define __FRAME_STRUCT_H__
 
+#include <stdbool.h>
+
 #include "header.h"
 
 #include "../bytes/struct.h"

@@ -6,6 +6,7 @@
 #include "../../../mods/macros/assert.h"
 
 #include "../../utils/header.h"
+#include "../../word/header.h"
 
 
 
@@ -21,7 +22,7 @@ byte_t bytes_get_byte(evm_bytes_p b, uint64_t pos)
 
 word_t bytes_get_word(evm_bytes_p b, uint64_t pos)
 {
-    word_t w = word_init_zero();
+    word_t w = W1(0);
     for(int i=0; i<32; i++)
     {
         byte_t u = bytes_get_byte(b, pos+i);

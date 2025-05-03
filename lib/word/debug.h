@@ -1,12 +1,9 @@
 #ifndef __WORD_DEBUG_H__
 #define __WORD_DEBUG_H__
 
-#include "struct.h"
+#include "header.h"
 
 #ifdef DEBUG
-
-#define WORD(V3, V2, V1, V0) ((word_t){{V0, V1, V2, V3}})
-#define W1(V0) ((word_t){{V0, 0, 0, 0}})
 
 void word_display(word_t w);
 void word_display_immed(word_t w);

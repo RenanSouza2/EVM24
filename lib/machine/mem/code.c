@@ -15,6 +15,7 @@
 #ifdef DEBUG
 
 #include "../../utils/debug.h"
+#include "../../word/debug.h"
 
 evm_mem_t mem_init_variadic(uint64_t n, va_list *arg)
 {

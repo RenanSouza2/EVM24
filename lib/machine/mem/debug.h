@@ -6,6 +6,7 @@
 #ifdef DEBUG
 
 #include <stdarg.h>
+#include <stdbool.h>
 
 evm_mem_t mem_init_variadic(uint64_t n, va_list *arg);
 evm_mem_t mem_init_immed(uint64_t n, ...);

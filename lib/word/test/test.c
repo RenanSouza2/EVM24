@@ -1,230 +1,214 @@
 #include <stdio.h>
 
 #include "../debug.h"
-#include "../../../utils/clu/bin/header.h"
+#include "../../../testrc.h"
+#include "../../../mods/macros/test.h"
 
 #include "../../machine/bytes/debug.h"
 #include "../../utils/debug.h"
 
 
 
-void test_word_mem_size()
+void test_word_mem_size(bool show)
 {
-    printf("\n\t%s", __func__);
+    TEST_FN_OPEN
     
-    assert(sizeof(word_t) == 32);
+    TEST_CASE_OPEN(1)
+    {
+        assert(sizeof(word_t) == 32);
+    }
+    TEST_CASE_CLOSE
 
-    assert(clu_mem_is_empty());
+    TEST_FN_CLOSE
 }
 
-void test_word_init_zero()
+void test_word_init_bytes(bool show)
 {
-    printf("\n\t%s", __func__);
+    TEST_FN_OPEN
+
+    #define TEST_WORD_INIT_BYTES(TAG, BYTES, RES)       \
+    {                                                   \
+        TEST_CASE_OPEN(TAG)                             \
+        {                                               \
+            evm_bytes_t b = byte_vec_init_immed(BYTES); \
+            word_t w = word_init_bytes(&b);             \
+            assert(word_test(w, RES));                  \
+        }                                               \
+        TEST_CASE_CLOSE                                 \
+    }
     
-    word_t w = word_init_zero();
-    assert(word_test(w, W1(0)));
+    TEST_WORD_INIT_BYTES(1, "0x", W1(0));
+    TEST_WORD_INIT_BYTES(2, "0xff", W1(0xff));
+    TEST_WORD_INIT_BYTES(3, "0xffee", W1(0xffee));
+    TEST_WORD_INIT_BYTES(4, "0xff0000000000000000", W4(0, 0, 0xff, 0));
 
-    assert(clu_mem_is_empty());
-}
+    #undef TEST_WORD_INIT_BYTES
 
-void test_word_init_uint64()
-{
-    printf("\n\t%s", __func__);
-    
-    word_t w = word_init_uint64(0);
-    assert(word_test(w, W1(0)));
-    
-    w = word_init_uint64(1);
-    assert(word_test(w, W1(1)));
-    
-    w = word_init_uint64(0xff);
-    assert(word_test(w, W1(0xff)));
-    
-    w = word_init_uint64(U64_FF);
-    assert(word_test(w, W1(U64_FF)));
-    
-    w = word_init_uint64(U64_MAX);
-    assert(word_test(w, W1(U64_MAX)));
-
-    assert(clu_mem_is_empty());
-}
-
-void test_word_init_bytes()
-{
-    printf("\n\t%s", __func__);
-    
-    evm_bytes_t b = byte_vec_init_immed("0x");
-    word_t w = word_init_bytes(&b);
-    assert(word_test(w, W1(0)));
-
-    b = byte_vec_init_immed("0xff");
-    w = word_init_bytes(&b);
-    assert(word_test(w, W1(0xff)));
-
-    b = byte_vec_init_immed("0xffee");
-    w = word_init_bytes(&b);
-    assert(word_test(w, W1(0xffee)));
-
-    b = byte_vec_init_immed("0xff0000000000000000");
-    w = word_init_bytes(&b);
-    assert(word_test(w, WORD(0, 0, 0xff, 0)));
-
-    assert(clu_mem_is_empty());
+    TEST_FN_CLOSE
 }
 
 
 
-void test_word_is_uint_64()
+void test_word_is_uint_64(bool show)
 {
-    printf("\n\t%s", __func__);
+    TEST_FN_OPEN
     
-    word_t w = word_init_zero();
-    assert(word_is_uint64(&w) == true);
+    #define TEST_WORD_IS_UINT64(TAG, WORD, RES) \
+    {                                           \
+        TEST_CASE_OPEN(TAG)                     \
+        {                                       \
+            word_t w = WORD;                    \
+            bool res = word_is_uint64(&w);      \
+            assert(res == RES);                 \
+        }                                       \
+        TEST_CASE_CLOSE                         \
+    }
 
-    w = W1(U64_MAX);
-    assert(word_is_uint64(&w) == true);
+    TEST_WORD_IS_UINT64(1, W1(0), true);
+    TEST_WORD_IS_UINT64(2, W1(U64_MAX), true);
+    TEST_WORD_IS_UINT64(2, W4(0, 0, 1, 0), false);
+    TEST_WORD_IS_UINT64(2, W4(U64_MAX, U64_MAX, U64_MAX, U64_MAX), false);
 
-    w = WORD(0, 0, 1, 0);
-    assert(word_is_uint64(&w) == false);
+    #undef TEST_WORD_IS_UINT64
 
-    w = WORD(U64_MAX, U64_MAX, U64_MAX, U64_MAX);
-    assert(word_is_uint64(&w) == false);
-
-    assert(clu_mem_is_empty());
+    TEST_FN_CLOSE
 }
 
-void test_word_eq()
+void test_word_eq(bool show)
 {
-    printf("\n\t%s", __func__);
+    TEST_FN_OPEN
     
-    word_t w1 = WORD(4, 3, 2, 1);
-    word_t w2 = WORD(4, 3, 2, 1);
-    assert(word_eq(&w1, &w2) == true);
-    
-    w2 = WORD(4, 3, 2, 0);
-    assert(word_eq(&w1, &w2) == false);
-    
-    w2 = WORD(4, 3, 0, 1);
-    assert(word_eq(&w1, &w2) == false);
-    
-    w2 = WORD(4, 0, 2, 1);
-    assert(word_eq(&w1, &w2) == false);
-    
-    w2 = WORD(0, 3, 2, 1);
-    assert(word_eq(&w1, &w2) == false);
+    #define TEST_WORD_EQ(TAG, WORD, RES)    \
+    {                                       \
+        TEST_CASE_OPEN(TAG)                 \
+        {                                   \
+            word_t w1 = W4(4, 3, 2, 1);     \
+            word_t w2 = WORD;               \
+            bool res = word_eq(&w1, &w2);   \
+            assert(res == RES);             \
+        }                                   \
+        TEST_CASE_CLOSE                     \
+    }
 
-    assert(clu_mem_is_empty());
+    TEST_WORD_EQ(1, W4(4, 3, 2, 1), true);
+    TEST_WORD_EQ(2, W4(4, 3, 2, 0), false);
+    TEST_WORD_EQ(3, W4(4, 3, 0, 1), false);
+    TEST_WORD_EQ(4, W4(4, 0, 2, 1), false);
+    TEST_WORD_EQ(5, W4(0, 3, 2, 1), false);
+
+    #undef TEST_WORD_EQ
+
+    TEST_FN_CLOSE
 }
 
-void test_word_add_uint64()
+void test_word_add_uint64(bool show)
 {
-    printf("\n\t%s", __func__);
+    TEST_FN_OPEN
+
+    #define TEST_WORD_ADD_UINT64(TAG, WORD, INDEX, U64, RES)    \
+    {                                                           \
+        TEST_CASE_OPEN(TAG)                                     \
+        {                                                       \
+            word_t w = WORD;                                    \
+            word_add_uint64(&w, INDEX, U64);                    \
+            assert(word_test(w, RES));                          \
+        }                                                       \
+        TEST_CASE_CLOSE                                         \
+    }
     
-    word_t w = WORD(4, 3, 2, 1);
-    word_add_uint64(&w, 0, 1);
-    assert(word_test(w, WORD(4, 3, 2, 2)));
+    TEST_WORD_ADD_UINT64(1, W4(4, 3, 2, 1), 0, 1, W4(4, 3, 2, 2));
+    TEST_WORD_ADD_UINT64(2, W4(4, 3, 2, 1), 1, 1, W4(4, 3, 3, 1));
+    TEST_WORD_ADD_UINT64(3, W4(4, 3, 2, 1), 2, 1, W4(4, 4, 2, 1));
+    TEST_WORD_ADD_UINT64(4, W4(4, 3, 2, 1), 3, 1, W4(5, 3, 2, 1));
+    TEST_WORD_ADD_UINT64(5, W4(4, 3, 2, 1), 4, 1, W4(4, 3, 2, 1));
+    TEST_WORD_ADD_UINT64(6, W1(0xffffffffff), 0, 0x1f, W1(0x1000000001e));
+    TEST_WORD_ADD_UINT64(7, W1(U64_MAX), 0, 1, W4(0, 0, 1, 0));
+    TEST_WORD_ADD_UINT64(8, W4(U64_MAX, U64_MAX, U64_MAX, U64_MAX), 0, 1, W1(0));
 
-    w = WORD(4, 3, 2, 1);
-    word_add_uint64(&w, 1, 1);
-    assert(word_test(w, WORD(4, 3, 3, 1)));
-    
-    w = WORD(4, 3, 2, 1);
-    word_add_uint64(&w, 2, 1);
-    assert(word_test(w, WORD(4, 4, 2, 1)));
-    
-    w = WORD(4, 3, 2, 1);
-    word_add_uint64(&w, 3, 1);
-    assert(word_test(w, WORD(5, 3, 2, 1)));
-    
-    w = WORD(4, 3, 2, 1);
-    word_add_uint64(&w, 4, 1);
-    assert(word_test(w, WORD(4, 3, 2, 1)));
+    #undef TEST_WORD_ADD_UINT64
 
-    w = W1(0xffffffffff);
-    word_add_uint64(&w, 0, 0x1f);
-    assert(word_test(w, W1(0x1000000001e)));
-
-    w = W1(U64_MAX);
-    word_add_uint64(&w, 0, 1);
-    assert(word_test(w, WORD(0, 0, 1, 0)));
-
-    w = WORD(U64_MAX, U64_MAX, U64_MAX, U64_MAX);
-    word_add_uint64(&w, 0, 1);
-    assert(word_test(w, W1(0)));
-
-    assert(clu_mem_is_empty());
+    TEST_FN_CLOSE
 }
 
-void test_word_set_byte()
+void test_word_set_byte(bool show)
 {
-    printf("\n\t%s", __func__);
-    
-    word_t w = W1(0);
-    word_set_byte(&w, 0, 0xff);
-    assert(word_test(w, W1(0xff)));
+    TEST_FN_OPEN
 
-    w = W1(0);
-    word_set_byte(&w, 1, 0xff);
-    assert(word_test(w, W1(0xff00)));
+    #define TEST_WORD_SET_BYTE(TAG, WORD, INDEX, BYTE, RES) \
+    {                                                       \
+        TEST_CASE_OPEN(TAG)                                 \
+        {                                                   \
+            word_t w = WORD;                                \
+            word_set_byte(&w, INDEX, BYTE);                 \
+            assert(word_test(w, RES));                      \
+        }                                                   \
+        TEST_CASE_CLOSE                                     \
+    }
 
-    w = W1(0);
-    word_set_byte(&w, 7, 0xff);
-    assert(word_test(w, W1(U64_FF)));
+    TEST_WORD_SET_BYTE(1, W1(0), 0, 0xff, W1(0xff));
+    TEST_WORD_SET_BYTE(2, W1(0), 1, 0xff, W1(0xff00));
+    TEST_WORD_SET_BYTE(3, W1(0), 7, 0xff, W1(U64_FF));
+    TEST_WORD_SET_BYTE(4, W1(0), 8, 0xff, W4(0, 0, 0xff, 0));
+    TEST_WORD_SET_BYTE(5, W1(0),31, 0xff, W4(U64_FF, 0, 0, 0));
+    TEST_WORD_SET_BYTE(6, W1(1), 0, 0xff, W1(0xff));
+    TEST_WORD_SET_BYTE(7, W1(1), 1, 0xff, W1(0xff01));
+    TEST_WORD_SET_BYTE(8, W1(1), 7, 0xff, W1(U64_FF | 0x01));
+    TEST_WORD_SET_BYTE(9, W1(1), 8, 0xff, W4(0, 0, 0xff, 1));
+    TEST_WORD_SET_BYTE(10, W1(1),31, 0xff, W4(U64_FF, 0, 0, 1));
 
-    w = W1(0);
-    word_set_byte(&w, 8, 0xff);
-    assert(word_test(w, WORD(0, 0, 0xff, 0)));
+    #undef TEST_WORD_SET_BYTE
 
-    w = W1(0);
-    word_set_byte(&w, 31, 0xff);
-    assert(word_test(w, WORD(U64_FF, 0, 0, 0)));
-
-    assert(clu_mem_is_empty());
+    TEST_FN_CLOSE
 }
 
 
 
-void test_word_add()
+void test_word_add(bool show)
 {
-    printf("\n\t%s", __func__);
+    TEST_FN_OPEN
     
-    word_t w1 = WORD(4, 3, 2, 1);
-    word_t w2 = WORD(1, 2, 3, 4);
-    word_t w = word_add(&w1, &w2);
-    assert(word_test(w, WORD(5, 5, 5, 5)));
-    
-    w1 = WORD(U64_MAX, U64_MAX, U64_MAX, U64_MAX);
-    w2 = WORD(0, 0, 1, 0);
-    w = word_add(&w1, &w2);
-    assert(word_test(w, W1(U64_MAX)));
-    
-    w1 = WORD(U64_MAX, U64_MAX, U64_MAX, U64_MAX);
-    w2 = WORD(U64_MAX, U64_MAX, U64_MAX, U64_MAX);
-    w = word_add(&w1, &w2);
-    assert(word_test(w, WORD(U64_MAX, U64_MAX, U64_MAX, U64_MAX - 1)));
+    #define TEST_WORD_ADD(TAG, WORD_1, WORD_2, RES) \
+    {                                               \
+        TEST_CASE_OPEN(TAG)                         \
+        {                                           \
+            word_t w1 = WORD_1;                     \
+            word_t w2 = WORD_2;                     \
+            word_t w = word_add(&w1, &w2);          \
+            assert(word_test(w, RES));              \
+        }                                           \
+        TEST_CASE_CLOSE                             \
+    }
 
-    assert(clu_mem_is_empty());
+    TEST_WORD_ADD(1, W4(4, 3, 2, 1), W4(1, 2, 3, 4), W4(5, 5, 5, 5));
+    TEST_WORD_ADD(2, W4(U64_MAX, U64_MAX, U64_MAX, U64_MAX), W4(0, 0, 1, 0), W1(U64_MAX));
+    TEST_WORD_ADD(3,
+        W4(U64_MAX, U64_MAX, U64_MAX, U64_MAX),
+        W4(U64_MAX, U64_MAX, U64_MAX, U64_MAX),
+        W4(U64_MAX, U64_MAX, U64_MAX, U64_MAX - 1)
+    );
+
+    TEST_FN_CLOSE
 }
 
 
 
 void test_word()
 {
-    printf("\n%s", __func__);
+    TEST_LIB
 
-    test_word_mem_size();
-    test_word_init_zero();
-    test_word_init_uint64();
-    test_word_init_bytes();
+    bool show = false;
 
-    test_word_is_uint_64();
-    test_word_eq();
-    test_word_add_uint64();
-    test_word_set_byte();
+    test_word_mem_size(show);
+    test_word_init_bytes(show);
 
-    test_word_add();
+    test_word_is_uint_64(show);
+    test_word_eq(show);
+    test_word_add_uint64(show);
+    test_word_set_byte(show);
 
-    assert(clu_mem_is_empty());
+    test_word_add(show);
+
+    TEST_ASSERT_MEM_EMPTY
 }
 
 

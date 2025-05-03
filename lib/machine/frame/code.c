@@ -8,6 +8,7 @@
 #include "../bytes/header.h"
 #include "../mem/header.h"
 #include "../../utils/header.h"
+#include "../../word/header.h"
 
 
 #ifdef DEBUG
@@ -188,7 +189,7 @@ int frame_push_uint64(evm_frame_p f, uint64_t value)
     GAS_VERIFY(G_base, 1);
     GAS_CONSUME(G_base);
 
-    word_t w = word_init_uint64(value);
+    word_t w = W1(value);
     if(stack_push(&f->s, &w)) return 2;
     f->pc++;
 
@@ -231,7 +232,7 @@ int frame_codesize(evm_frame_p f) // TODO test
     GAS_VERIFY(G_base, 1);
     GAS_CONSUME(G_base);
 
-    word_t w = word_init_uint64(f->code.size);
+    word_t w = W1(f->code.size);
     if(stack_push(&f->s, &w)) return 2;
     return 0;
 }

@@ -6,11 +6,14 @@
 #include "../../../mods/macros/assert.h"
 
 #include "../../rlp/header.h"
+#include "../../word/header.h"
 
 
 
 #ifdef DEBUG
 #endif
+
+
 
 // TODO test
 evm_rlp_t rlp_init_node_leaf(evm_node_leaf_p n)
