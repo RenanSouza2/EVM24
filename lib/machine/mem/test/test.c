@@ -11,7 +11,7 @@
 void test_mem_dry_run(bool show)
 {
     TEST_FN_OPEN
-    
+
     #define TEST_MEM_DRY_RUN(TAG, INITIAL_SIZE, POS, SIZE, RES)   \
     {   \
         TEST_CASE_OPEN(TAG) \
@@ -55,19 +55,19 @@ void test_mem_dry_run(bool show)
         evm_mem_t m = byte_vec_init_zero();
         m.size = 736;
         uint64_t res = mem_dry_run(&m, WORD(0, 0, 1, 0), 1);
-        assert_64(res, U64_MAX);    
+        assert_64(res, U64_MAX);
     }
     TEST_CASE_CLOSE
 
     #undef TEST_MEM_DRY_RUN
 
-    TEST_FN_CLOSE 
+    TEST_FN_CLOSE
 }
 
 void test_mem_expand(bool show)
 {
     TEST_FN_OPEN
-    
+
     for(uint64_t i=0; i<4; i++)
     {
         TEST_CASE_OPEN(33 * i + 1)
@@ -121,7 +121,7 @@ void test_mem_get_word(bool show)
         assert(word_test(w, W1(0)));
     }
     TEST_CASE_CLOSE
-        
+
     TEST_CASE_OPEN(2)
     {
         evm_mem_t m = mem_init_immed(1, W1(0xff));
@@ -130,7 +130,7 @@ void test_mem_get_word(bool show)
         assert(word_test(w, W1(0xff)));
     }
     TEST_CASE_CLOSE
-        
+
     TEST_CASE_OPEN(3)
     {
         evm_mem_t m = mem_init_immed(1, W1(0xff));
@@ -139,7 +139,7 @@ void test_mem_get_word(bool show)
         assert(word_test(w, WORD(U64_FF, 0, 0, 0)));
     }
     TEST_CASE_CLOSE
-        
+
     TEST_CASE_OPEN(4)
     {
         evm_mem_t m = mem_init_immed(1, W1(0xff));
@@ -151,7 +151,7 @@ void test_mem_get_word(bool show)
     TEST_CASE_CLOSE
 
     #undef TEST_MEM_GET_WORD
-    
+
     TEST_FN_CLOSE
 }
 
@@ -178,7 +178,7 @@ void test_mem_get_bytes(bool show)
     assert(mem_immed(m, 2, W1(0x1234), W1(0)));
     vec_free(&b);
     vec_free(&m);
-    
+
     TEST_FN_CLOSE
 }
 
@@ -202,7 +202,7 @@ void test_mem_set_byte(bool show)
     assert(mem_immed(m, 1, WORD(0xff00ee0000000000, 0, 0, 0xdd)));
 
     mem_set_byte(&m, 32, 0xcc);
-    assert(mem_immed(m, 2, 
+    assert(mem_immed(m, 2,
         WORD(0xff00ee0000000000, 0, 0, 0xdd),
         WORD(0xcc00000000000000, 0, 0, 0)
     ));
@@ -245,12 +245,12 @@ void test_mem_set_bytes(bool show)
     evm_bytes_t b = byte_vec_init_zero();
     mem_set_bytes(&m, 1024, &b);
     assert(mem_immed(m, 0));
-    
+
     b = byte_vec_init_immed("0x1234");
     mem_set_bytes(&m, 0, &b);
     assert(mem_immed(m, 1, WORD(0x1234000000000000, 0, 0, 0)));
     vec_free(&b);
-    
+
     b = byte_vec_init_immed("0x5678");
     mem_set_bytes(&m, 1, &b);
     assert(mem_immed(m, 1, WORD(0x1256780000000000, 0, 0, 0)));
@@ -290,7 +290,7 @@ void test_mem()
 
 
 
-int main() 
+int main()
 {
     setbuf(stdout, NULL);
     test_mem();

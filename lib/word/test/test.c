@@ -12,7 +12,7 @@
 void test_word_mem_size(bool show)
 {
     TEST_FN_OPEN
-    
+
     TEST_CASE_OPEN(1)
     {
         assert(sizeof(word_t) == 32);
@@ -36,7 +36,7 @@ void test_word_init_bytes(bool show)
         }                                               \
         TEST_CASE_CLOSE                                 \
     }
-    
+
     TEST_WORD_INIT_BYTES(1, "0x", W1(0));
     TEST_WORD_INIT_BYTES(2, "0xff", W1(0xff));
     TEST_WORD_INIT_BYTES(3, "0xffee", W1(0xffee));
@@ -52,7 +52,7 @@ void test_word_init_bytes(bool show)
 void test_word_is_uint_64(bool show)
 {
     TEST_FN_OPEN
-    
+
     #define TEST_WORD_IS_UINT64(TAG, WORD, RES) \
     {                                           \
         TEST_CASE_OPEN(TAG)                     \
@@ -77,7 +77,7 @@ void test_word_is_uint_64(bool show)
 void test_word_eq(bool show)
 {
     TEST_FN_OPEN
-    
+
     #define TEST_WORD_EQ(TAG, WORD, RES)    \
     {                                       \
         TEST_CASE_OPEN(TAG)                 \
@@ -115,7 +115,7 @@ void test_word_add_uint64(bool show)
         }                                                       \
         TEST_CASE_CLOSE                                         \
     }
-    
+
     TEST_WORD_ADD_UINT64(1, W4(4, 3, 2, 1), 0, 1, W4(4, 3, 2, 2));
     TEST_WORD_ADD_UINT64(2, W4(4, 3, 2, 1), 1, 1, W4(4, 3, 3, 1));
     TEST_WORD_ADD_UINT64(3, W4(4, 3, 2, 1), 2, 1, W4(4, 4, 2, 1));
@@ -166,7 +166,7 @@ void test_word_set_byte(bool show)
 void test_word_add(bool show)
 {
     TEST_FN_OPEN
-    
+
     #define TEST_WORD_ADD(TAG, WORD_1, WORD_2, RES) \
     {                                               \
         TEST_CASE_OPEN(TAG)                         \
@@ -213,7 +213,7 @@ void test_word()
 
 
 
-int main() 
+int main()
 {
     setbuf(stdout, NULL);
     test_word();

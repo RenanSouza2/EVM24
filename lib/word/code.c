@@ -115,7 +115,7 @@ byte_vec_t byte_vec_init_word(word_p w)
     byte_vec_t b = byte_vec_init(size);
     for(uint64_t i=0; i<size; i++)
         b.arr[size-1 - i] = word_get_byte(w, i);
-        
+
     return b;
 }
 

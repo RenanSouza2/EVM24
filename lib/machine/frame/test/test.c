@@ -126,7 +126,7 @@ void test_frame_mload()
     // expand memory
     f = frame_init_immed_setup("0x51", GAS_DEF, 1, W1(0xff), 1, W1(0x10));
     assert_64(frame_mload(&f), 0);
-    assert(frame_test_immed(f, 1, GAS_DEF - 6, 
+    assert(frame_test_immed(f, 1, GAS_DEF - 6,
         2, W1(0xff), W1(0x00),
         1, WORD(0, 0xff, 0, 0)
     ));
@@ -245,7 +245,7 @@ void test_frame_push()
 
         word_t w = W1(0);
         memset(w.arr, 0xff, i);
-        
+
         f = frame_init_immed(str, GAS_DEF);
         assert_64(frame_push(&f), 0);
         assert(frame_test_immed(f, i+1, GAS_DEF - 3, IGN, 1, w));
@@ -282,7 +282,7 @@ void test_frame_return()
     printf("\n\t%s", __func__);
 
     // common case
-    evm_frame_t f = frame_init_immed_setup("0xf3", GAS_DEF, 
+    evm_frame_t f = frame_init_immed_setup("0xf3", GAS_DEF,
         1, WORD(0x0001020304050607, 0x08090a0b0c0d0e0f, 0x1011121314151617, 0x18191a1b1c1d1e1f),
         2, W1(0x20), W1(0x00)
     );
@@ -292,7 +292,7 @@ void test_frame_return()
     frame_o_free(&fo);
 
     // common case expansion
-    f = frame_init_immed_setup("0xf3", GAS_DEF, 
+    f = frame_init_immed_setup("0xf3", GAS_DEF,
         1, WORD(0x0001020304050607, 0x08090a0b0c0d0e0f, 0x1011121314151617, 0x18191a1b1c1d1e1f),
         2, W1(0x20), W1(0x10)
     );
@@ -302,8 +302,8 @@ void test_frame_return()
     frame_o_free(&fo);
 
     // stack 0 elements
-    f = frame_init_immed_setup("0xf3", GAS_DEF, 
-        1, WORD(0x0001020304050607, 0x08090a0b0c0d0e0f, 0x1011121314151617, 0x18191a1b1c1d1e1f), 
+    f = frame_init_immed_setup("0xf3", GAS_DEF,
+        1, WORD(0x0001020304050607, 0x08090a0b0c0d0e0f, 0x1011121314151617, 0x18191a1b1c1d1e1f),
         1, W1(0x20)
     );
     fo = frame_return(&f);
@@ -319,7 +319,7 @@ void test_frame_return()
     frame_o_free(&fo);
 
     // mem expand too much
-    f = frame_init_immed_setup("0xf3", GAS_DEF, 
+    f = frame_init_immed_setup("0xf3", GAS_DEF,
         1, WORD(0x0001020304050607, 0x08090a0b0c0d0e0f, 0x1011121314151617, 0x18191a1b1c1d1e1f),
         2, W1(0x20), W1(U64_MAX)
     );
@@ -329,7 +329,7 @@ void test_frame_return()
     frame_o_free(&fo);
 
     // return 0
-    f = frame_init_immed_setup("0xf3", GAS_DEF, 
+    f = frame_init_immed_setup("0xf3", GAS_DEF,
         1, WORD(0x0001020304050607, 0x08090a0b0c0d0e0f, 0x1011121314151617, 0x18191a1b1c1d1e1f),
         2, W1(0x00), W1(0x00)
     );
@@ -339,7 +339,7 @@ void test_frame_return()
     frame_o_free(&fo);
 
     // reaturn 0 from far
-    f = frame_init_immed_setup("0xf3", GAS_DEF, 
+    f = frame_init_immed_setup("0xf3", GAS_DEF,
         1, WORD(0x0001020304050607, 0x08090a0b0c0d0e0f, 0x1011121314151617, 0x18191a1b1c1d1e1f),
         2, W1(0x00), W1(U64_MAX)
     );
@@ -376,7 +376,7 @@ void test_frame()
 
 
 
-int main() 
+int main()
 {
     setbuf(stdout, NULL);
     test_frame();

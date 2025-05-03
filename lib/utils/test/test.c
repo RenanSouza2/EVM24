@@ -83,7 +83,7 @@ void test_utils_uint64_add(bool show)
         assert_64(res, 3);
     }
     TEST_CASE_CLOSE
-    
+
     TEST_CASE_OPEN(2)
     {
         uint64_t res = uint64_add(UINT64_MAX, 2);
@@ -131,7 +131,7 @@ void test_utils_uint64_set_byte(bool show)
 
     for(uint64_t i = 0; i < 8; i++)
         TEST_UTILS_UINT64_SET_BYTE(5 + i, 0, i, 0xff, (uint64_t)0xff << (i << 3));
-    
+
     #undef TEST_UTILS_UINT64_SET_BYTE
 
     TEST_CASE_OPEN(13)
@@ -268,7 +268,7 @@ void test_utils_byte_vec_init_uint64(bool show)
 void test_utils_uint64_vec_has_uint64(bool show)
 {
     TEST_FN_OPEN
-    
+
     #define TEST_UTILS_UINT64_VEC_HAS_UINT64(TAG, VEC, U64, RES)    \
     {                                                               \
         TEST_CASE_OPEN(TAG)                                         \
@@ -281,7 +281,7 @@ void test_utils_uint64_vec_has_uint64(bool show)
         TEST_CASE_CLOSE                                             \
     }
 
-    
+
     TEST_UTILS_UINT64_VEC_HAS_UINT64(1, (1, 1), 0, false);
     TEST_UTILS_UINT64_VEC_HAS_UINT64(2, (1, 1), 1, true);
     TEST_UTILS_UINT64_VEC_HAS_UINT64(3, (1, 1), 2, false);
@@ -306,7 +306,7 @@ void test_utils()
 
     test_utils_cton(show);
     test_utils_byte_vec_init_immed(show);
-    
+
     test_utils_uint64_add(show);
     test_utils_uint64_get_byte(show);
     test_utils_uint64_set_byte(show);

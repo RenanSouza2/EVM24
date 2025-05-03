@@ -9,7 +9,7 @@ jobs:
     - uses: actions/checkout@v4
     - run: git submodule update --recursive --init
     - run: make test
-  
+
   build:
     runs-on: ubuntu-latest
     steps:

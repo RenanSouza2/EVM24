@@ -164,7 +164,7 @@ void rlp_free(evm_rlp_p r)
             vec_free(&r->vec.b);
         }
         return;
-        
+
         case LIST:
         {
             rlp_vec_free_rec(&r->vec.r);

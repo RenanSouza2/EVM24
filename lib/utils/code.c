@@ -270,7 +270,7 @@ byte_vec_t byte_vec_concat(byte_vec_p b1, byte_vec_p b2) // TODO test
 {
     if(b2->size == 0)
         return *b1;
-        
+
     if(b1->size == 0)
         return *b2;
 

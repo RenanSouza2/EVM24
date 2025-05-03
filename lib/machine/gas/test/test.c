@@ -46,7 +46,7 @@ void test_gas()
 }
 
 
-int main() 
+int main()
 {
     setbuf(stdout, NULL);
     test_gas();

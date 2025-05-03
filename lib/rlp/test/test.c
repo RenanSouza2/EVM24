@@ -26,7 +26,7 @@ void test_rlp_encode(bool show)
     b = rlp_encode_immed(BYTES, "0x00");
     assert(byte_vec_test_immed(b, "0x00"));
     vec_free(&b);
-    
+
     if(show) printf("\n\t\t%s  3\t\t", __func__);
     b = rlp_encode_immed(BYTES, "0x01");
     assert(byte_vec_test_immed(b, "0x01"));
@@ -41,17 +41,17 @@ void test_rlp_encode(bool show)
     b = rlp_encode_immed(BYTES, "0x80");
     assert(byte_vec_test_immed(b, "0x8180"));
     vec_free(&b);
-    
+
     if(show) printf("\n\t\t%s  6\t\t", __func__);
     b = rlp_encode_immed(BYTES, "0x80");
     assert(byte_vec_test_immed(b, "0x8180"));
     vec_free(&b);
-    
+
     if(show) printf("\n\t\t%s  7\t\t", __func__);
     b = rlp_encode_immed(BYTES, "0xff");
     assert(byte_vec_test_immed(b, "0x81ff"));
     vec_free(&b);
-    
+
     if(show) printf("\n\t\t%s  8\t\t", __func__);
     b = rlp_encode_immed(BYTES, "0x0000");
     assert(byte_vec_test_immed(b, "0x820000"));

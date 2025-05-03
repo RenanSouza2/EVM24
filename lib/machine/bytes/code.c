@@ -35,11 +35,11 @@ evm_bytes_t bytes_get_bytes(evm_bytes_p b, uint64_t pos, uint64_t size)
 {
     if(size == 0)
         return byte_vec_init_zero();
-    
+
     byte_t *v = malloc(size);
     assert(v);
     for(uint64_t i = 0; i < size; i++)
         v[i] = bytes_get_byte(b, pos+i);
-    
+
     return (evm_bytes_t){size, v};
 }

@@ -12,7 +12,7 @@ void test_database()
 
 
 
-int main() 
+int main()
 {
     setbuf(stdout, NULL);
     test_database();

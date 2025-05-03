@@ -98,7 +98,7 @@ void test_bytes()
 
 
 
-int main() 
+int main()
 {
     setbuf(stdout, NULL);
     test_bytes();

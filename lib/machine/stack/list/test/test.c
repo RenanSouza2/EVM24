@@ -58,7 +58,7 @@ void test_stack_list()
 
 
 
-int main() 
+int main()
 {
     setbuf(stdout, NULL);
     test_stack_list();

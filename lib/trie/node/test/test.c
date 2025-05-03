@@ -9,7 +9,7 @@ void test_node()
 }
 
 
-int main() 
+int main()
 {
     setbuf(stdout, NULL);
     test_node();

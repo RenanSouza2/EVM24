@@ -55,11 +55,11 @@ void test_stack_evm_pop()
     assert(!stack_push_immed(&s, WORD(4, 3, 2, 1)));
     assert(!stack_push_immed(&s, WORD(1, 2, 3, 4)));
 
-    
+
     assert_64(stack_pop(&w, &s), 0);
     assert(word_test(w, WORD(1, 2, 3, 4)));
     assert(stack_test_immed(s, 1, WORD(4, 3, 2, 1)));
-    
+
     assert_64(stack_pop(&w, &s), 0);
     assert(word_test(w, WORD(4, 3, 2, 1)));
     assert(stack_test_immed(s, 0));
@@ -85,7 +85,7 @@ void test_stack()
 
 
 
-int main() 
+int main()
 {
     setbuf(stdout, NULL);
     test_stack();
