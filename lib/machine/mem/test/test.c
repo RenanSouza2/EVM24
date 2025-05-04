@@ -133,7 +133,7 @@ void test_mem_get_bytes(bool show)
         {                                                               \
             evm_mem_t m = mem_init_immed(ARG_OPEN MEM_BEF);             \
             evm_bytes_t b = mem_get_bytes(&m, INDEX, SIZE);             \
-            assert(byte_vec_test_immed(b, RES));                        \
+            assert(byte_vec_immed(b, RES));                        \
             assert(mem_immed(m, ARG_OPEN MEM_AFT));                     \
         }                                                               \
         TEST_CASE_CLOSE                                                 \

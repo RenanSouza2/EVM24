@@ -12,19 +12,7 @@
 
 
 
-void stack_l_display(evm_stack_l_p sl)
-{
-    for(uint64_t i=0; sl; i++, sl = sl->sl)
-    {
-        printf("\n\tword " U64P() ": ", i);
-        word_display(sl->w);
-    }
-    printf("\n");
-}
-
-
-
-evm_stack_l_p stack_l_init_immed_variadic(uint64_t n, va_list *args)
+evm_stack_l_p stack_l_init_variadic(uint64_t n, va_list *args)
 {
     evm_stack_l_p sl = NULL;
     for(uint64_t i=0; i<n; i++)
@@ -35,41 +23,80 @@ evm_stack_l_p stack_l_init_immed_variadic(uint64_t n, va_list *args)
     return sl;
 }
 
-
-
-bool stack_l_test_immed(evm_stack_l_p sl, uint64_t n, ...)
+evm_stack_l_p stack_l_init_immed(uint64_t n, ...)
 {
     va_list args;
     va_start(args, n);
-    return stack_l_test_variadic(sl, n, &args);
+    return stack_l_init_variadic(n, &args);
 }
 
-bool stack_l_test_variadic(evm_stack_l_p sl, uint64_t n, va_list *args)
+
+
+void stack_l_display(evm_stack_l_p sl)
+{
+    if(sl == NULL)
+        return;
+
+    for(uint64_t i=0; sl; i++, sl = sl->sl)
+    {
+        printf("\n\tword " U64P() ": ", i);
+        word_display(sl->w);
+    }
+    printf("\n");
+}
+
+
+
+bool stack_l_test_inner(evm_stack_l_p sl_1, evm_stack_l_p sl_2)
 {
     uint64_t i;
-    for(i=0; sl && i < n; sl = sl->sl, i++)
+    for(i=0; sl_1 && sl_2; i++)
     {
-        word_t w = va_arg(*args, word_t);
-        if(!word_test(sl->w, w))
+        if(!word_test(sl_1->w, sl_2->w))
         {
             printf("\n\tSTACK LIST ASSERTION ERROR | WORD | " U64P(), i);
             return false;
         }
+
+        sl_1 = sl_1->sl;
+        sl_2 = sl_2->sl;
     }
 
-    if(i < n)
+    if(sl_2 != NULL)
     {
-        printf("\n\n\tSTACK LIST ASSERTION ERROR | FEWER WORDS | " U64P() " " U64P() "", i, n);
+        printf("\n\n\tSTACK LIST ASSERTION ERROR | LIST SHORTER | " U64P() "", i);
         return false;
     }
 
-    if(sl != NULL)
+    if(sl_1 != NULL)
     {
-        printf("\n\n\tSTACK LIST ASSERTION ERROR | MORE WORDS | " U64P() "", n);
+        printf("\n\n\tSTACK LIST ASSERTION ERROR | LIST LONGER | " U64P() "", i);
         return false;
     }
 
     return true;
+}
+
+bool stack_l_test(evm_stack_l_p sl_1, evm_stack_l_p sl_2)
+{
+    if(!stack_l_test_inner(sl_1, sl_2))
+    {
+        stack_l_display(sl_1);
+        stack_l_display(sl_2);
+        return false;
+    }
+
+    stack_l_free(sl_1);
+    stack_l_free(sl_2);
+    return true;
+}
+
+bool stack_l_immed(evm_stack_l_p sl, uint64_t n, ...)
+{
+    va_list args;
+    va_start(args, n);
+    evm_stack_l_p sl_2 = stack_l_init_variadic(n, &args);
+    return stack_l_test(sl, sl_2);
 }
 
 #endif
@@ -81,13 +108,18 @@ evm_stack_l_p stack_l_create(evm_stack_l_p sl_next, word_p w)
     evm_stack_l_p sl = malloc(sizeof(evm_stack_l_t));
     assert(sl);
 
-    *sl = (evm_stack_l_t){sl_next, *w};
+    *sl = (evm_stack_l_t)
+    {
+        .sl = sl_next,
+        .w = *w
+    };
     return sl;
 }
 
 evm_stack_l_p stack_l_pop(word_p w, evm_stack_l_p sl)
 {
-    if(w) *w = sl->w;
+    if(w)
+        *w = sl->w;
 
     assert(sl);
     evm_stack_l_p sl_next = sl->sl;

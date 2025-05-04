@@ -10,10 +10,10 @@
 
 void stack_l_display(evm_stack_l_p sl);
 
-evm_stack_l_p stack_l_init_immed_variadic(uint64_t n, va_list *args);
+evm_stack_l_p stack_l_init_variadic(uint64_t n, va_list *args);
 
-bool stack_l_test_immed(evm_stack_l_p sl, uint64_t n, ...);
-bool stack_l_test_variadic(evm_stack_l_p sl, uint64_t n, va_list *args);
+bool stack_l_test(evm_stack_l_p sl_1, evm_stack_l_p sl_2);
+bool stack_l_immed(evm_stack_l_p sl, uint64_t n, ...);
 
 #endif
 

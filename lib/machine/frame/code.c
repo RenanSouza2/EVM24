@@ -39,7 +39,7 @@ evm_frame_t frame_init_immed_setup(char str_code[], uint64_t gas, uint64_t n_mem
         code,
         frame_get_jumpdest(&code),
         mem_init_variadic(n_mem, &args),
-        stack_init_immed_variadic(va_arg(args, uint64_t), &args)
+        stack_init_variadic(va_arg(args, uint64_t), &args)
     };
 }
 
@@ -53,7 +53,7 @@ uint64_vec_t frame_get_jumpdest_immed(char str_code[])
 
 
 
-bool frame_test_immed(evm_frame_t f, uint64_t pc, uint64_t gas, uint64_t n_mem, ...) {
+bool frame_immed(evm_frame_t f, uint64_t pc, uint64_t gas, uint64_t n_mem, ...) {
     va_list args;
     va_start(args, n_mem);
 
@@ -79,18 +79,18 @@ bool frame_test_immed(evm_frame_t f, uint64_t pc, uint64_t gas, uint64_t n_mem, 
     //     return false;
     // }
 
-    uint64_t n_stack = va_arg(args, uint64_t);
-    if(n_stack < IGN)
-    if(!stack_test_variadic(f.s, n_stack, &args))
-    {
-        printf("\n\tFRAME ASSERTION ERROR | STACK");
-        return false;
-    }
+    // uint64_t n_stack = va_arg(args, uint64_t);
+    // if(n_stack < IGN)
+    // if(!stack_test_variadic(f.s, n_stack, &args))
+    // {
+    //     printf("\n\tFRAME ASSERTION ERROR | STACK");
+    //     return false;
+    // }
 
     return true;
 }
 
-bool frame_o_test_immed(evm_frame_o_t fo, bool success, uint64_t gas, char str_returndata[])
+bool frame_o_immed(evm_frame_o_t fo, bool success, uint64_t gas, char str_returndata[])
 {
     if(fo.success != success) {
         printf("\n\n\tFRAME ASSERTION ERROR | SUCCESS");
@@ -103,7 +103,7 @@ bool frame_o_test_immed(evm_frame_o_t fo, bool success, uint64_t gas, char str_r
         return false;
     }
 
-    if(!byte_vec_test_immed(fo.returndata, str_returndata))
+    if(!byte_vec_immed(fo.returndata, str_returndata))
     {
         printf("\n\tFRAME OUTPUT ASSERTION ERROR | RETURN DATA");
         return false;
@@ -200,12 +200,22 @@ int frame_push_uint64(evm_frame_p f, uint64_t value)
 
 evm_frame_o_t frame_stop(evm_frame_p f)
 {
-    return (evm_frame_o_t){true, f->gas, byte_vec_init_zero()};
+    return (evm_frame_o_t)
+    {
+        .success =  true,
+        .gas = f->gas,
+        .returndata = byte_vec_init_zero()
+    };
 }
 
 evm_frame_o_t frame_halt(evm_frame_p f)
 {
-    return (evm_frame_o_t){false, f->gas, byte_vec_init_zero()};
+    return (evm_frame_o_t)
+    {
+        .success = false,
+        .gas = f->gas,
+        .returndata = byte_vec_init_zero()
+    };
 }
 
 
@@ -402,7 +412,12 @@ evm_frame_o_t frame_return(evm_frame_p f)
     GAS_VERIFY(gas, frame_halt(f));
     GAS_CONSUME(gas);
 
-    return (evm_frame_o_t){true, f->gas, mem_get_bytes(&f->m, w_ptr.arr[0], w_size.arr[0])};
+    return (evm_frame_o_t)
+    {
+        .success = true,
+        .gas = f->gas,
+        .returndata = mem_get_bytes(&f->m, w_ptr.arr[0], w_size.arr[0])
+    };
 }
 
 

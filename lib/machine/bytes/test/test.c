@@ -90,7 +90,7 @@ void test_bytes_get_bytes(bool show)
         {                                                           \
             evm_bytes_t b = byte_vec_init_immed("0x0001020304");    \
             evm_bytes_t res = bytes_get_bytes(&b, INDEX, SIZE);     \
-            assert(byte_vec_test_immed(res, RES));                  \
+            assert(byte_vec_immed(res, RES));                  \
             vec_free(&b);                                           \
         }                                                           \
         TEST_CASE_CLOSE                                             \

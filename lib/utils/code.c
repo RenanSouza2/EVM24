@@ -59,7 +59,11 @@ byte_vec_t byte_vec_init_immed(char str[])
     for(uint64_t i = 0; i < size; i++)
         b[i] = (cton(str[2 * i + 2]) << 4) | cton(str[2 * i + 3]);
 
-    return (byte_vec_t){size, b};
+    return (byte_vec_t)
+    {
+        .size = size,
+        .arr = b
+    };
 }
 
 uint64_vec_t uint64_vec_init_variadic(uint64_t n, va_list *args)
@@ -171,13 +175,13 @@ bool uint64_vec_test(uint64_vec_t vec_1, uint64_vec_t vec_2)
 
     return true;
 }
-bool byte_vec_test_immed(byte_vec_t b, char str[])
+bool byte_vec_immed(byte_vec_t b, char str[])
 {
     byte_vec_t b_exp = byte_vec_init_immed(str);
     return byte_vec_test(b, b_exp);
 }
 
-bool uint64_vec_test_immed(uint64_vec_t vec, uint64_t n, ...)
+bool uint64_vec_immed(uint64_vec_t vec, uint64_t n, ...)
 {
     va_list args;
     va_start(args, n);
@@ -235,7 +239,11 @@ uint64_t uint128_to_uint64(uint128_t res)
 
 byte_vec_t byte_vec_init_zero()
 {
-    return (byte_vec_t){0, NULL};
+    return (byte_vec_t)
+    {
+        .size = 0,
+        .arr = NULL
+    };
 }
 
 byte_vec_t byte_vec_init_uint64(uint64_t num)
@@ -252,10 +260,14 @@ byte_vec_t byte_vec_init(uint64_t size)
     if(size == 0)
         return byte_vec_init_zero();
 
-    byte_p v = calloc(size, sizeof(byte_t));
-    assert(v);
+    byte_p arr = calloc(size, sizeof(byte_t));
+    assert(arr);
 
-    return (byte_vec_t){size, v};
+    return (byte_vec_t)
+    {
+        .size = size,
+        .arr = arr
+    };
 }
 
 byte_vec_t byte_vec_init_byte_arr(byte_p b, uint64_t size) // TODO: test
@@ -285,7 +297,11 @@ byte_vec_t byte_vec_concat(byte_vec_p b1, byte_vec_p b2) // TODO test
 
 uint64_vec_t uint64_vec_init_zero() // TODO test
 {
-    return (uint64_vec_t){0, NULL};
+    return (uint64_vec_t)
+    {
+        .size = 0,
+        .arr = NULL
+    };
 }
 
 uint64_vec_t uint64_vec_init(uint64_t size)
@@ -293,10 +309,14 @@ uint64_vec_t uint64_vec_init(uint64_t size)
     if(size == 0)
         uint64_vec_init_zero();
 
-    uint64_p v = calloc(size, sizeof(uint64_t));
-    assert(v);
+    uint64_p arr = calloc(size, sizeof(uint64_t));
+    assert(arr);
 
-    return (uint64_vec_t){size, v};
+    return (uint64_vec_t)
+    {
+        .size = size,
+        .arr = arr
+    };
 }
 
 bool uint64_vec_has_uint64(uint64_vec_p vec, uint64_t v)

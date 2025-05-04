@@ -139,11 +139,15 @@ byte_vec_t mem_get_bytes(evm_mem_p m, uint64_t pos, uint64_t size)
         return byte_vec_init_zero();
 
     mem_expand(m, pos + size);
-    byte_t *v = malloc(size);
-    assert(v);
+    byte_t *arr = malloc(size);
+    assert(arr);
 
-    memcpy(v, &m->arr[pos], size);
-    return (byte_vec_t){size, v};
+    memcpy(arr, &m->arr[pos], size);
+    return (byte_vec_t)
+    {
+        .size = size,
+        .arr = arr
+    };
 }
 
 void mem_set_byte(evm_mem_p m, uint64_t pos, byte_t u)

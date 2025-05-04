@@ -248,7 +248,7 @@ void test_utils_byte_vec_init_uint64(bool show)
         TEST_CASE_OPEN(TAG)                                 \
         {                                                   \
             byte_vec_t b = byte_vec_init_uint64(U64);       \
-            assert(byte_vec_test_immed(b, RES));            \
+            assert(byte_vec_immed(b, RES));            \
         }                                                   \
         TEST_CASE_CLOSE                                     \
     }

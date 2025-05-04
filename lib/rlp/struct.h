@@ -17,7 +17,7 @@ STRUCT(evm_rlp)
     {
         byte_vec_t b;
         evm_rlp_vec_t r;
-    } vec;
+    } arr;
 };
 
 #endif

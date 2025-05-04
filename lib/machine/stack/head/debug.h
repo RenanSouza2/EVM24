@@ -9,12 +9,14 @@
 
 #include "../../../word/struct.h"
 
+
+evm_stack_t stack_init_variadic(uint64_t n, va_list *args);
+evm_stack_t stack_init_immed(uint64_t n, ...);
+
 void stack_display(evm_stack_t s);
 
-evm_stack_t stack_init_immed_variadic(uint64_t n, va_list *args);
-
-bool stack_test_immed(evm_stack_t s, uint64_t n, ...);
-bool stack_test_variadic(evm_stack_t s, uint64_t n, va_list *args);
+bool stack_test(evm_stack_t s_1, evm_stack_t s_2);
+bool stack_immed(evm_stack_t s, uint64_t n, ...);
 
 uint64_t stack_push_immed(evm_stack_p s, word_t w);
 

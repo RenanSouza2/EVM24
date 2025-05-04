@@ -2,71 +2,113 @@
 
 #include "../debug.h"
 #include "../../../../../testrc.h"
+#include "../../../../../mods/macros/test.h"
 
 #include "../../../../word/debug.h"
 #include "../../../../utils/debug.h"
 
 
 
-void test_stack_init()
+void test_stack_init(bool show)
 {
-    printf("\n\t%s", __func__);
+    TEST_FN_OPEN
 
-    evm_stack_t s = stack_init();
-    assert(stack_test_immed(s, 0) == true);
+    TEST_CASE_OPEN(1)
+    {
+        evm_stack_t s = stack_init();
+        assert(stack_immed(s, 0) == true);
+    }
+    TEST_CASE_CLOSE
 
-    assert(clu_mem_is_empty());
+    TEST_FN_CLOSE
 }
 
-void test_stack_evm_push()
+void test_stack_push(bool show)
 {
-    printf("\n\t%s", __func__);
+    TEST_FN_OPEN
 
-    // printf("\n\t\t%s 1", __func__);
-    word_t w1 = WORD(4, 3, 2, 1);
-    evm_stack_t s = stack_init();
-    assert_64(stack_push(&s, &w1), 0);
-    assert(stack_test_immed(s, 1, w1));
+    #define TEST_STACK_PUSH(TAG, STACK_BEF, WORD, STACK_AFT)        \
+    {                                                               \
+        TEST_CASE_OPEN(TAG)                                         \
+        {                                                           \
+            evm_stack_t s = stack_init_immed(ARG_OPEN STACK_BEF);   \
+            word_t w1 = WORD;                                       \
+            uint64_t res = stack_push(&s, &w1);                     \
+            assert_64(res, 0);                                      \
+            assert(stack_immed(s, ARG_OPEN STACK_AFT));             \
+        }                                                           \
+        TEST_CASE_CLOSE                                             \
+    }
 
-    // printf("\n\t\t%s 2", __func__);
-    word_t w2 = WORD(1, 2, 3, 4);
-    assert_64(stack_push(&s, &w2), 0);
-    assert(stack_test_immed(s, 2, w2, w1));
-    stack_free(&s);
+    TEST_STACK_PUSH(1,
+        (0),
+        W4(4, 3, 2, 1),
+        (1, W4(4, 3, 2, 1))
+    );
 
-    // printf("\n\t\t%s 3", __func__);
-    s = stack_init();
-    word_t w = WORD(0, 0, 0, 0);
-    for(uint64_t i=0; i<1024; i++)
-        assert_64(stack_push(&s, &w), 0);
-    assert_64(stack_push(&s, &w), 1);
-    stack_free(&s);
+    TEST_STACK_PUSH(1,
+        (1, W4(4, 3, 2, 1)),
+        W4(1, 2, 3, 4),
+        (2, W4(4, 3, 2, 1), W4(1, 2, 3, 4))
+    );
 
-    assert(clu_mem_is_empty());
+    #undef TEST_STACK_PUSH
+    
+    TEST_CASE_OPEN(3)
+    {
+        evm_stack_t s = stack_init();
+        s.count = 1024;
+        word_t w = W4(0, 0, 0, 0);
+        uint64_t res = stack_push(&s, &w);
+        assert_64(res, 1);
+        stack_free(&s);
+    }
+    TEST_CASE_CLOSE
+
+    TEST_FN_CLOSE
 }
 
-void test_stack_evm_pop()
+void test_stack_pop(bool show)
 {
-    printf("\n\t%s", __func__);
+    TEST_FN_OPEN
 
-    word_t w = WORD(0, 0, 0, 0);
-    evm_stack_t s = stack_init();
+    #define TEST_STACK_POP(TAG, STACK_BEF, WORD, STACK_AFT)         \
+    {                                                               \
+        TEST_CASE_OPEN(TAG)                                         \
+        {                                                           \
+            word_t w;                                               \
+            evm_stack_t s = stack_init_immed(ARG_OPEN STACK_BEF);   \
+            uint64_t res = stack_pop(&w, &s);                       \
+            assert_64(res, 0);                                      \
+            assert(word_test(w, WORD));                             \
+            assert(stack_immed(s, ARG_OPEN STACK_AFT));             \
+        }                                                           \
+        TEST_CASE_CLOSE                                             \
+    }
 
-    assert(!stack_push_immed(&s, WORD(4, 3, 2, 1)));
-    assert(!stack_push_immed(&s, WORD(1, 2, 3, 4)));
+    TEST_STACK_POP(1,
+        (2, W4(4, 3, 2, 1), W4(1, 2, 3, 4)),
+        W4(1, 2, 3, 4),
+        (1, W4(4, 3, 2, 1))
+    );
+    
+    TEST_STACK_POP(2,
+        (1, W4(4, 3, 2, 1)),
+        W4(4, 3, 2, 1),
+        (0)
+    );
 
+    TEST_CASE_OPEN(3)
+    {
+        word_t w;
+        evm_stack_t s = stack_init_immed(0);
+        uint64_t res = stack_pop(&w, &s);
+        assert_64(res, 1);
+        assert(stack_immed(s, 0));
+    }
+    TEST_CASE_CLOSE
 
-    assert_64(stack_pop(&w, &s), 0);
-    assert(word_test(w, WORD(1, 2, 3, 4)));
-    assert(stack_test_immed(s, 1, WORD(4, 3, 2, 1)));
-
-    assert_64(stack_pop(&w, &s), 0);
-    assert(word_test(w, WORD(4, 3, 2, 1)));
-    assert(stack_test_immed(s, 0));
-
-    assert_64(stack_pop(&w, &s), 1);
-
-    assert(clu_mem_is_empty());
+    TEST_FN_CLOSE
 }
 
 
@@ -74,13 +116,15 @@ void test_stack_evm_pop()
 
 void test_stack()
 {
-    printf("\n%s", __func__);
+    TEST_LIB
 
-    test_stack_init();
-    test_stack_evm_push();
-    test_stack_evm_pop();
+    bool show = true;
 
-    assert(clu_mem_is_empty());
+    test_stack_init(show);
+    test_stack_push(show);
+    test_stack_pop(show);
+
+    TEST_ASSERT_MEM_EMPTY
 }
 
 
