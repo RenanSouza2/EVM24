@@ -19,8 +19,7 @@
 
 evm_mem_t mem_init_variadic(uint64_t n, va_list *arg)
 {
-    evm_mem_t m = byte_vec_init_zero();
-    mem_expand(&m, n << 5);
+    evm_mem_t m = byte_vec_init(n << 5);
     for(uint64_t i = 0; i < n; i++)
     {
         word_t w = va_arg(*arg, word_t);
@@ -38,7 +37,21 @@ evm_mem_t mem_init_immed(uint64_t n, ...)
 
 
 
-bool mem_eq_dbg(evm_mem_t m_1, evm_mem_t m_2)
+void mem_display(evm_mem_t m)
+{
+    printf("\nsize: " U64P() "", m.size);
+    uint64_t max = m.size >> 5;
+    for(uint64_t i=0; i<max; i++)
+    {
+        printf("\n0x");
+        for(uint64_t j=0; j<32; j++)
+            printf("%02x", m.arr[(i << 5) + j]);
+    }
+}
+
+
+
+bool mem_test_inner(evm_mem_t m_1, evm_mem_t m_2)
 {
     if(!uint64_test(m_1.size, m_2.size))
     {
@@ -55,12 +68,24 @@ bool mem_eq_dbg(evm_mem_t m_1, evm_mem_t m_2)
     return true;
 }
 
+bool mem_test(evm_mem_t m_1, evm_mem_t m_2)
+{
+    if(!mem_test_inner(m_1, m_2))
+    {
+        mem_display(m_1);
+        mem_display(m_2);
+        return false;
+    }
+
+    return true;
+}
+
 bool mem_immed(evm_mem_t m, uint64_t n, ...)
 {
     va_list args;
     va_start(args, n);
     evm_mem_t m_2 = mem_init_variadic(n, &args);
-    return mem_eq_dbg(m, m_2);
+    return mem_test(m, m_2);
 }
 
 #endif
@@ -95,10 +120,10 @@ void mem_expand(evm_mem_p m, uint64_t pos)
     uint64_t size_prev = m->size;
     if(size <= size_prev)
         return;
-
+    
     m->size = size;
     m->arr = realloc(m->arr, size);
-    assert(size == 0 || m->arr != NULL);
+    assert(m->arr != NULL);
     memset(&m->arr[size_prev], 0, size - size_prev);
 }
 
@@ -141,4 +166,5 @@ void mem_set_bytes(evm_mem_p m, uint64_t pos, byte_vec_p b)
 
     mem_expand(m, pos + b->size);
     memcpy(&m->arr[pos], b->arr, b->size);
+    vec_free(b);
 }

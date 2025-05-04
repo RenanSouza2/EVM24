@@ -3,3 +3,5 @@ Utils
 Word
 Rlp
 Trie
+
+rename pos to index

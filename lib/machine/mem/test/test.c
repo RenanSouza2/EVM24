@@ -12,16 +12,16 @@ void test_mem_dry_run(bool show)
 {
     TEST_FN_OPEN
 
-    #define TEST_MEM_DRY_RUN(TAG, INITIAL_SIZE, POS, SIZE, RES)   \
-    {   \
-        TEST_CASE_OPEN(TAG) \
-        {   \
-            evm_mem_t m = byte_vec_init_zero(); \
-            m.size = INITIAL_SIZE;  \
-            uint64_t res = mem_dry_run(&m, W1(POS), SIZE);  \
-            assert_64(res, RES);    \
-        }   \
-        TEST_CASE_CLOSE \
+    #define TEST_MEM_DRY_RUN(TAG, INITIAL_SIZE, INDEX, SIZE, RES)   \
+    {                                                               \
+        TEST_CASE_OPEN(TAG)                                         \
+        {                                                           \
+            evm_mem_t m = byte_vec_init_zero();                     \
+            m.size = INITIAL_SIZE;                                  \
+            uint64_t res = mem_dry_run(&m, W1(INDEX), SIZE);        \
+            assert_64(res, RES);                                    \
+        }                                                           \
+        TEST_CASE_CLOSE                                             \
     }
 
     TEST_MEM_DRY_RUN(1, 0,   1, 0,  0);
@@ -54,7 +54,7 @@ void test_mem_dry_run(bool show)
     {
         evm_mem_t m = byte_vec_init_zero();
         m.size = 736;
-        uint64_t res = mem_dry_run(&m, WORD(0, 0, 1, 0), 1);
+        uint64_t res = mem_dry_run(&m, W4(0, 0, 1, 0), 1);
         assert_64(res, U64_MAX);
     }
     TEST_CASE_CLOSE
@@ -101,54 +101,22 @@ void test_mem_get_word(bool show)
 {
     TEST_FN_OPEN
 
-    #define TEST_MEM_GET_WORD(TAG, MEM_BEF, POS)    \
-    {   \
-        TEST_CASE_OPEN(TAG) \
-        {   \
-            evm_mem_t m = mem_init_immed(ARG_OPEN MEM_BEF); \
-            word_t w = mem_get_word(&m, POS);   \
-            assert(mem_immed(m, 1, W1(0)));    \
-            assert(word_test(w, W1(0)));    \
-        }   \
-        TEST_CASE_CLOSE \
+    #define TEST_MEM_GET_WORD(TAG, MEM_BEF, INDEX, WORD, MEM_AFT)   \
+    {                                                               \
+        TEST_CASE_OPEN(TAG)                                         \
+        {                                                           \
+            evm_mem_t m = mem_init_immed(ARG_OPEN MEM_BEF);         \
+            word_t w = mem_get_word(&m, INDEX);                     \
+            assert(word_test(w, WORD));                             \
+            assert(mem_immed(m, ARG_OPEN MEM_AFT));                 \
+        }                                                           \
+        TEST_CASE_CLOSE                                             \
     }
 
-    TEST_CASE_OPEN(1)
-    {
-        evm_mem_t m = byte_vec_init_zero();
-        word_t w = mem_get_word(&m, 0);
-        assert(mem_immed(m, 1, W1(0)));
-        assert(word_test(w, W1(0)));
-    }
-    TEST_CASE_CLOSE
-
-    TEST_CASE_OPEN(2)
-    {
-        evm_mem_t m = mem_init_immed(1, W1(0xff));
-        word_t w = mem_get_word(&m, 0);
-        assert(mem_immed(m, 1, W1(0xff)));
-        assert(word_test(w, W1(0xff)));
-    }
-    TEST_CASE_CLOSE
-
-    TEST_CASE_OPEN(3)
-    {
-        evm_mem_t m = mem_init_immed(1, W1(0xff));
-        word_t w = mem_get_word(&m, 31);
-        assert(mem_immed(m, 2, W1(0xff), W1(0)));
-        assert(word_test(w, WORD(U64_FF, 0, 0, 0)));
-    }
-    TEST_CASE_CLOSE
-
-    TEST_CASE_OPEN(4)
-    {
-        evm_mem_t m = mem_init_immed(1, W1(0xff));
-        word_t w = mem_get_word(&m, 32);
-        assert(mem_immed(m, 2, W1(0xff), W1(0)));
-        assert(word_test(w, W1(0)));
-        vec_free(&m);
-    }
-    TEST_CASE_CLOSE
+    TEST_MEM_GET_WORD(1, (0), 0, W1(0), (1, W1(0)));
+    TEST_MEM_GET_WORD(2, (1, W1(0xff)), 0, W1(0xff), (1, W1(0xff)));
+    TEST_MEM_GET_WORD(3, (1, W1(0xff)), 31, W4(U64_FF, 0, 0, 0), (2, W1(0xff), W1(0)));
+    TEST_MEM_GET_WORD(4, (1, W1(0xff)), 32, W1(0), (2, W1(0xff), W1(0)));
 
     #undef TEST_MEM_GET_WORD
 
@@ -159,25 +127,21 @@ void test_mem_get_bytes(bool show)
 {
     TEST_FN_OPEN
 
-    TEST_CASE_OPEN(1)
-    TEST_CASE_CLOSE
+    #define TEST_MEM_GET_BYTES(TAG, MEM_BEF, INDEX, SIZE, RES, MEM_AFT) \
+    {                                                                   \
+        TEST_CASE_OPEN(TAG)                                             \
+        {                                                               \
+            evm_mem_t m = mem_init_immed(ARG_OPEN MEM_BEF);             \
+            evm_bytes_t b = mem_get_bytes(&m, INDEX, SIZE);             \
+            assert(byte_vec_test_immed(b, RES));                        \
+            assert(mem_immed(m, ARG_OPEN MEM_AFT));                     \
+        }                                                               \
+        TEST_CASE_CLOSE                                                 \
+    }
 
-    evm_mem_t m = mem_init_immed(1, W1(0x1234));
-    evm_bytes_t b = mem_get_bytes(&m, 0x1e, 2);
-    assert(byte_vec_test_immed(b, "0x1234"));
-    assert(mem_immed(m, 1, W1(0x1234)));
-    vec_free(&b);
-
-    b = mem_get_bytes(&m, 0x40, 0);
-    assert(byte_vec_test_immed(b, "0x"));
-    assert(mem_immed(m, 1, W1(0x1234)));
-    vec_free(&b);
-
-    b = mem_get_bytes(&m, 0x1e, 3);
-    assert(byte_vec_test_immed(b, "0x123400"));
-    assert(mem_immed(m, 2, W1(0x1234), W1(0)));
-    vec_free(&b);
-    vec_free(&m);
+    TEST_MEM_GET_BYTES(1, (1, W1(0x1234)), 0x1e, 2, "0x1234", (1, W1(0x1234)));
+    TEST_MEM_GET_BYTES(2, (1, W1(0x1234)), 0x40, 0, "0x", (1, W1(0x1234)));
+    TEST_MEM_GET_BYTES(3, (1, W1(0x1234)), 0x1e, 3, "0x123400", (2, W1(0x1234), W1(0)));
 
     TEST_FN_CLOSE
 }
@@ -188,25 +152,39 @@ void test_mem_set_byte(bool show)
 {
     TEST_FN_OPEN
 
-    TEST_CASE_OPEN(1)
-    TEST_CASE_CLOSE
+    #define TEST_MEM_SET_BYTE(TAG, MEM_BEF, INDEX, BYTE, MEM_AFT)   \
+    {                                                               \
+        TEST_CASE_OPEN(TAG)                                         \
+        {                                                           \
+            evm_mem_t m = mem_init_immed(ARG_OPEN MEM_BEF);         \
+            mem_set_byte(&m, INDEX, BYTE);                          \
+            assert(mem_immed(m, ARG_OPEN MEM_AFT));                 \
+        }                                                           \
+        TEST_CASE_CLOSE                                             \
+    }
 
-    evm_mem_t m = byte_vec_init_zero();
-    mem_set_byte(&m, 0, 0xff);
-    assert(mem_immed(m, 1, WORD(U64_FF, 0, 0, 0)));
+    TEST_MEM_SET_BYTE(1, (0), 0, 0xff, (1, W4(U64_FF, 0, 0, 0)));
+    TEST_MEM_SET_BYTE(2, 
+        (1, W4(U64_FF, 0, 0, 0)),
+        2, 0xee,
+        (1, W4(0xff00ee0000000000, 0, 0, 0))
+    );
+    TEST_MEM_SET_BYTE(3,
+        (1, W4(0xff00ee0000000000, 0, 0, 0)),
+        31, 0xdd,
+        (1, W4(0xff00ee0000000000, 0, 0, 0xdd))
+    );
+    TEST_MEM_SET_BYTE(4,
+        (1, W4(0xff00ee0000000000, 0, 0, 0xdd)),
+        32, 0xcc, 
+        (
+            2,
+            W4(0xff00ee0000000000, 0, 0, 0xdd),
+            W4(0xcc00000000000000, 0, 0, 0)
+        )
+    );
 
-    mem_set_byte(&m, 2, 0xee);
-    assert(mem_immed(m, 1, WORD(0xff00ee0000000000, 0, 0, 0)));
-
-    mem_set_byte(&m, 31, 0xdd);
-    assert(mem_immed(m, 1, WORD(0xff00ee0000000000, 0, 0, 0xdd)));
-
-    mem_set_byte(&m, 32, 0xcc);
-    assert(mem_immed(m, 2,
-        WORD(0xff00ee0000000000, 0, 0, 0xdd),
-        WORD(0xcc00000000000000, 0, 0, 0)
-    ));
-    vec_free(&m);
+    #undef TEST_MEM_SET_WORD
 
     TEST_FN_CLOSE
 }
@@ -215,21 +193,34 @@ void test_mem_set_word(bool show)
 {
     TEST_FN_OPEN
 
-    TEST_CASE_OPEN(1)
-    TEST_CASE_CLOSE
+    #define TEST_MEM_SET_WORD(TAG, MEM_BEF, INDEX, WORD, MEM_AFT)   \
+    {                                                               \
+        TEST_CASE_OPEN(TAG)                                         \
+        {                                                           \
+            evm_mem_t m = mem_init_immed(ARG_OPEN MEM_BEF);         \
+            word_t w = WORD;                                        \
+            mem_set_word(&m, INDEX, &w);                            \
+            assert(mem_immed(m, ARG_OPEN MEM_AFT));                 \
+        }                                                           \
+        TEST_CASE_CLOSE                                             \
+    }
 
-    evm_mem_t m = byte_vec_init_zero();
-    word_t w = WORD(U64_MAX, U64_MAX, U64_MAX, U64_MAX);
-    mem_set_word(&m, 0, &w);
-    assert(mem_immed(m, 1, WORD(U64_MAX, U64_MAX, U64_MAX, U64_MAX)));
+    TEST_MEM_SET_WORD(1, 
+        (0),
+        0, W4(U64_MAX, U64_MAX, U64_MAX, U64_MAX),
+        (1, W4(U64_MAX, U64_MAX, U64_MAX, U64_MAX))
+    );
+    TEST_MEM_SET_WORD(2,
+        (1, W4(U64_MAX, U64_MAX, U64_MAX, U64_MAX)),
+        1, W4(0xeeeeeeeeeeeeeeee, 0xeeeeeeeeeeeeeeee, 0xeeeeeeeeeeeeeeee, 0xeeeeeeeeeeeeeeee),
+        (
+            2,
+            W4(0xffeeeeeeeeeeeeee, 0xeeeeeeeeeeeeeeee, 0xeeeeeeeeeeeeeeee, 0xeeeeeeeeeeeeeeee),
+            W4(0xee00000000000000, 0, 0, 0)
+        )
+    );
 
-    w = WORD(0xeeeeeeeeeeeeeeee, 0xeeeeeeeeeeeeeeee, 0xeeeeeeeeeeeeeeee, 0xeeeeeeeeeeeeeeee);
-    mem_set_word(&m, 1, &w);
-    assert(mem_immed(m, 2,
-        WORD(0xffeeeeeeeeeeeeee, 0xeeeeeeeeeeeeeeee, 0xeeeeeeeeeeeeeeee, 0xeeeeeeeeeeeeeeee),
-        WORD(0xee00000000000000, 0, 0, 0)
-    ));
-    vec_free(&m);
+    #undef TEST_MEM_SET_WORD
 
     TEST_FN_CLOSE
 }
@@ -238,31 +229,26 @@ void test_mem_set_bytes(bool show)
 {
     TEST_FN_OPEN
 
-    TEST_CASE_OPEN(1)
-    TEST_CASE_CLOSE
+    #define TEST_MEM_SET_BYTES(TAG, MEM_BEF, INDEX, BYTES, MEM_AFT) \
+    {                                                               \
+        TEST_CASE_OPEN(TAG)                                         \
+        {                                                           \
+            evm_mem_t m = mem_init_immed(ARG_OPEN MEM_BEF);         \
+            evm_bytes_t b = byte_vec_init_immed(BYTES);             \
+            mem_set_bytes(&m, INDEX, &b);                           \
+            assert(mem_immed(m, ARG_OPEN MEM_AFT));                 \
+        }                                                           \
+        TEST_CASE_CLOSE                                             \
+    }
 
-    evm_mem_t m = byte_vec_init_zero();
-    evm_bytes_t b = byte_vec_init_zero();
-    mem_set_bytes(&m, 1024, &b);
-    assert(mem_immed(m, 0));
-
-    b = byte_vec_init_immed("0x1234");
-    mem_set_bytes(&m, 0, &b);
-    assert(mem_immed(m, 1, WORD(0x1234000000000000, 0, 0, 0)));
-    vec_free(&b);
-
-    b = byte_vec_init_immed("0x5678");
-    mem_set_bytes(&m, 1, &b);
-    assert(mem_immed(m, 1, WORD(0x1256780000000000, 0, 0, 0)));
-    vec_free(&b);
-    vec_free(&m);
-
-    m = byte_vec_init_zero();
-    b = byte_vec_init_immed("0x1234");
-    mem_set_bytes(&m, 0x1f, &b);
-    assert(mem_immed(m, 2, W1(0x12),  WORD(0x3400000000000000, 0, 0, 0)));
-    vec_free(&b);
-    vec_free(&m);
+    TEST_MEM_SET_BYTES(1, (0), 1024, "0x", (0));
+    TEST_MEM_SET_BYTES(2, (0), 0, "0x1234", (1, W4(0x1234000000000000, 0, 0, 0)));
+    TEST_MEM_SET_BYTES(3,
+        (1, W4(0x1234000000000000, 0, 0, 0)),
+        1, "0x5678",
+        (1, W4(0x1256780000000000, 0, 0, 0))
+    );
+    TEST_MEM_SET_BYTES(2, (0), 0x1f, "0x1234", (2, W1(0x12),  W4(0x3400000000000000, 0, 0, 0)));
 
     TEST_FN_CLOSE
 }
@@ -273,7 +259,7 @@ void test_mem()
 {
     TEST_LIB
 
-    bool show = true;
+    bool show = false;
 
     test_mem_dry_run(show);
     test_mem_expand(show);
