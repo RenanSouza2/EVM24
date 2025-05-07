@@ -1,13 +1,14 @@
 #include "../debug.h"
-#include "../../../../utils/assert.h"
+#include "../../../../testrc.h"
+#include "../../../../mods/macros/test.h"
 
 
 
 void test_database()
 {
-    printf("\n%s\t\t", __func__);
+    TEST_LIB
 
-    assert(clu_mem_is_empty());
+    TEST_ASSERT_MEM_EMPTY
 }
 
 

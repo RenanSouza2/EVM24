@@ -9,6 +9,7 @@
 #include "../gas/header.h"
 #include "../bytes/header.h"
 #include "../../utils/header.h"
+#include "../../word/header.h"
 
 
 
@@ -16,6 +17,8 @@
 
 #include "../../utils/debug.h"
 #include "../../word/debug.h"
+
+
 
 evm_mem_t mem_init_variadic(uint64_t n, va_list *arg)
 {
@@ -102,15 +105,15 @@ uint64_t mem_dry_run(evm_mem_p m, word_t w_pos, uint64_t size)
         return UINT64_MAX;
 
     uint64_t max = w_pos.arr[0];
-    uint64_t m_size_aft = (max > m->size ? max : m->size) >> 5;
-    uint64_t m_size_bef = m->size >> 5;
-    if(m_size_bef == m_size_aft)
+    if(max <= m->size)
         return 0;
 
+    uint64_t m_size_aft = max >> 5;
     uint64_t gas_after = gas_mem(m_size_aft);
     if(gas_after == UINT64_MAX)
         return UINT64_MAX;
 
+    uint64_t m_size_bef = m->size >> 5;
     return gas_after - gas_mem(m_size_bef);
 }
 
