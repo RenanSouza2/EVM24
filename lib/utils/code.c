@@ -66,15 +66,20 @@ byte_vec_t byte_vec_init_immed(char str[])
     if(len == 2)
         return byte_vec_init(0);
 
+    assert(len%2 == 0);
+
     uint64_t size = len / 2 - 1;
-    byte_t *b = malloc(size);
+    if(size == 0)
+        return byte_vec_init_zero();
+
+    byte_t *arr = malloc(size);
     for(uint64_t i = 0; i < size; i++)
-        b[i] = (cton(str[2 * i + 2]) << 4) | cton(str[2 * i + 3]);
+        arr[i] = (cton(str[2 * i + 2]) << 4) | cton(str[2 * i + 3]);
 
     return (byte_vec_t)
     {
         .size = size,
-        .arr = b
+        .arr = arr
     };
 }
 
@@ -248,12 +253,13 @@ uint64_t uint64_get_size(uint64_t u)
     return 8;
 }
 
-uint64_t uint64_init_byte_arr(byte_p b, uint64_t size)
+uint64_t uint64_init_byte_arr(byte_p arr, uint64_t size)
 {
     assert(size <= 8);
     uint64_t u = 0;
     for(uint64_t i = 0; i < size; i++)
-        u = uint64_set_byte(u, i, b[size - 1 - i]);
+        u = uint64_set_byte(u, i, arr[size - 1 - i]);
+
     return u;
 }
 
@@ -277,10 +283,13 @@ byte_vec_t byte_vec_init_uint64(uint64_t num)
 {
     uint64_t size = uint64_get_size(num);
     byte_vec_t b = byte_vec_init(size);
+
     for(uint64_t i = 0; i < size; i++)
         b.arr[size - 1 - i] = uint64_get_byte(num, i);
+
     return b;
 }
+
 
 byte_vec_t byte_vec_init(uint64_t size)
 {
@@ -297,12 +306,12 @@ byte_vec_t byte_vec_init(uint64_t size)
     };
 }
 
-byte_vec_t byte_vec_init_byte_arr(byte_p b, uint64_t size) // TODO: test
+// keeps arr
+byte_vec_t byte_vec_init_byte_arr(uint64_t size, byte_p arr) // TODO: test
 {
-    byte_vec_t _b = byte_vec_init(size);
-    memcpy(_b.arr, b, size);
-
-    return _b;
+    byte_vec_t b = byte_vec_init(size);
+    memcpy(b.arr, arr, size);
+    return b;
 }
 
 byte_vec_t byte_vec_concat(byte_vec_p b1, byte_vec_p b2) // TODO test
