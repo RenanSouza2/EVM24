@@ -11,6 +11,7 @@
 #include "../../word/header.h"
 
 
+
 #ifdef DEBUG
 
 #include "../mem/debug.h"
@@ -20,27 +21,32 @@
 
 
 
-evm_frame_t frame_init_immed(char str_code[], uint64_t gas)
+evm_frame_t frame_init_variadic(
+    char str_code[],
+    uint64_t pc,
+    uint64_t gas,
+    uint64_t n_mem,
+    va_list *args
+)
 {
     evm_bytes_t code = byte_vec_init_immed(str_code);
-    return frame_init(code, gas);
-}
 
-evm_frame_t frame_init_immed_setup(char str_code[], uint64_t gas, uint64_t n_mem, ...)
-{
-    evm_bytes_t code = byte_vec_init_immed(str_code);
-
-    va_list args;
-    va_start(args, n_mem);
     return (evm_frame_t)
     {
-        0,
+        pc,
         gas,
         code,
         frame_get_jumpdest(&code),
-        mem_init_variadic(n_mem, &args),
-        stack_init_variadic(va_arg(args, uint64_t), &args)
+        mem_init_variadic(n_mem, args),
+        stack_init_variadic(va_arg(*args, uint64_t), args)
     };
+}
+
+evm_frame_t frame_init_immed(char str_code[], uint64_t pc, uint64_t gas, uint64_t n_mem, ...)
+{
+    va_list args;
+    va_start(args, n_mem);
+    return frame_init_variadic(str_code, pc, gas, n_mem, &args);
 }
 
 uint64_vec_t frame_get_jumpdest_immed(char str_code[])
@@ -51,49 +57,68 @@ uint64_vec_t frame_get_jumpdest_immed(char str_code[])
     return jumpdest;
 }
 
+void frame_populate_stack(evm_frame_p f, uint64_t max)
+{
+    for(uint64_t i=0; i<max; i++)
+        assert(!stack_push_immed(&f->s, W1(i)));
+}
 
 
-bool frame_immed(evm_frame_t f, uint64_t pc, uint64_t gas, uint64_t n_mem, ...) {
-    va_list args;
-    va_start(args, n_mem);
 
-    if(pc < IGN)
-    if(!uint64_test(f.pc, pc))
+bool frame_test(evm_frame_t f_1, evm_frame_t f_2)
+{
+    if(!uint64_test(f_1.pc, f_2.pc))
     {
-        printf("\n\tFRAME ASSERTION ERROR | PC");
+        printf("\n\tFRAME ASSERTION ERROR\t| PC");
         return false;
     }
 
-    if(gas < IGN)
-    if(!uint64_test(f.gas, gas))
+    if(!uint64_test(f_1.gas, f_2.gas))
     {
-        printf("\n\tFRAME ASSERTION ERROR | GAS");
+        printf("\n\tFRAME ASSERTION ERROR\t| GAS");
         return false;
     }
 
-    // TODO
-    // if(n_mem < IGN)
-    // if(!mem_test_variadic(f.m, n_mem, &args))
-    // {
-    //     printf("\n\tFRAME ASSERTION ERROR | MEM");
-    //     return false;
-    // }
+    if(!byte_vec_test(f_1.code, f_2.code))
+    {
+        printf("\n\tFRAME ASSERTION ERROR\t| CODE");
+        return false;
+    }
 
-    // uint64_t n_stack = va_arg(args, uint64_t);
-    // if(n_stack < IGN)
-    // if(!stack_test_variadic(f.s, n_stack, &args))
-    // {
-    //     printf("\n\tFRAME ASSERTION ERROR | STACK");
-    //     return false;
-    // }
+    if(!uint64_vec_test(f_1.jumpdest, f_2.jumpdest))
+    {
+        printf("\n\tFRAME ASSERTION ERROR\t| JUMPDEST");
+        return false;
+    }
+
+    if(!mem_test(f_1.m, f_2.m))
+    {
+        printf("\n\tFRAME ASSERTION ERROR\t| MEM");
+        return false;
+    }
+
+    if(!stack_test(f_1.s, f_2.s))
+    {
+        printf("\n\tFRAME ASSERTION ERROR\t| STACK");
+        return false;
+    }
 
     return true;
 }
 
+bool frame_immed(evm_frame_t f, char str_code[], uint64_t pc, uint64_t gas, uint64_t n_mem, ...)
+{
+    va_list args;
+    va_start(args, n_mem);
+    evm_frame_t f_2 = frame_init_variadic(str_code, pc, gas, n_mem, &args);
+    return frame_test(f, f_2);
+}
+
 bool frame_o_immed(evm_frame_o_t fo, bool success, uint64_t gas, char str_returndata[])
 {
-    if(fo.success != success) {
-        printf("\n\n\tFRAME ASSERTION ERROR | SUCCESS");
+    if(fo.success != success)
+    {
+        printf("\n\n\tFRAME OUTPUT ASSERTION ERROR | SUCCESS FLAG");
         return false;
     }
 
@@ -146,10 +171,11 @@ uint64_vec_t frame_get_jumpdest(evm_bytes_p code) // TODO improve test
             case PUSH0 ... PUSH32: pc += op - PUSH0;
         }
     }
-    if(count == 0) return uint64_vec_init(0);
+    if(count == 0)
+        return uint64_vec_init(0);
 
     uint64_vec_t vec = uint64_vec_init(count);
-    count = 1;
+    count = 0;
     for(uint64_t pc=0; pc<code->size; pc++)
     {
         byte_t op = bytes_get_byte(code, pc);
@@ -210,6 +236,7 @@ evm_frame_o_t frame_stop(evm_frame_p f)
 
 evm_frame_o_t frame_halt(evm_frame_p f)
 {
+    frame_free(f);
     return (evm_frame_o_t)
     {
         .success = false,
@@ -403,21 +430,27 @@ int frame_push(evm_frame_p f)
 evm_frame_o_t frame_return(evm_frame_p f)
 {
     word_t w_ptr;
-    if(stack_pop(&w_ptr, &f->s)) return frame_halt(f);
+    if(stack_pop(&w_ptr, &f->s))
+        return frame_halt(f);
 
     word_t w_size;
-    if(stack_pop(&w_size, &f->s)) return frame_halt(f);
-    if(!word_is_uint64(&w_size)) return frame_halt(f);
+    if(stack_pop(&w_size, &f->s))
+        return frame_halt(f);
+    if(!word_is_uint64(&w_size))
+        return frame_halt(f);
+
     uint64_t gas = mem_dry_run(&f->m, w_ptr, w_size.arr[0]);
     GAS_VERIFY(gas, frame_halt(f));
     GAS_CONSUME(gas);
 
-    return (evm_frame_o_t)
+    evm_frame_o_t res = (evm_frame_o_t)
     {
         .success = true,
         .gas = f->gas,
         .returndata = mem_get_bytes(&f->m, w_ptr.arr[0], w_size.arr[0])
     };
+    frame_free(f);
+    return res;
 }
 
 

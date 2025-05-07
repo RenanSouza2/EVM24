@@ -34,7 +34,7 @@ evm_stack_t stack_init_variadic(uint64_t n, va_list *args)
 evm_stack_t stack_init_immed(uint64_t n, ...)
 {
     va_list args;
-    va_start(args, n); 
+    va_start(args, n);
     return stack_init_variadic(n, &args);
 }
 

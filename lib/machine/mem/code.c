@@ -120,7 +120,7 @@ void mem_expand(evm_mem_p m, uint64_t pos)
     uint64_t size_prev = m->size;
     if(size <= size_prev)
         return;
-    
+
     m->size = size;
     m->arr = realloc(m->arr, size);
     assert(m->arr != NULL);

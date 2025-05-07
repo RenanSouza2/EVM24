@@ -53,7 +53,7 @@ void test_stack_push(bool show)
     );
 
     #undef TEST_STACK_PUSH
-    
+
     TEST_CASE_OPEN(3)
     {
         evm_stack_t s = stack_init();
@@ -91,7 +91,7 @@ void test_stack_pop(bool show)
         W4(1, 2, 3, 4),
         (1, W4(4, 3, 2, 1))
     );
-    
+
     TEST_STACK_POP(2,
         (1, W4(4, 3, 2, 1)),
         W4(4, 3, 2, 1),
@@ -118,7 +118,7 @@ void test_stack()
 {
     TEST_LIB
 
-    bool show = true;
+    bool show = false;
 
     test_stack_init(show);
     test_stack_push(show);

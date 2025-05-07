@@ -164,7 +164,7 @@ void test_mem_set_byte(bool show)
     }
 
     TEST_MEM_SET_BYTE(1, (0), 0, 0xff, (1, W4(U64_FF, 0, 0, 0)));
-    TEST_MEM_SET_BYTE(2, 
+    TEST_MEM_SET_BYTE(2,
         (1, W4(U64_FF, 0, 0, 0)),
         2, 0xee,
         (1, W4(0xff00ee0000000000, 0, 0, 0))
@@ -176,7 +176,7 @@ void test_mem_set_byte(bool show)
     );
     TEST_MEM_SET_BYTE(4,
         (1, W4(0xff00ee0000000000, 0, 0, 0xdd)),
-        32, 0xcc, 
+        32, 0xcc,
         (
             2,
             W4(0xff00ee0000000000, 0, 0, 0xdd),
@@ -205,7 +205,7 @@ void test_mem_set_word(bool show)
         TEST_CASE_CLOSE                                             \
     }
 
-    TEST_MEM_SET_WORD(1, 
+    TEST_MEM_SET_WORD(1,
         (0),
         0, W4(U64_MAX, U64_MAX, U64_MAX, U64_MAX),
         (1, W4(U64_MAX, U64_MAX, U64_MAX, U64_MAX))

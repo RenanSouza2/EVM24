@@ -31,6 +31,18 @@ void byte_vec_display(byte_vec_t b)
     printf("\n");
 }
 
+void uint64_vec_display(uint64_vec_t vec)
+{
+    printf("\n\nuint64 (" U64P() "):", vec.size);
+    printf("\n");
+    for(uint64_t i = 0; i < vec.size; i++)
+    {
+        printf("\n\t0x" U64PX "", vec.arr[i]);
+    }
+
+    printf("\n");
+}
+
 byte_t cton(byte_t c)
 {
     switch (c)
@@ -156,7 +168,7 @@ bool byte_vec_test(byte_vec_t b_1, byte_vec_t b_2)
     return true;
 }
 
-bool uint64_vec_test(uint64_vec_t vec_1, uint64_vec_t vec_2)
+bool uint64_vec_test_inner(uint64_vec_t vec_1, uint64_vec_t vec_2)
 {
     if(!uint64_test(vec_1.size, vec_2.size))
     {
@@ -175,6 +187,21 @@ bool uint64_vec_test(uint64_vec_t vec_1, uint64_vec_t vec_2)
 
     return true;
 }
+
+bool uint64_vec_test(uint64_vec_t vec_1, uint64_vec_t vec_2)
+{
+    if(!uint64_vec_test_inner(vec_1, vec_2))
+    {
+        uint64_vec_display(vec_1);
+        uint64_vec_display(vec_2);
+        return false;
+    }
+
+    vec_free(&vec_1);
+    vec_free(&vec_2);
+    return true;
+}
+
 bool byte_vec_immed(byte_vec_t b, char str[])
 {
     byte_vec_t b_exp = byte_vec_init_immed(str);
@@ -185,7 +212,7 @@ bool uint64_vec_immed(uint64_vec_t vec, uint64_t n, ...)
 {
     va_list args;
     va_start(args, n);
-    uint64_vec_t vec_2 = uint64_vec_init_immed(n, *args);
+    uint64_vec_t vec_2 = uint64_vec_init_variadic(n, &args);
     return uint64_vec_test(vec, vec_2);
 }
 

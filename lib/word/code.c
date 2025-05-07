@@ -19,12 +19,6 @@ void word_display(word_t w)
         printf(U64PX, w.arr[i]);
 }
 
-void word_display_immed(word_t w)
-{
-    printf("\n\t");
-    word_display(w);
-}
-
 
 
 bool word_test(word_t w1, word_t w2)

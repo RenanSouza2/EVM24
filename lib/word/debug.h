@@ -6,7 +6,6 @@
 #ifdef DEBUG
 
 void word_display(word_t w);
-void word_display_immed(word_t w);
 
 bool word_test(word_t w1, word_t w2);
 

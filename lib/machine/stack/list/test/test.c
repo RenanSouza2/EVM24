@@ -68,7 +68,7 @@ void test_stack_list()
 {
     TEST_LIB
 
-    bool show = true;
+    bool show = false;
 
     test_stack_list_create(show);
     test_stack_list_pop(show);
