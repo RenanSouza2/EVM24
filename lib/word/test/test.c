@@ -275,13 +275,45 @@ void test_word_get_size(bool show)
     TEST_FN_CLOSE
 }
 
+void test_byte_vec_init_word(bool show)
+{
+    TEST_FN_OPEN
+
+    #define TEST_BYTE_VEC_INIT_WORD(TAG, WORD, RES)     \
+    {                                                   \
+        TEST_CASE_OPEN(TAG)                             \
+        {                                               \
+            word_t w = WORD;                            \
+            byte_vec_t res = byte_vec_init_word(&w);    \
+            assert(byte_vec_immed(res, RES));           \
+        }                                               \
+        TEST_CASE_CLOSE                                 \
+    }
+    
+    TEST_BYTE_VEC_INIT_WORD(1, W1(0), "0x");
+    TEST_BYTE_VEC_INIT_WORD(2, W1(1), "0x01");
+    TEST_BYTE_VEC_INIT_WORD(3, W1(0xff), "0xff");
+    TEST_BYTE_VEC_INIT_WORD(4, W1(0x1ff), "0x01ff");
+    TEST_BYTE_VEC_INIT_WORD(5, W1(U64_MAX), "0xffffffffffffffff");
+    TEST_BYTE_VEC_INIT_WORD(6, W4(U64_FF, 0, 0, 0),
+        "0xff00000000000000000000000000000000000000000000000000000000000000"
+    );
+    TEST_BYTE_VEC_INIT_WORD(7, W4(U64_MAX, U64_MAX, U64_MAX, U64_MAX),
+        "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+    );
+
+    #undef TEST_BYTE_VEC_INIT_WORD
+
+    TEST_FN_CLOSE
+}
+
 
 
 void test_word()
 {
     TEST_LIB
 
-    bool show = true;
+    bool show = false;
 
     test_word_struct_size(show);
     test_word_init_bytes(show);
@@ -296,6 +328,7 @@ void test_word()
     test_word_add(show);
 
     test_word_get_size(show);
+    test_byte_vec_init_word(show);
 
     TEST_ASSERT_MEM_EMPTY
 }

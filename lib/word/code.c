@@ -117,13 +117,12 @@ uint64_t word_get_size(word_p w)
     return 0;
 }
 
-// TODO test
 byte_vec_t byte_vec_init_word(word_p w)
 {
     uint64_t size = word_get_size(w);
     byte_vec_t b = byte_vec_init(size);
     for(uint64_t i=0; i<size; i++)
-        b.arr[size-1 - i] = word_get_byte(w, i);
+        b.arr[size-1 - i] = word_get_byte(w, 31-i);
 
     return b;
 }
