@@ -307,7 +307,7 @@ byte_vec_t byte_vec_init_byte_arr(uint64_t size, byte_p arr)
     return b;
 }
 
-byte_vec_t byte_vec_concat(byte_vec_p b1, byte_vec_p b2) // TODO test
+byte_vec_t byte_vec_concat(byte_vec_p b1, byte_vec_p b2)
 {
     if(b2->size == 0)
         return *b1;
@@ -324,7 +324,7 @@ byte_vec_t byte_vec_concat(byte_vec_p b1, byte_vec_p b2) // TODO test
 
 
 
-uint64_vec_t uint64_vec_init_zero() // TODO test
+uint64_vec_t uint64_vec_init_zero()
 {
     return (uint64_vec_t)
     {
@@ -336,7 +336,7 @@ uint64_vec_t uint64_vec_init_zero() // TODO test
 uint64_vec_t uint64_vec_init(uint64_t size)
 {
     if(size == 0)
-        uint64_vec_init_zero();
+        return uint64_vec_init_zero();
 
     uint64_p arr = calloc(size, sizeof(uint64_t));
     assert(arr);
@@ -348,6 +348,7 @@ uint64_vec_t uint64_vec_init(uint64_t size)
     };
 }
 
+// vec is assumed to be ordered 
 bool uint64_vec_has_uint64(uint64_vec_p vec, uint64_t v)
 {
     if(vec->size == 0)
