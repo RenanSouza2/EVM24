@@ -255,12 +255,12 @@ void test_frame_mstore8(bool show)
     }
 
     TEST_FRAME_MSTORE8(1,
-        ("0x52", 0, GAS_DEF, 0, 2, W1(0xff), W1(0x00)),
-        ("0x52", 1, GAS_DEF - 6, 1, W4(U64_FF, 0, 0, 0), 0)
+        ("0x53", 0, GAS_DEF, 0, 2, W1(0xff), W1(0x00)),
+        ("0x53", 1, GAS_DEF - 6, 1, W4(U64_FF, 0, 0, 0), 0)
     );
     TEST_FRAME_MSTORE8(2,
-        ("0x52", 0, GAS_DEF, 0, 2, W1(0xffff), W1(0x00)),
-        ("0x52", 1, GAS_DEF - 6, 1, W4(U64_FF, 0, 0, 0), 0)
+        ("0x53", 0, GAS_DEF, 0, 2, W1(0xffff), W1(0x00)),
+        ("0x53", 1, GAS_DEF - 6, 1, W4(U64_FF, 0, 0, 0), 0)
     );
 
     #undef TEST_FRAME_MSTORE8
@@ -277,10 +277,10 @@ void test_frame_mstore8(bool show)
         TEST_CASE_CLOSE                                         \
     }
 
-    TEST_FRAME_MLOAD(3, ("0x52", 0, GAS_DEF, 0, 0), 1);
-    TEST_FRAME_MLOAD(4, ("0x52", 0, GAS_DEF, 0, 2, W1(0), W1(U64_MAX)), 2);
-    TEST_FRAME_MLOAD(5, ("0x52", 0, 0, 0, 2, W1(0xff), W1(0x00)), 2);
-    TEST_FRAME_MLOAD(6, ("0x52", 0, 0, 0, 1, W1(0xff)), 2);
+    TEST_FRAME_MLOAD(3, ("0x53", 0, GAS_DEF, 0, 0), 1);
+    TEST_FRAME_MLOAD(4, ("0x53", 0, GAS_DEF, 0, 2, W1(0), W1(U64_MAX)), 2);
+    TEST_FRAME_MLOAD(5, ("0x53", 0, 0, 0, 2, W1(0xff), W1(0x00)), 2);
+    TEST_FRAME_MLOAD(6, ("0x53", 0, 0, 0, 1, W1(0xff)), 2);
 
     #undef TEST_FRAME_MSTORE8
 

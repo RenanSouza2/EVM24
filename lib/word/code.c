@@ -8,10 +8,6 @@
 
 #ifdef DEBUG
 
-#include "../utils/debug.h"
-
-
-
 void word_display(word_t w)
 {
     printf("0x");
@@ -46,10 +42,35 @@ word_t word_init_bytes(byte_vec_p b)
     for(uint64_t i=0; i<size; i++)
     {
         byte_t u = b->arr[size-1-i];
-        word_set_byte(&w, i, u);
+        word_set_byte(&w, 31-i, u);
     }
     vec_free(b);
     return w;
+}
+
+
+
+byte_t word_get_byte(word_p w, uint64_t index)
+{
+    assert(index<32);
+    return ((byte_t*)w->arr)[31-index];
+}
+
+void word_set_byte(word_p w, uint64_t index, byte_t u)
+{
+    assert(index<32);
+    ((byte_t*)(w->arr))[31-index] = u;
+}
+
+
+
+bool word_eq(word_p w1, word_p w2)
+{
+    for(uint64_t i=0; i<V_MAX; i++)
+        if(w1->arr[i] != w2->arr[i])
+            return false;
+
+    return true;
 }
 
 
@@ -63,15 +84,6 @@ bool word_is_uint64(word_p w)
     return true;
 }
 
-bool word_eq(word_p w1, word_p w2)
-{
-    for(uint64_t i=0; i<V_MAX; i++)
-        if(w1->arr[i] != w2->arr[i])
-            return false;
-
-    return true;
-}
-
 void word_add_uint64(word_p w, uint64_t i, uint64_t v)
 {
     if(i >= V_MAX) return;
@@ -80,17 +92,16 @@ void word_add_uint64(word_p w, uint64_t i, uint64_t v)
     if(res < v) word_add_uint64(w, i+1, 1);
 }
 
-byte_t word_get_byte(word_p w, uint64_t index)
+word_t word_add(word_p w1, word_p w2)
 {
-    assert(index<32);
-    return ((byte_t*)w->arr)[index];
+    word_t w = *w1;
+    for(uint64_t i=0; i<V_MAX; i++)
+        word_add_uint64(&w, i, w2->arr[i]);
+
+    return w;
 }
 
-void word_set_byte(word_p w, uint64_t index, byte_t u)
-{
-    assert(index<32);
-    ((byte_t*)w->arr)[index] = u;
-}
+
 
 // TODO test
 uint64_t word_get_size(word_p w)
@@ -111,15 +122,4 @@ byte_vec_t byte_vec_init_word(word_p w)
         b.arr[size-1 - i] = word_get_byte(w, i);
 
     return b;
-}
-
-
-
-word_t word_add(word_p w1, word_p w2)
-{
-    word_t w = *w1;
-    for(uint64_t i=0; i<V_MAX; i++)
-        word_add_uint64(&w, i, w2->arr[i]);
-
-    return w;
 }

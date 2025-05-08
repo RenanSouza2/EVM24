@@ -219,6 +219,7 @@ void test_mem_set_word(bool show)
             W4(0xee00000000000000, 0, 0, 0)
         )
     );
+    TEST_MEM_SET_WORD(3, (0), 0, W1(0xff), (1, W1(0xff)));
 
     #undef TEST_MEM_SET_WORD
 

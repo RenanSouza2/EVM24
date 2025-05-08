@@ -26,7 +26,7 @@ word_t bytes_get_word(evm_bytes_p b, uint64_t pos)
     for(int i=0; i<32; i++)
     {
         byte_t u = bytes_get_byte(b, pos+i);
-        word_set_byte(&w, 31-i, u);
+        word_set_byte(&w, i, u);
     }
     return w;
 }

@@ -1,9 +1,9 @@
 #ifndef __WORD_H__
 #define __WORD_H__
 
-#include <stdbool.h>
-
 #include "struct.h"
+
+#include <stdbool.h>
 
 word_t word_init_bytes(byte_vec_p b);
 

@@ -27,7 +27,7 @@ evm_mem_t mem_init_variadic(uint64_t n, va_list *arg)
     {
         word_t w = va_arg(*arg, word_t);
         for(int j = 0; j < 32; j++)
-            m.arr[(i << 5) + j] = word_get_byte(&w, 31 - j);
+            m.arr[(i << 5) + j] = word_get_byte(&w, j);
     }
     return m;
 }
@@ -163,7 +163,7 @@ void mem_set_word(evm_mem_p m, uint64_t pos, word_p w)
 {
     mem_expand(m, pos + 32);
     for(int i = 0; i < 32; i++)
-        m->arr[pos + i] = word_get_byte(w, 31 - i);
+        m->arr[pos + i] = word_get_byte(w, i);
 }
 
 void mem_set_bytes(evm_mem_p m, uint64_t pos, byte_vec_p b)
