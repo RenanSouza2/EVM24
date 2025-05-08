@@ -24,7 +24,6 @@ void byte_vec_display(byte_vec_t b);
 byte_t cton(byte_t c);
 byte_vec_t byte_vec_init_immed(char str[]);
 uint64_vec_t uint64_vec_init_immed(uint64_t n, ...);
-uint64_t uint64_init_byte_immed(char str[]);
 
 bool byte_test(byte_t u1, byte_t u2);
 bool uint64_test(uint64_t i1, uint64_t i2);

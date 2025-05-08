@@ -3,6 +3,7 @@
 #include "../../../mods/macros/test.h"
 
 
+
 void test_utils_cton(bool show)
 {
     TEST_FN_OPEN
@@ -107,6 +108,26 @@ void test_utils_uint64_get_byte(bool show)
         TEST_CASE_CLOSE
     }
 
+    TEST_CASE_OPEN(8)
+    {
+        TEST_REVERT_OPEN
+        {
+            uint64_get_byte(0x0807060504030201, 8);
+        }
+        TEST_REVERT_CLOSE
+    }
+    TEST_CASE_CLOSE
+
+    TEST_CASE_OPEN(9)
+    {
+        TEST_REVERT_OPEN
+        {
+            uint64_get_byte(0x0807060504030201, 9);
+        }
+        TEST_REVERT_CLOSE
+    }
+    TEST_CASE_CLOSE
+
     TEST_FN_CLOSE
 }
 
@@ -143,6 +164,26 @@ void test_utils_uint64_set_byte(bool show)
     }
     TEST_CASE_CLOSE
 
+    TEST_CASE_OPEN(14)
+    {
+        TEST_REVERT_OPEN
+        {
+            uint64_set_byte(0x0807060504030201, 8, 1);
+        }
+        TEST_REVERT_CLOSE
+    }
+    TEST_CASE_CLOSE
+
+    TEST_CASE_OPEN(15)
+    {
+        TEST_REVERT_OPEN
+        {
+            uint64_set_byte(0x0807060504030201, 9, 1);
+        }
+        TEST_REVERT_CLOSE
+    }
+    TEST_CASE_CLOSE
+
     TEST_FN_CLOSE
 }
 
@@ -172,26 +213,28 @@ void test_utils_uint64_get_size(bool show)
     TEST_FN_CLOSE
 }
 
-void test_utils_uint64_init_byte(bool show)
+void test_utils_uint64_init_byte_arr(bool show)
 {
     TEST_FN_OPEN
 
-    #define TEST_UTILS_UINT64_INIT_BYTE(TAG, BYTES, RES)    \
-    {                                                       \
-        TEST_CASE_OPEN(TAG)                                 \
-        {                                                   \
-            uint64_t res = uint64_init_byte_immed(BYTES);   \
-            assert_64(res, RES);                            \
-        }                                                   \
-        TEST_CASE_CLOSE                                     \
+    #define TEST_UTILS_UINT64_INIT_BYTE_ARR(TAG, BYTES, RES)    \
+    {                                                           \
+        TEST_CASE_OPEN(TAG)                                     \
+        {                                                       \
+            byte_vec_t b = byte_vec_init_immed(BYTES);          \
+            uint64_t res = uint64_init_byte_arr(b.size, b.arr); \
+            assert_64(res, RES);                                \
+            vec_free(&b);                                       \
+        }                                                       \
+        TEST_CASE_CLOSE                                         \
     }
 
-    TEST_UTILS_UINT64_INIT_BYTE(1, "0xff", 0xff);
-    TEST_UTILS_UINT64_INIT_BYTE(2, "0xffee", 0xffee);
-    TEST_UTILS_UINT64_INIT_BYTE(3, "0xffffffffffffffff", U64_MAX);
-    TEST_UTILS_UINT64_INIT_BYTE(4, "0x0807060504030201", 0x0807060504030201);
+    TEST_UTILS_UINT64_INIT_BYTE_ARR(1, "0xff", 0xff);
+    TEST_UTILS_UINT64_INIT_BYTE_ARR(2, "0xffee", 0xffee);
+    TEST_UTILS_UINT64_INIT_BYTE_ARR(3, "0xffffffffffffffff", U64_MAX);
+    TEST_UTILS_UINT64_INIT_BYTE_ARR(4, "0x0807060504030201", 0x0807060504030201);
 
-    #undef TEST_UTILS_UINT64_INIT_BYTE
+    #undef TEST_UTILS_UINT64_INIT_BYTE_ARR
 
     TEST_FN_CLOSE
 }
@@ -224,15 +267,15 @@ void test_utils_uint128_to_uint64(bool show)
 
 
 
-void tet_utils_vec_init_zero(bool show)
+void test_utils_byte_vec_init_zero(bool show)
 {
     TEST_FN_OPEN
 
     TEST_CASE_OPEN(1)
     {
         byte_vec_t b = byte_vec_init_zero();
-        assert(b.arr == NULL);
         assert(b.size == 0);
+        assert(b.arr == NULL);
     }
     TEST_CASE_CLOSE
 
@@ -248,7 +291,7 @@ void test_utils_byte_vec_init_uint64(bool show)
         TEST_CASE_OPEN(TAG)                                 \
         {                                                   \
             byte_vec_t b = byte_vec_init_uint64(U64);       \
-            assert(byte_vec_immed(b, RES));            \
+            assert(byte_vec_immed(b, RES));                 \
         }                                                   \
         TEST_CASE_CLOSE                                     \
     }
@@ -261,6 +304,33 @@ void test_utils_byte_vec_init_uint64(bool show)
     TEST_UTILS_BYTE_VEC_INIT_UINT64(6, U64_MAX, "0xffffffffffffffff");
 
     #undef TEST_UTILS_BYTE_VEC_INIT_UINT64
+
+    TEST_FN_CLOSE
+}
+
+void test_utils_byte_vec_init_byte_arr(bool show)
+{
+    TEST_FN_OPEN
+
+    #define TEST_UTILS_BYTE_VEC_INIT_BYTE_ARR(TAG, BYTE_IN, OFFSET, SIZE, RES)  \
+    {                                                                           \
+        TEST_CASE_OPEN(TAG)                                                     \
+        {                                                                       \
+            byte_vec_t b = byte_vec_init_immed(BYTE_IN);                        \
+            byte_vec_t b_res = byte_vec_init_byte_arr(SIZE, &b.arr[OFFSET]);    \
+            assert(byte_vec_immed(b_res, RES));                                 \
+            vec_free(&b);                                                       \
+        }                                                                       \
+        TEST_CASE_CLOSE                                                         \
+    }
+
+    TEST_UTILS_BYTE_VEC_INIT_BYTE_ARR(1, "0x", 0, 0, "0x");
+    TEST_UTILS_BYTE_VEC_INIT_BYTE_ARR(2, "0x00", 0, 1, "0x00");
+    TEST_UTILS_BYTE_VEC_INIT_BYTE_ARR(3, "0x0001", 0, 1, "0x00");
+    TEST_UTILS_BYTE_VEC_INIT_BYTE_ARR(4, "0x0001", 1, 1, "0x01");
+    TEST_UTILS_BYTE_VEC_INIT_BYTE_ARR(5, "0x0001", 0, 2, "0x0001");
+
+    #undef TEST_UTILS_BYTE_VEC_INIT_BYTE_ARR
 
     TEST_FN_CLOSE
 }
@@ -302,7 +372,7 @@ void test_utils()
 {
     TEST_LIB
 
-    bool show = false;
+    bool show = true;
 
     test_utils_cton(show);
     test_utils_byte_vec_init_immed(show);
@@ -311,11 +381,12 @@ void test_utils()
     test_utils_uint64_get_byte(show);
     test_utils_uint64_set_byte(show);
     test_utils_uint64_get_size(show);
-    test_utils_uint64_init_byte(show);
+    test_utils_uint64_init_byte_arr(show);
     test_utils_uint128_to_uint64(show);
 
-    tet_utils_vec_init_zero(show);
+    test_utils_byte_vec_init_zero(show);
     test_utils_byte_vec_init_uint64(show);
+    test_utils_byte_vec_init_byte_arr(show);
     test_utils_uint64_vec_has_uint64(show);
 
     TEST_ASSERT_MEM_EMPTY

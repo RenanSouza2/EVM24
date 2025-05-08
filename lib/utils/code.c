@@ -1,4 +1,3 @@
-#include <stdlib.h>
 #include <string.h>
 
 #include "debug.h"
@@ -10,6 +9,8 @@
 #ifdef DEBUG
 
 #include <stdarg.h>
+
+
 
 void byte_vec_display(byte_vec_t b)
 {
@@ -99,13 +100,6 @@ uint64_vec_t uint64_vec_init_immed(uint64_t n, ...)
     return uint64_vec_init_variadic(n, &args);
 }
 
-uint64_t uint64_init_byte_immed(char str[])
-{
-    byte_vec_t b = byte_vec_init_immed(str);
-    uint64_t res = uint64_init_byte_arr(b.arr, b.size);
-    vec_free(&b);
-    return res;
-}
 
 
 bool byte_test(byte_t u1, byte_t u2)
@@ -253,7 +247,7 @@ uint64_t uint64_get_size(uint64_t u)
     return 8;
 }
 
-uint64_t uint64_init_byte_arr(byte_p arr, uint64_t size)
+uint64_t uint64_init_byte_arr(uint64_t size, byte_p arr)
 {
     assert(size <= 8);
     uint64_t u = 0;
@@ -279,18 +273,6 @@ byte_vec_t byte_vec_init_zero()
     };
 }
 
-byte_vec_t byte_vec_init_uint64(uint64_t num)
-{
-    uint64_t size = uint64_get_size(num);
-    byte_vec_t b = byte_vec_init(size);
-
-    for(uint64_t i = 0; i < size; i++)
-        b.arr[size - 1 - i] = uint64_get_byte(num, i);
-
-    return b;
-}
-
-
 byte_vec_t byte_vec_init(uint64_t size)
 {
     if(size == 0)
@@ -306,8 +288,19 @@ byte_vec_t byte_vec_init(uint64_t size)
     };
 }
 
+byte_vec_t byte_vec_init_uint64(uint64_t num)
+{
+    uint64_t size = uint64_get_size(num);
+    byte_vec_t b = byte_vec_init(size);
+
+    for(uint64_t i = 0; i < size; i++)
+        b.arr[size - 1 - i] = uint64_get_byte(num, i);
+
+    return b;
+}
+
 // keeps arr
-byte_vec_t byte_vec_init_byte_arr(uint64_t size, byte_p arr) // TODO: test
+byte_vec_t byte_vec_init_byte_arr(uint64_t size, byte_p arr)
 {
     byte_vec_t b = byte_vec_init(size);
     memcpy(b.arr, arr, size);
