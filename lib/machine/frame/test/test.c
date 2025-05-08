@@ -387,7 +387,7 @@ void test_frame_return(bool show)
         TEST_CASE_CLOSE                                         \
     }
 
-    TEST_FRAME_RETURN(1, 
+    TEST_FRAME_RETURN(1,
         (
             "0xf3", 0, GAS_DEF,
             1, W4(0x0001020304050607, 0x08090a0b0c0d0e0f, 0x1011121314151617, 0x18191a1b1c1d1e1f),
@@ -395,22 +395,22 @@ void test_frame_return(bool show)
         ),
         (true, GAS_DEF, "0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f")
     );
-    TEST_FRAME_RETURN(2, 
+    TEST_FRAME_RETURN(2,
         ("0xf3", 0, GAS_DEF, 0, 2, W1(0x20), W1(0x00)),
         (true, GAS_DEF - G_very_low, "0x0000000000000000000000000000000000000000000000000000000000000000")
     );
-    TEST_FRAME_RETURN(3, 
+    TEST_FRAME_RETURN(3,
         ("0xf3", 0, GAS_DEF, 0, 2, W1(0x00), W1(0x00)),
         (true, GAS_DEF, "0x")
     );
-    TEST_FRAME_RETURN(4, 
+    TEST_FRAME_RETURN(4,
         ("0xf3", 0, GAS_DEF,
             1, W4(0x0001020304050607, 0x08090a0b0c0d0e0f, 0x1011121314151617, 0x18191a1b1c1d1e1f),
             1, W1(0x20)
         ),
         (false, GAS_DEF, "0x")
     );
-    TEST_FRAME_RETURN(5, 
+    TEST_FRAME_RETURN(5,
         (
             "0xf3", 0, GAS_DEF,
             1, W4(0x0001020304050607, 0x08090a0b0c0d0e0f, 0x1011121314151617, 0x18191a1b1c1d1e1f),
@@ -418,7 +418,7 @@ void test_frame_return(bool show)
         ),
         (false, GAS_DEF, "0x")
     );
-    TEST_FRAME_RETURN(6, 
+    TEST_FRAME_RETURN(6,
         (
             "0xf3", 0, GAS_DEF,
             1, W4(0x0001020304050607, 0x08090a0b0c0d0e0f, 0x1011121314151617, 0x18191a1b1c1d1e1f),
@@ -426,7 +426,7 @@ void test_frame_return(bool show)
         ),
         (false, GAS_DEF, "0x")
     );
-    TEST_FRAME_RETURN(7, 
+    TEST_FRAME_RETURN(7,
         (
             "0xf3", 0, GAS_DEF,
             1, W4(0x0001020304050607, 0x08090a0b0c0d0e0f, 0x1011121314151617, 0x18191a1b1c1d1e1f),
@@ -434,7 +434,7 @@ void test_frame_return(bool show)
         ),
         (false, GAS_DEF, "0x")
     );
-    TEST_FRAME_RETURN(8, 
+    TEST_FRAME_RETURN(8,
         (
             "0xf3", 0, GAS_DEF,
             1, W4(0x0001020304050607, 0x08090a0b0c0d0e0f, 0x1011121314151617, 0x18191a1b1c1d1e1f),
