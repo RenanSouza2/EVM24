@@ -5,21 +5,23 @@
 
 #include "struct.h"
 
-#define TRY(FN)                 \
+#define TRY_CATCH_OPEN(RES)     \
     {                           \
-        uint64_t res = (FN);    \
+        uint64_t res = (RES);   \
         if(res)
 
-#define CATCH }
+#define TRY_CATCH_CLOSE }
 
-#define ERR_CONCAT(RES, CODE) ((res) << 4) | (CODE)
+#define ERR_CONCAT(CODE, RES) ((res) << 4) | (CODE)
 
-#define ERR(FN, CODE)               \
-    TRY(FN)                         \
+#define ERR(CODE, RES)              \
+    TRY_CATCH_OPEN(RES)             \
+    {                               \
         return (CODE)               \
-            ? ERR_CONCAT(res, CODE) \
+            ? ERR_CONCAT(CODE, res) \
             : res;                  \
-    CATCH
+    }                               \
+    TRY_CATCH_CLOSE
 
 #define VEC(POINTER) ((vec_p)(POINTER))
 

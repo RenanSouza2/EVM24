@@ -297,7 +297,7 @@ uint64_t rlp_get_size(
         case 184 ... 191:
         {
             type = BYTES;
-            ERR(rlp_get_size_long(&head_size, &body_size, b0 - 183, arr, size), 4);
+            ERR(4, rlp_get_size_long(&head_size, &body_size, b0 - 183, arr, size));
         }
         break;
 
@@ -312,7 +312,7 @@ uint64_t rlp_get_size(
         case 248 ... 255:
         {
             type = LIST;
-            ERR(rlp_get_size_long(&head_size, &body_size, b0 - 247, arr, size), 5);
+            ERR(5, rlp_get_size_long(&head_size, &body_size, b0 - 247, arr, size));
         }
         break;
     }
@@ -339,12 +339,12 @@ uint64_t rlp_get_r1_sizes_rec(
     }
 
     uint64_t type, head_size, body_size;
-    ERR(rlp_get_size(&type, &head_size, &body_size, arr, size), 1);
+    ERR(1, rlp_get_size(&type, &head_size, &body_size, arr, size));
     uint64_t r1_size = head_size + body_size;
     if(r1_size > size)
         return 2;
 
-    ERR(rlp_get_r1_sizes_rec(out_r1_sizes, &arr[r1_size], size - r1_size, cnt + 1), 0);
+    ERR(0, rlp_get_r1_sizes_rec(out_r1_sizes, &arr[r1_size], size - r1_size, cnt + 1));
 
     uint64_t index = 3 * cnt;
     out_r1_sizes->arr[index] = type;
@@ -367,7 +367,7 @@ evm_rlp_t rlp_decode_bytes(byte_p arr, uint64_t body_size)
 uint64_t rlp_decode_list(evm_rlp_p out_r, byte_p arr, uint64_t size)
 {
     uint64_vec_t r1_sizes;
-    ERR(rlp_get_r1_sizes(&r1_sizes, arr, size), 1)
+    ERR(1, rlp_get_r1_sizes(&r1_sizes, arr, size))
 
     uint64_t r_vec_size = r1_sizes.size / 3;
     evm_rlp_vec_t r_vec = rlp_vec_init(r_vec_size);
@@ -380,13 +380,13 @@ uint64_t rlp_decode_list(evm_rlp_p out_r, byte_p arr, uint64_t size)
         body_size = r1_sizes.arr[index + 2];
 
         evm_rlp_t r1;
-        TRY(rlp_decode_rec(&r1, type, &arr[ptr + head_size], body_size)) // TODO improve try catch with try catch endcatch
+        TRY_CATCH_OPEN(rlp_decode_rec(&r1, type, &arr[ptr + head_size], body_size))
         {
             rlp_vec_free_rec(&r_vec);
             vec_free(&r1_sizes);
-            return ERR_CONCAT(res, 2);
+            return ERR_CONCAT(2, res);
         }
-        CATCH
+        TRY_CATCH_CLOSE
 
         r_vec.arr[i] = r1;
         ptr += head_size + body_size;
@@ -409,7 +409,7 @@ uint64_t rlp_decode_rec(evm_rlp_p out_r, uint64_t type, byte_p arr, uint64_t siz
 
         case LIST:
         {
-            ERR(rlp_decode_list(out_r, arr, size), 1);
+            ERR(1, rlp_decode_list(out_r, arr, size));
         }
         break;
 
@@ -425,14 +425,14 @@ uint64_t rlp_decode_rec(evm_rlp_p out_r, uint64_t type, byte_p arr, uint64_t siz
 uint64_t rlp_decode_inner(evm_rlp_p out_r, byte_vec_p b)
 {
     uint64_t type, head_size, body_size;
-    ERR(rlp_get_size(&type, &head_size, &body_size, b->arr, b->size), 1);
+    ERR(1, rlp_get_size(&type, &head_size, &body_size, b->arr, b->size));
 
     uint64_t rlp_size = head_size + body_size;
     if(rlp_size != b->size)
         return 2;
 
     evm_rlp_t _r;
-    ERR(rlp_decode_rec(&_r, type, &b->arr[head_size], body_size), 3);
+    ERR(3, rlp_decode_rec(&_r, type, &b->arr[head_size], body_size));
 
     *out_r = _r;
     return 0;
