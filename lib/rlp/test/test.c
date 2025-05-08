@@ -189,7 +189,7 @@ void test_rlp()
 {
     TEST_LIB
 
-    bool show = true;
+    bool show = false;
 
     test_rlp_encode(show);
     test_rlp_decode(show);

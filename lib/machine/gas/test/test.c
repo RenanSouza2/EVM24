@@ -62,7 +62,7 @@ void test_gas()
 {
     TEST_LIB
 
-    bool show = true;
+    bool show = false;
 
     test_gas_mem(show);
     test_gas_copy(show);
