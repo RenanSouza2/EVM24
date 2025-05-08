@@ -62,89 +62,6 @@ void test_word_init_bytes(bool show)
 
 
 
-void test_word_is_uint_64(bool show)
-{
-    TEST_FN_OPEN
-
-    #define TEST_WORD_IS_UINT64(TAG, WORD, RES) \
-    {                                           \
-        TEST_CASE_OPEN(TAG)                     \
-        {                                       \
-            word_t w = WORD;                    \
-            bool res = word_is_uint64(&w);      \
-            assert(res == RES);                 \
-        }                                       \
-        TEST_CASE_CLOSE                         \
-    }
-
-    TEST_WORD_IS_UINT64(1, W1(0), true);
-    TEST_WORD_IS_UINT64(2, W1(U64_MAX), true);
-    TEST_WORD_IS_UINT64(3, W4(0, 0, 1, 0), false);
-    TEST_WORD_IS_UINT64(4, W4(0, 1, 0, 0), false);
-    TEST_WORD_IS_UINT64(5, W4(1, 0, 0, 0), false);
-    TEST_WORD_IS_UINT64(6, W4(U64_MAX, U64_MAX, U64_MAX, U64_MAX), false);
-
-    #undef TEST_WORD_IS_UINT64
-
-    TEST_FN_CLOSE
-}
-
-void test_word_eq(bool show)
-{
-    TEST_FN_OPEN
-
-    #define TEST_WORD_EQ(TAG, WORD, RES)    \
-    {                                       \
-        TEST_CASE_OPEN(TAG)                 \
-        {                                   \
-            word_t w1 = W4(4, 3, 2, 1);     \
-            word_t w2 = WORD;               \
-            bool res = word_eq(&w1, &w2);   \
-            assert(res == RES);             \
-        }                                   \
-        TEST_CASE_CLOSE                     \
-    }
-
-    TEST_WORD_EQ(1, W4(4, 3, 2, 1), true);
-    TEST_WORD_EQ(2, W4(4, 3, 2, 0), false);
-    TEST_WORD_EQ(3, W4(4, 3, 0, 1), false);
-    TEST_WORD_EQ(4, W4(4, 0, 2, 1), false);
-    TEST_WORD_EQ(5, W4(0, 3, 2, 1), false);
-
-    #undef TEST_WORD_EQ
-
-    TEST_FN_CLOSE
-}
-
-void test_word_add_uint64(bool show)
-{
-    TEST_FN_OPEN
-
-    #define TEST_WORD_ADD_UINT64(TAG, WORD, INDEX, U64, RES)    \
-    {                                                           \
-        TEST_CASE_OPEN(TAG)                                     \
-        {                                                       \
-            word_t w = WORD;                                    \
-            word_add_uint64(&w, INDEX, U64);                    \
-            assert(word_test(w, RES));                          \
-        }                                                       \
-        TEST_CASE_CLOSE                                         \
-    }
-
-    TEST_WORD_ADD_UINT64(1, W4(4, 3, 2, 1), 0, 1, W4(4, 3, 2, 2));
-    TEST_WORD_ADD_UINT64(2, W4(4, 3, 2, 1), 1, 1, W4(4, 3, 3, 1));
-    TEST_WORD_ADD_UINT64(3, W4(4, 3, 2, 1), 2, 1, W4(4, 4, 2, 1));
-    TEST_WORD_ADD_UINT64(4, W4(4, 3, 2, 1), 3, 1, W4(5, 3, 2, 1));
-    TEST_WORD_ADD_UINT64(5, W4(4, 3, 2, 1), 4, 1, W4(4, 3, 2, 1));
-    TEST_WORD_ADD_UINT64(6, W1(0xffffffffff), 0, 0x1f, W1(0x1000000001e));
-    TEST_WORD_ADD_UINT64(7, W1(U64_MAX), 0, 1, W4(0, 0, 1, 0));
-    TEST_WORD_ADD_UINT64(8, W4(U64_MAX, U64_MAX, U64_MAX, U64_MAX), 0, 1, W1(0));
-
-    #undef TEST_WORD_ADD_UINT64
-
-    TEST_FN_CLOSE
-}
-
 void test_word_get_byte(bool show)
 {
     TEST_FN_OPEN
@@ -201,10 +118,106 @@ void test_word_set_byte(bool show)
 
     #undef TEST_WORD_SET_BYTE
 
+    TEST_CASE_OPEN(11)
+    {
+        word_t w = W1(0);
+        TEST_REVERT_OPEN
+        {
+            word_set_byte(&w, 33, 0xff);
+        }
+        TEST_REVERT_CLOSE
+    }
+    TEST_CASE_CLOSE
+
     TEST_FN_CLOSE
 }
 
 
+
+void test_word_eq(bool show)
+{
+    TEST_FN_OPEN
+
+    #define TEST_WORD_EQ(TAG, WORD, RES)    \
+    {                                       \
+        TEST_CASE_OPEN(TAG)                 \
+        {                                   \
+            word_t w1 = W4(4, 3, 2, 1);     \
+            word_t w2 = WORD;               \
+            bool res = word_eq(&w1, &w2);   \
+            assert(res == RES);             \
+        }                                   \
+        TEST_CASE_CLOSE                     \
+    }
+
+    TEST_WORD_EQ(1, W4(4, 3, 2, 1), true);
+    TEST_WORD_EQ(2, W4(4, 3, 2, 0), false);
+    TEST_WORD_EQ(3, W4(4, 3, 0, 1), false);
+    TEST_WORD_EQ(4, W4(4, 0, 2, 1), false);
+    TEST_WORD_EQ(5, W4(0, 3, 2, 1), false);
+
+    #undef TEST_WORD_EQ
+
+    TEST_FN_CLOSE
+}
+
+
+
+void test_word_is_uint64(bool show)
+{
+    TEST_FN_OPEN
+
+    #define TEST_WORD_IS_UINT64(TAG, WORD, RES) \
+    {                                           \
+        TEST_CASE_OPEN(TAG)                     \
+        {                                       \
+            word_t w = WORD;                    \
+            bool res = word_is_uint64(&w);      \
+            assert(res == RES);                 \
+        }                                       \
+        TEST_CASE_CLOSE                         \
+    }
+
+    TEST_WORD_IS_UINT64(1, W1(0), true);
+    TEST_WORD_IS_UINT64(2, W1(U64_MAX), true);
+    TEST_WORD_IS_UINT64(3, W4(0, 0, 1, 0), false);
+    TEST_WORD_IS_UINT64(4, W4(0, 1, 0, 0), false);
+    TEST_WORD_IS_UINT64(5, W4(1, 0, 0, 0), false);
+    TEST_WORD_IS_UINT64(6, W4(U64_MAX, U64_MAX, U64_MAX, U64_MAX), false);
+
+    #undef TEST_WORD_IS_UINT64
+
+    TEST_FN_CLOSE
+}
+
+void test_word_add_uint64(bool show)
+{
+    TEST_FN_OPEN
+
+    #define TEST_WORD_ADD_UINT64(TAG, WORD, INDEX, U64, RES)    \
+    {                                                           \
+        TEST_CASE_OPEN(TAG)                                     \
+        {                                                       \
+            word_t w = WORD;                                    \
+            word_add_uint64(&w, INDEX, U64);                    \
+            assert(word_test(w, RES));                          \
+        }                                                       \
+        TEST_CASE_CLOSE                                         \
+    }
+
+    TEST_WORD_ADD_UINT64(1, W4(4, 3, 2, 1), 0, 1, W4(4, 3, 2, 2));
+    TEST_WORD_ADD_UINT64(2, W4(4, 3, 2, 1), 1, 1, W4(4, 3, 3, 1));
+    TEST_WORD_ADD_UINT64(3, W4(4, 3, 2, 1), 2, 1, W4(4, 4, 2, 1));
+    TEST_WORD_ADD_UINT64(4, W4(4, 3, 2, 1), 3, 1, W4(5, 3, 2, 1));
+    TEST_WORD_ADD_UINT64(5, W4(4, 3, 2, 1), 4, 1, W4(4, 3, 2, 1));
+    TEST_WORD_ADD_UINT64(6, W1(0xffffffffff), 0, 0x1f, W1(0x1000000001e));
+    TEST_WORD_ADD_UINT64(7, W1(U64_MAX), 0, 1, W4(0, 0, 1, 0));
+    TEST_WORD_ADD_UINT64(8, W4(U64_MAX, U64_MAX, U64_MAX, U64_MAX), 0, 1, W1(0));
+
+    #undef TEST_WORD_ADD_UINT64
+
+    TEST_FN_CLOSE
+}
 
 void test_word_add(bool show)
 {
@@ -235,6 +248,35 @@ void test_word_add(bool show)
 
 
 
+void test_word_get_size(bool show)
+{
+    TEST_FN_OPEN
+
+    #define TEST_WORD_GET_SIZE(TAG, WORD, RES)  \
+    {                                           \
+        TEST_CASE_OPEN(TAG)                     \
+        {                                       \
+            word_t w = WORD;                    \
+            uint64_t res = word_get_size(&w);   \
+            assert_64(res, RES);                \
+        }                                       \
+        TEST_CASE_CLOSE                         \
+    }
+
+    TEST_WORD_GET_SIZE(1, W1(0), 0);
+    TEST_WORD_GET_SIZE(2, W1(1), 1);
+    TEST_WORD_GET_SIZE(3, W1(0xff), 1);
+    TEST_WORD_GET_SIZE(4, W1(0xff00), 2);
+    TEST_WORD_GET_SIZE(5, W1(U64_MAX), 8);
+    TEST_WORD_GET_SIZE(6, W4(U64_MAX, 0, 0, 0), 32);
+
+    #undef TEST_WORD_GET_SIZE
+
+    TEST_FN_CLOSE
+}
+
+
+
 void test_word()
 {
     TEST_LIB
@@ -249,9 +291,11 @@ void test_word()
 
     test_word_eq(show);
     
-    test_word_is_uint_64(show);
+    test_word_is_uint64(show);
     test_word_add_uint64(show);
     test_word_add(show);
+
+    test_word_get_size(show);
 
     TEST_ASSERT_MEM_EMPTY
 }

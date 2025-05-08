@@ -365,15 +365,20 @@ int frame_mstore(evm_frame_p f)
 int frame_mstore8(evm_frame_p f)
 {
     word_t w_pos, w_value;
-    if(stack_pop(&w_pos, &f->s))   return 1;
+    if(stack_pop(&w_pos, &f->s))
+        return 1;
+
     uint64_t gas_expand = mem_dry_run(&f->m, w_pos, 1);
     uint64_t gas = uint64_add(G_very_low, gas_expand);
     GAS_VERIFY(gas, 2);
 
-    if(stack_pop(&w_value, &f->s)) return 3;
+    if(stack_pop(&w_value, &f->s))
+        return 3;
+
+
     GAS_CONSUME(gas);
 
-    byte_t u = word_get_byte(&w_value, 0);
+    byte_t u = word_get_byte(&w_value, 31);
     mem_set_byte(&f->m, w_pos.arr[0], u);
     f->pc++;
 

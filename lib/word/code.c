@@ -19,14 +19,17 @@ void word_display(word_t w)
 
 bool word_test(word_t w1, word_t w2)
 {
-    if(word_eq(&w1, &w2)) return true;
+    if(!word_eq(&w1, &w2))
+    {
+        printf("\n");
+        printf("\n\t");word_display(w1);
+        printf("\n\t");word_display(w2);
+        printf("\n");
+        printf("\n\tWORD ASSERTION ERROR");
+        return false;
+    }
 
-    printf("\n");
-    printf("\n\t");word_display(w1);
-    printf("\n\t");word_display(w2);
-    printf("\n");
-    printf("\n\tWORD ASSERTION ERROR");
-    return false;
+    return true;
 }
 
 #endif
@@ -86,10 +89,12 @@ bool word_is_uint64(word_p w)
 
 void word_add_uint64(word_p w, uint64_t i, uint64_t v)
 {
-    if(i >= V_MAX) return;
+    if(i >= V_MAX)
+        return;
 
     uint64_t res = w->arr[i] += v;
-    if(res < v) word_add_uint64(w, i+1, 1);
+    if(res < v)
+        word_add_uint64(w, i+1, 1);
 }
 
 word_t word_add(word_p w1, word_p w2)
@@ -103,12 +108,11 @@ word_t word_add(word_p w1, word_p w2)
 
 
 
-// TODO test
 uint64_t word_get_size(word_p w)
 {
-    for(uint64_t i=64; i>0; i--)
-        if(word_get_byte(w, i-1) != 0x00)
-            return i;
+    for(uint64_t i=0; i<32; i++)
+        if(word_get_byte(w, i) != 0x00)
+            return 32-i;
 
     return 0;
 }

@@ -439,7 +439,7 @@ void test_utils()
 {
     TEST_LIB
 
-    bool show = true;
+    bool show = false;
 
     test_utils_cton(show);
     test_utils_byte_vec_init_immed(show);
