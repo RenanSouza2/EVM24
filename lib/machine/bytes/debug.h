@@ -1,8 +1,7 @@
 #ifndef __BYTES_DEBUG_H__
 #define __BYTES_DEBUG_H__
 
-#include "struct.h"
-#include "../../word/struct.h"
+#include "header.h"
 
 #ifdef DEBUG
 #endif

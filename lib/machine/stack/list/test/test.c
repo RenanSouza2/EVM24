@@ -1,64 +1,84 @@
 #include <stdio.h>
 
 #include "../debug.h"
-#include "../../../../../utils/clu/bin/header.h"
+#include "../../../../../testrc.h"
+#include "../../../../../mods/macros/test.h"
 
 #include "../../../../word/debug.h"
 #include "../../../../utils/debug.h"
 
 
 
-void test_stack_list_create()
+void test_stack_list_create(bool show)
 {
-    printf("\n\t%s", __func__);
+    TEST_FN_OPEN
 
-    word_t w = WORD(4, 3, 2, 1);
-    evm_stack_l_p sl = stack_l_create((evm_stack_l_p)1, &w);
-    assert(sl->sl == (evm_stack_l_p)1);
-    assert(word_test(w, WORD(4, 3, 2, 1)));
-    free(sl);
+    TEST_CASE_OPEN(1)
+    {
+        word_t w = W4(4, 3, 2, 1);
+        evm_stack_l_p sl = stack_l_create((evm_stack_l_p)1, &w);
+        assert(sl->sl == (evm_stack_l_p)1);
+        assert(word_test(w, W4(4, 3, 2, 1)));
+        free(sl);
+    }
+    TEST_CASE_CLOSE
 
-    sl = stack_l_create(NULL, &w);
-    assert(sl->sl == NULL);
-    free(sl);
+    TEST_CASE_OPEN(2)
+    {
+        word_t w = W4(4, 3, 2, 1);
+        evm_stack_l_p sl = stack_l_create(NULL, &w);
+        assert(sl->sl == NULL);
+        free(sl);
+    }
+    TEST_CASE_CLOSE
 
-    assert(clu_mem_empty());
+    TEST_FN_CLOSE
 }
 
-void test_stack_list_pop()
+void test_stack_list_pop(bool show)
 {
-    printf("\n\t%s", __func__);
+    TEST_FN_OPEN
 
-    word_t w = WORD(4, 3, 2, 1);
-    evm_stack_l_p sl = stack_l_create((evm_stack_l_p)1, &w);
-    sl = stack_l_pop(NULL, sl);
-    assert(sl == (evm_stack_l_p)1);
+    TEST_CASE_OPEN(1)
+    {
+        word_t w = W4(4, 3, 2, 1);
+        evm_stack_l_p sl = stack_l_create((evm_stack_l_p)1, &w);
+        sl = stack_l_pop(NULL, sl);
+        assert(sl == (evm_stack_l_p)1);
+    }
+    TEST_CASE_CLOSE
 
-    word_t w_out;
-    w = WORD(4, 3, 2, 1);
-    sl = stack_l_create((evm_stack_l_p)1, &w);
-    sl = stack_l_pop(&w_out, sl);
-    assert(word_test(w_out, WORD(4, 3, 2, 1)));
-    assert(sl == (evm_stack_l_p)1);
+    TEST_CASE_OPEN(2)
+    {
+        word_t w_out;
+        word_t w = W4(4, 3, 2, 1);
+        evm_stack_l_p sl = stack_l_create((evm_stack_l_p)1, &w);
+        sl = stack_l_pop(&w_out, sl);
+        assert(word_test(w_out, W4(4, 3, 2, 1)));
+        assert(sl == (evm_stack_l_p)1);
+    }
+    TEST_CASE_CLOSE
 
-    assert(clu_mem_empty());
+    TEST_FN_CLOSE
 }
 
 
 
 void test_stack_list()
 {
-    printf("\n%s", __func__);
+    TEST_LIB
 
-    test_stack_list_create();
-    test_stack_list_pop();
+    bool show = false;
 
-    assert(clu_mem_empty());
+    test_stack_list_create(show);
+    test_stack_list_pop(show);
+
+    TEST_ASSERT_MEM_EMPTY
 }
 
 
 
-int main() 
+int main()
 {
     setbuf(stdout, NULL);
     test_stack_list();

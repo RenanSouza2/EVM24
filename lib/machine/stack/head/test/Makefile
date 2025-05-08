@@ -1,8 +1,8 @@
-FLAGS = -Wall -Werror -Wfatal-errors
+FLAGS = -Wall -Wextra -Werror -Wfatal-errors -O3
 DEBUG_FILE = $(LIB_ROOT)/debug.o
 
 test: test.o
-	./test.o 
+	./test.o
 
 test.o: test.c $(DEBUG_FILE)
 	echo "building test $(DIR)"

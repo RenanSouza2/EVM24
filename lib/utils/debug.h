@@ -1,13 +1,11 @@
 #ifndef __UTILS_DEBUG_H__
 #define __UTILS_DEBUG_H__
 
-#include "struct.h"
+#include "header.h"
 
 #ifdef DEBUG
 
-#include <stdbool.h>
-
-#include "../../utils/assert.h"
+#include "../../mods/macros/assert.h"
 
 #define U128(U641, U642) ((((uint128_t)(U641)) << 64) | (uint128_t)(U642))
 
@@ -31,9 +29,11 @@ uint64_t uint64_init_byte_immed(char str[]);
 bool byte_test(byte_t u1, byte_t u2);
 bool uint64_test(uint64_t i1, uint64_t i2);
 
+bool byte_vec_test_inner(byte_vec_t b_1, byte_vec_t b_2);
 bool byte_vec_test(byte_vec_t b, byte_vec_t b_exp);
-bool byte_vec_test_immed(byte_vec_t b, char str[]);
-bool uint64_vec_test_immed(uint64_vec_t vec, uint64_t n, ...);
+bool uint64_vec_test(uint64_vec_t vec_1, uint64_vec_t vec_2);
+bool byte_vec_immed(byte_vec_t b, char str[]);
+bool uint64_vec_immed(uint64_vec_t vec, uint64_t n, ...);
 
 #endif
 

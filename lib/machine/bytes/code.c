@@ -2,14 +2,15 @@
 #include <stdlib.h>
 
 #include "debug.h"
-#include "../../../utils/assert.h"
+#include "../../../mods/clu/header.h"
+#include "../../../mods/macros/assert.h"
+
+#include "../../utils/header.h"
+#include "../../word/header.h"
 
 
 
 #ifdef DEBUG
-
-#include "../../../utils/clu/bin/header.h"
-
 #endif
 
 
@@ -21,7 +22,7 @@ byte_t bytes_get_byte(evm_bytes_p b, uint64_t pos)
 
 word_t bytes_get_word(evm_bytes_p b, uint64_t pos)
 {
-    word_t w = word_init_zero();
+    word_t w = W1(0);
     for(int i=0; i<32; i++)
     {
         byte_t u = bytes_get_byte(b, pos+i);
@@ -32,12 +33,17 @@ word_t bytes_get_word(evm_bytes_p b, uint64_t pos)
 
 evm_bytes_t bytes_get_bytes(evm_bytes_p b, uint64_t pos, uint64_t size)
 {
-    if(size == 0) return byte_vec_init_zero();
-    
-    byte_t *v = malloc(size);
-    assert(v);
+    if(size == 0)
+        return byte_vec_init_zero();
+
+    byte_t *arr = malloc(size);
+    assert(arr);
     for(uint64_t i = 0; i < size; i++)
-        v[i] = bytes_get_byte(b, pos+i);
-    
-    return (evm_bytes_t){size, v};
+        arr[i] = bytes_get_byte(b, pos+i);
+
+    return (evm_bytes_t)
+    {
+        .size = size,
+        .arr = arr
+    };
 }

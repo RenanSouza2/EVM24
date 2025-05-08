@@ -1,4 +1,4 @@
-FLAGS = -Wall -Werror -Wfatal-errors
+FLAGS = -Wall -Wextra -Werror -Wfatal-errors -O3
 
 LIB = ../lib/lib.o
 

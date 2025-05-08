@@ -1,104 +1,126 @@
 #include "../debug.h"
-#include "../../../../utils/clu/bin/header.h"
+#include "../../../../testrc.h"
+#include "../../../../mods/macros/test.h"
 
 #include "../../../word/debug.h"
 #include "../../../utils/debug.h"
 
 
 
-void test_bytes_get_byte()
+void test_bytes_get_byte(bool show)
 {
-    printf("\n\t%s", __func__);
+    TEST_FN_OPEN
 
-    evm_bytes_t b = byte_vec_init_immed("0x");
-    assert(bytes_get_byte(&b, 0) == 0);
+    TEST_CASE_OPEN(1)
+    {
+        evm_bytes_t b = byte_vec_init_immed("0x");
+        byte_t res = bytes_get_byte(&b, 0);
+        assert_byte(res, 0);
+    }
+    TEST_CASE_CLOSE
 
-    b = byte_vec_init_immed("0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f");
     for(int i=0; i<32; i++)
-        assert(bytes_get_byte(&b, i) == i);
-    assert(bytes_get_byte(&b, 64) == 0);
-    vec_free(&b);
+    {
+        TEST_CASE_OPEN(2 + i)
+        {
+            evm_bytes_t b = byte_vec_init_immed("0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f");
+            byte_t res = bytes_get_byte(&b, i);
+            assert_byte(res, i);
+            vec_free(&b);
+        }
+        TEST_CASE_CLOSE
+    }
 
-    assert(clu_mem_empty());
+    TEST_CASE_OPEN(34)
+    {
+        evm_bytes_t b = byte_vec_init_immed("0xff");
+        byte_t res = bytes_get_byte(&b, 1);
+        assert_byte(res, 0);
+        vec_free(&b);
+    }
+    TEST_CASE_CLOSE
+
+    TEST_FN_CLOSE
 }
 
-void test_bytes_get_word()
+void test_bytes_get_word(bool show)
 {
-    printf("\n\t%s", __func__);
+    TEST_FN_OPEN
 
-    // printf("\n\t\t%s 1", __func__);
-    evm_bytes_t b = byte_vec_init_immed("0x");
-    word_t w = bytes_get_word(&b, 0);
-    assert(word_test(w, WORD(0, 0, 0, 0)));
-    vec_free(&b);
+    #define TEST_BYTES_GET_WORD(TAG, BYTES, INDEX, RES) \
+    {                                                   \
+        TEST_CASE_OPEN(TAG)                             \
+        {                                               \
+            evm_bytes_t b = byte_vec_init_immed(BYTES); \
+            word_t w = bytes_get_word(&b, INDEX);       \
+            assert(word_test(w, RES));                  \
+            vec_free(&b);                               \
+        }                                               \
+        TEST_CASE_CLOSE                                 \
+    }
 
-    // printf("\n\t\t%s 2", __func__);
-    b = byte_vec_init_immed("0xff");
-    w = bytes_get_word(&b, 0);
-    assert(word_test(w, WORD(U64_FF, 0, 0, 0)));
+    TEST_BYTES_GET_WORD(1, "0x", 0, W1(0));
+    TEST_BYTES_GET_WORD(2, "0xff", 0, W4(U64_FF, 0, 0, 0));
+    TEST_BYTES_GET_WORD(3, "0xff", 1, W1(0));
+    TEST_BYTES_GET_WORD(4,
+        "0x00000000000000000000000000000000000000000000000000000000000000ff", 0, W1(0xff)
+    );
+    TEST_BYTES_GET_WORD(5,
+        "0x00000000000000000000000000000000000000000000000000000000000000ff", 1, W1(0xff00)
+    );
+    TEST_BYTES_GET_WORD(6,
+        "0x00000000000000000000000000000000000000000000000000000000000000ff", 31, W4(U64_FF, 0, 0, 0)
+    );
+    TEST_BYTES_GET_WORD(7,
+        "0x00000000000000000000000000000000000000000000000000000000000000ff", 32, W1(0)
+    );
 
-    // printf("\n\t\t%s 3", __func__);
-    w = bytes_get_word(&b, 1);
-    assert(word_test(w, WORD(0, 0, 0, 0)));
-    vec_free(&b);
+    #undef TEST_BYTES_GET_WORD
 
-    // printf("\n\t\t%s 4", __func__);
-    b = byte_vec_init_immed("0x00000000000000000000000000000000000000000000000000000000000000ff");
-    w = bytes_get_word(&b, 0);
-    assert(word_test(w, WORD(0, 0, 0, 0xff)));
-
-    // printf("\n\t\t%s 5", __func__);
-    w = bytes_get_word(&b, 1);
-    assert(word_test(w, WORD(0, 0, 0, 0xff00)));
-
-    // printf("\n\t\t%s 6", __func__);
-    w = bytes_get_word(&b, 31);
-    assert(word_test(w, WORD(U64_FF, 0, 0, 0)));
-
-    // printf("\n\t\t%s 7", __func__);
-    w = bytes_get_word(&b, 32);
-    assert(word_test(w, WORD(0, 0, 0, 0)));
-    vec_free(&b);
-
-    assert(clu_mem_empty());
+    TEST_FN_CLOSE
 }
 
-void test_bytes_get_bytes()
+void test_bytes_get_bytes(bool show)
 {
-    printf("\n\t%s", __func__);
+    TEST_FN_OPEN
 
-    evm_bytes_t b0 = byte_vec_init_immed("0x0001020304");
-    evm_bytes_t b1 = bytes_get_bytes(&b0, 0, 0);
-    assert(byte_vec_test_immed(b1, "0x"));
+    #define TEST_BYTES_GET_BYTES(TAG, INDEX, SIZE, RES)             \
+    {                                                               \
+        TEST_CASE_OPEN(TAG)                                         \
+        {                                                           \
+            evm_bytes_t b = byte_vec_init_immed("0x0001020304");    \
+            evm_bytes_t res = bytes_get_bytes(&b, INDEX, SIZE);     \
+            assert(byte_vec_immed(res, RES));                  \
+            vec_free(&b);                                           \
+        }                                                           \
+        TEST_CASE_CLOSE                                             \
+    }
 
-    b1 = bytes_get_bytes(&b0, 0, 6);
-    assert(byte_vec_test_immed(b1, "0x000102030400"));
-    vec_free(&b1);
+    TEST_BYTES_GET_BYTES(1, 0, 0, "0x");
+    TEST_BYTES_GET_BYTES(2, 0, 6, "0x000102030400");
+    TEST_BYTES_GET_BYTES(3, 2, 2, "0x0203");
 
-    b1 = bytes_get_bytes(&b0, 2, 2);
-    assert(byte_vec_test_immed(b1, "0x0203"));
-    vec_free(&b0);
-    vec_free(&b1);
-
-    assert(clu_mem_empty());
+    TEST_FN_CLOSE
 }
 
 
 
 void test_bytes()
 {
-    printf("\n%s", __func__);
+    TEST_LIB
 
-    test_bytes_get_byte();
-    test_bytes_get_word();
-    test_bytes_get_bytes();
+    bool show = false;
 
-    assert(clu_mem_empty());
+    test_bytes_get_byte(show);
+    test_bytes_get_word(show);
+    test_bytes_get_bytes(show);
+
+    TEST_ASSERT_MEM_EMPTY
 }
 
 
 
-int main() 
+int main()
 {
     setbuf(stdout, NULL);
     test_bytes();

@@ -1,8 +1,6 @@
 #ifndef __RLP_STRUCT_H__
 #define __RLP_STRUCT_H__
 
-#include "header.h"
-
 #include "../utils/struct.h"
 
 #define BYTES 0
@@ -19,9 +17,7 @@ STRUCT(evm_rlp)
     {
         byte_vec_t b;
         evm_rlp_vec_t r;
-    } vec;
+    } arr;
 };
-
-byte_vec_t rlp_encode(evm_rlp_p r);
 
 #endif
