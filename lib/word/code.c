@@ -38,6 +38,8 @@ bool word_test(word_t w1, word_t w2)
 
 word_t word_init_bytes(byte_vec_p b)
 {
+    CLU_HANDLER_IS_SAFE(b->arr);
+
     uint64_t size = b->size;
     assert(size <= 32);
 

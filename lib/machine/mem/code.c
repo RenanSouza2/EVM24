@@ -31,6 +31,7 @@ evm_mem_t mem_init_variadic(uint64_t n, va_list *arg)
     }
     return m;
 }
+
 evm_mem_t mem_init_immed(uint64_t n, ...)
 {
     va_list args;
@@ -58,13 +59,13 @@ bool mem_test_inner(evm_mem_t m_1, evm_mem_t m_2)
 {
     if(!uint64_test(m_1.size, m_2.size))
     {
-        printf("\n\tMEM ASSERTTION ERROR | LENGTH");
+        printf("\n\tMEM ASSERTTION ERROR\t| LENGTH");
         return false;
     }
 
     if(!byte_vec_test(m_1, m_2))
     {
-        printf("\n\tMEM ASSERTTION ERROR | BYTES ASSERTTION ERROR");
+        printf("\n\tMEM ASSERTTION ERROR\t| BYTES ASSERTTION ERROR");
         return false;
     }
 
@@ -141,16 +142,9 @@ byte_vec_t mem_get_bytes(evm_mem_p m, uint64_t pos, uint64_t size)
     if(size == 0)
         return byte_vec_init_zero();
 
-    mem_expand(m, pos + size);
-    byte_t *arr = malloc(size);
-    assert(arr);
-
-    memcpy(arr, &m->arr[pos], size);
-    return (byte_vec_t)
-    {
-        .size = size,
-        .arr = arr
-    };
+    byte_vec_t b = byte_vec_init(size);
+    memcpy(b.arr, &m->arr[pos], size);
+    return b;
 }
 
 void mem_set_byte(evm_mem_p m, uint64_t pos, byte_t b)

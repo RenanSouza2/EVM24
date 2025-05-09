@@ -83,7 +83,7 @@ void test_word_get_byte(bool show)
         {
             word_get_byte(&w, 33);
         }
-        TEST_REVERT_CLOSE   
+        TEST_REVERT_CLOSE
     }
     TEST_CASE_CLOSE
 
@@ -289,7 +289,7 @@ void test_byte_vec_init_word(bool show)
         }                                               \
         TEST_CASE_CLOSE                                 \
     }
-    
+
     TEST_BYTE_VEC_INIT_WORD(1, W1(0), "0x");
     TEST_BYTE_VEC_INIT_WORD(2, W1(1), "0x01");
     TEST_BYTE_VEC_INIT_WORD(3, W1(0xff), "0xff");
@@ -322,7 +322,7 @@ void test_word()
     test_word_set_byte(show);
 
     test_word_eq(show);
-    
+
     test_word_is_uint64(show);
     test_word_add_uint64(show);
     test_word_add(show);

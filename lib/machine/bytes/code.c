@@ -17,11 +17,15 @@
 
 byte_t bytes_get_byte(evm_bytes_p b, uint64_t pos)
 {
+    CLU_HANDLER_IS_SAFE(b->arr);
+
     return pos < b->size ? b->arr[pos] : 0;
 }
 
 word_t bytes_get_word(evm_bytes_p b, uint64_t pos)
 {
+    CLU_HANDLER_IS_SAFE(b->arr);
+
     word_t w = W1(0);
     for(int i=0; i<32; i++)
     {
@@ -33,17 +37,14 @@ word_t bytes_get_word(evm_bytes_p b, uint64_t pos)
 
 evm_bytes_t bytes_get_bytes(evm_bytes_p b, uint64_t pos, uint64_t size)
 {
+    CLU_HANDLER_IS_SAFE(b->arr);
+
     if(size == 0)
         return byte_vec_init_zero();
 
-    byte_t *arr = malloc(size);
-    assert(arr);
+    evm_bytes_t b_out = byte_vec_init(size);
     for(uint64_t i = 0; i < size; i++)
-        arr[i] = bytes_get_byte(b, pos+i);
+        b_out.arr[i] = bytes_get_byte(b, pos+i);
 
-    return (evm_bytes_t)
-    {
-        .size = size,
-        .arr = arr
-    };
+    return b_out;
 }

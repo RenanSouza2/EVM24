@@ -48,7 +48,7 @@ bool rlp_vec_test(evm_rlp_vec_t r, evm_rlp_vec_t r_exp)
 {
     if(!uint64_test(r.size, r_exp.size))
     {
-        printf("\n\tRLP VECTOR ASSERTION ERROR | SIZE");
+        printf("\n\tRLP VECTOR ASSERTION ERROR\t| SIZE");
         return false;
     }
 
@@ -56,7 +56,7 @@ bool rlp_vec_test(evm_rlp_vec_t r, evm_rlp_vec_t r_exp)
     {
         if(!rlp_test(r.arr[i], r_exp.arr[i]))
         {
-            printf("\n\tRLP VECTOR ASSERTION ERROR | ITEM | " U64P() "", i);
+            printf("\n\tRLP VECTOR ASSERTION ERROR\t| ITEM | " U64P() "", i);
             return false;
         }
     }
@@ -70,7 +70,7 @@ bool rlp_test(evm_rlp_t r, evm_rlp_t r_exp)
 {
     if(!byte_test(r.type, r_exp.type))
     {
-        printf("\n\tRLP ASSERTION ERROR | TYPE");
+        printf("\n\tRLP ASSERTION ERROR\t| TYPE");
         return false;
     }
 
@@ -81,7 +81,7 @@ bool rlp_test(evm_rlp_t r, evm_rlp_t r_exp)
 
             if(!byte_vec_test(r.arr.b, r_exp.arr.b))
             {
-                printf("\n\tRLP ASSERTION ERROR | BYTE VEC");
+                printf("\n\tRLP ASSERTION ERROR\t| BYTE VEC");
                 return false;
             }
             return true;
@@ -91,14 +91,14 @@ bool rlp_test(evm_rlp_t r, evm_rlp_t r_exp)
         {
             if(!rlp_vec_test(r.arr.r, r_exp.arr.r))
             {
-                printf("\n\tRLP ASSERTION ERROR | LIST VEC");
+                printf("\n\tRLP ASSERTION ERROR\t| LIST VEC");
                 return false;
             }
             return true;
         }
     }
 
-    printf("\n\n\tRLP ASSERTION ERROR | INVALID TYPE");
+    printf("\n\n\tRLP ASSERTION ERROR\t| INVALID TYPE");
     return false;
 }
 

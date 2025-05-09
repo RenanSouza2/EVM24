@@ -7,12 +7,23 @@
 
 #define GAS_DEF 100000000
 
-evm_frame_t frame_init_immed(char str_code[], uint64_t pc, uint64_t gas, uint64_t n_mem, ...);
+evm_frame_t frame_init_immed(char str_code[],
+    uint64_t pc,
+    uint64_t gas,
+    uint64_t n_mem,
+    ...
+);
 uint64_vec_t frame_get_jumpdest_immed(char str_code[]);
 void frame_populate_stack(evm_frame_p f, uint64_t max);
 
 bool frame_test(evm_frame_t f_1, evm_frame_t f_2);
-bool frame_immed(evm_frame_t f, char str_code[], uint64_t pc, uint64_t gas, uint64_t n_mem, ...);
+bool frame_immed(evm_frame_t f,
+    char str_code[],
+    uint64_t pc,
+    uint64_t gas,
+    uint64_t n_mem,
+    ...
+);
 bool frame_o_immed(evm_frame_o_t fo, bool success, uint64_t gas, char str_returndata[]);
 
 #endif

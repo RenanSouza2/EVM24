@@ -28,7 +28,6 @@ uint64_vec_t uint64_vec_init_immed(uint64_t n, ...);
 bool byte_test(byte_t u1, byte_t u2);
 bool uint64_test(uint64_t i1, uint64_t i2);
 
-bool byte_vec_test_inner(byte_vec_t b_1, byte_vec_t b_2);
 bool byte_vec_test(byte_vec_t b, byte_vec_t b_exp);
 bool uint64_vec_test(uint64_vec_t vec_1, uint64_vec_t vec_2);
 bool byte_vec_immed(byte_vec_t b, char str[]);
