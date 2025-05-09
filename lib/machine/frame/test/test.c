@@ -15,7 +15,6 @@ void test_frame_init(bool show)
 {
     TEST_FN_OPEN
 
-
     TEST_CASE_OPEN(1)
     {
         evm_frame_t f = frame_init_immed("0x", 0, GAS_DEF, 0, 0);

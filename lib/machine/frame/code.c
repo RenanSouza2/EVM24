@@ -398,7 +398,7 @@ uint64_t frame_jump(evm_frame_p f) // TODO test
     ERR(1, stack_pop(&w_pos, &f->s));
     ERR(2, !word_is_uint64(&w_pos));
     uint64_t pos = w_pos.arr[0];
-    
+
     ERR(3, !uint64_vec_has_uint64(&f->jumpdest, pos));
 
     GAS_VERIFY(G_mid, 4);
