@@ -15,7 +15,7 @@ evm_frame_t frame_init_immed(char str_code[],
     ...
 );
 uint64_vec_t frame_get_jumpdest_immed(char str_code[]);
-void frame_populate_stack(evm_frame_p f, uint64_t max);
+void frame_stack_populate(evm_frame_p f, uint64_t max);
 
 bool frame_test(evm_frame_t f_1, evm_frame_t f_2);
 bool frame_immed(evm_frame_t f,
@@ -29,40 +29,67 @@ bool frame_o_immed(evm_frame_o_t fo, bool success, uint64_t gas, char str_return
 
 #endif
 
-#define STOP 0x00
-#define ADD  0x01
+#define STOP            0x00
+#define ADD             0x01
 
-#define CODESIZE 0x38
+#define BYTE            0x1a    //  TODO
 
-#define POP     0x50
-#define MLOAD   0x51
-#define MSTORE  0x52
-#define MSTORE8 0x53
+#define ADDRESS         0x30    //  TODO ENV
 
-#define JUMP    0x56
+#define ORIGIN          0x32    //  TODO ENV
+#define CALLER          0x33    //  TODO ENV
+#define CALLVALUE       0x34    //  TODO CALLDATA
+#define CALLDATALOAD    0x35    //  TODO CALLDATA
+#define CALLDATASIZE    0x36    //  TODO CALLDATA
+#define CALLDATACOPY    0x37    //  TODO CALLDATA
+#define CODESIZE        0x38    //  TODO CODE
+#define CODECOPY        0x39    //  TODO CODE
+#define GASPRICE        0x3a    //  TODO ENV
 
-#define JUMPDEST 0x5b
+#define RETURNDATASIZE  0x3d    //  TODO RETURNDATABUFFER
+#define RETURNDATACOPY  0x3e    //  TODO RETURNDATABUFFER
 
-#define PUSH0   0x5f
-#define PUSH32  0x7f
+#define POP             0x50
+#define MLOAD           0x51
+#define MSTORE          0x52
+#define MSTORE8         0x53
 
-#define RETURN  0xf3
+#define JUMP            0x56
+#define JUMPI           0x57    // TODO
+#define PC              0X58
+#define MSIZE           0x59
+#define GAS             0x5a
+#define JUMPDEST        0x5b
 
-evm_frame_t frame_init(evm_bytes_t code, uint64_t gas);
+#define PUSH0           0x5f
+#define PUSH32          0x7f
+
+#define DUP1            0x80    //  TODO
+#define DUP16           0x8f    //  TODO
+#define SWAP1           0x90    //  TODO
+#define SWAP16          0x9f    //  TODO
+
+#define RETURN          0xf3
+#define REVERT          0xfd    //  TODO
+#define INVALID         0xfe
+
 uint64_vec_t frame_get_jumpdest(evm_bytes_p code);
-
+evm_frame_t frame_init(evm_bytes_t code, uint64_t gas);
 void frame_free(evm_frame_p f);
 void frame_o_free(evm_frame_o_p fo);
 
-evm_frame_o_t frame_stop(evm_frame_p f);
+byte_t frame_get_opcode(evm_frame_p f);
+uint64_t frame_PUSH_uint64(evm_frame_p f, uint64_t value);
 
-uint64_t frame_pop(evm_frame_p f);
-uint64_t frame_mload(evm_frame_p f);
-uint64_t frame_mstore(evm_frame_p f);
-uint64_t frame_mstore8(evm_frame_p f);
+evm_frame_o_t frame_STOP(evm_frame_p f);
 
-uint64_t frame_push(evm_frame_p f);
+uint64_t frame_POP(evm_frame_p f);
+uint64_t frame_MLOAD(evm_frame_p f);
+uint64_t frame_MSTORE(evm_frame_p f);
+uint64_t frame_MSTORE8(evm_frame_p f);
 
-evm_frame_o_t frame_return(evm_frame_p f);
+uint64_t frame_PUSH(evm_frame_p f, byte_t opcode);
+
+evm_frame_o_t frame_RETURN(evm_frame_p f);
 
 #endif
