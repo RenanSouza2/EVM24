@@ -4,7 +4,6 @@
 
 #include "debug.h"
 #include "../../../mods/clu/header.h"
-#include "../../../mods/macros/assert.h"
 
 #include "../gas/header.h"
 #include "../bytes/header.h"
@@ -142,6 +141,7 @@ byte_vec_t mem_get_bytes(evm_mem_p m, uint64_t pos, uint64_t size)
     if(size == 0)
         return byte_vec_init_zero();
 
+    mem_expand(m, pos + size);
     byte_vec_t b = byte_vec_init(size);
     memcpy(b.arr, &m->arr[pos], size);
     return b;

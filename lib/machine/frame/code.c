@@ -452,18 +452,19 @@ evm_frame_o_t frame_return(evm_frame_p f)
 {
     word_t w_ptr;
     if(stack_pop(&w_ptr, &f->s))
-        return frame_halt(f);
-
+    return frame_halt(f);
+    
     word_t w_size;
     if(stack_pop(&w_size, &f->s))
         return frame_halt(f);
+
     if(!word_is_uint64(&w_size))
         return frame_halt(f);
-
+    
     uint64_t gas = mem_dry_run(&f->m, w_ptr, w_size.arr[0]);
     GAS_VERIFY(gas, frame_halt(f));
     GAS_CONSUME(gas);
-
+    
     evm_frame_o_t res = (evm_frame_o_t)
     {
         .success = true,
