@@ -79,7 +79,7 @@ void frame_free(evm_frame_p f);
 void frame_o_free(evm_frame_o_p fo);
 
 byte_t frame_get_opcode(evm_frame_p f);
-uint64_t frame_PUSH_uint64(evm_frame_p f, uint64_t value);
+uint64_t frame_push_uint64(evm_frame_p f, uint64_t value);
 
 evm_frame_o_t frame_STOP(evm_frame_p f);
 

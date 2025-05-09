@@ -90,23 +90,23 @@ void test_frame_get_opcode(bool show)
     TEST_FN_CLOSE
 }
 
-void test_frame_PUSH_uint64(bool show)
+void test_frame_push_uint64(bool show)
 {
     TEST_FN_OPEN
 
     TEST_CASE_OPEN(1)
     {
         evm_frame_t f = frame_init_immed("0x", 0, GAS_DEF, 0, 0);
-        uint64_t err = frame_PUSH_uint64(&f, 1);
+        uint64_t err = frame_push_uint64(&f, 1);
         assert_64(err, 0);
-        assert(frame_immed(f, "0x", 1, GAS_DEF - 2, 0, 1, W1(1)));
+        assert(frame_immed(f, "0x", 0, GAS_DEF - 2, 0, 1, W1(1)));
     }
     TEST_CASE_CLOSE
 
     TEST_CASE_OPEN(2)
     {
         evm_frame_t f = frame_init_immed("0x", 0, 0, 0, 0);
-        uint64_t err = frame_PUSH_uint64(&f, 1);
+        uint64_t err = frame_push_uint64(&f, 1);
         assert_64(err, 1);
     }
     TEST_CASE_CLOSE
@@ -115,7 +115,7 @@ void test_frame_PUSH_uint64(bool show)
     {
         evm_frame_t f = frame_init_immed("0x", 0, GAS_DEF, 0, 0);
         frame_stack_populate(&f, 1024);
-        uint64_t err = frame_PUSH_uint64(&f, 2);
+        uint64_t err = frame_push_uint64(&f, 2);
         assert_64(err, 0x12);
         frame_free(&f);
     }
@@ -162,11 +162,11 @@ void test_frame_POP(bool show)
 
     TEST_FRAME_POP(1,
         ("0x50", 0, GAS_DEF, 0, 2, W1(1), W1(2)),
-        ("0x50", 1, GAS_DEF - G_base, 0, 1, W1(1))
+        ("0x50", 0, GAS_DEF - G_base, 0, 1, W1(1))
     );
     TEST_FRAME_POP(2,
         ("0x50", 0, GAS_DEF, 0, 1, W1(1)),
-        ("0x50", 1, GAS_DEF - G_base, 0, 0)
+        ("0x50", 0, GAS_DEF - G_base, 0, 0)
     );
 
     #undef TEST_FRAME_POP
@@ -209,15 +209,15 @@ void test_frame_MLOAD(bool show)
 
     TEST_FRAME_MLOAD(1,
         ("0x51", 0, GAS_DEF, 1, W1(0xff), 1, W1(0x00)),
-        ("0x51", 1, GAS_DEF - G_very_low, 1, W1(0xff), 1, W1(0xff))
+        ("0x51", 0, GAS_DEF - G_very_low, 1, W1(0xff), 1, W1(0xff))
     );
     TEST_FRAME_MLOAD(2,
         ("0x51", 0, GAS_DEF, 1, W1(0xff), 1, W1(0x10)),
-        ("0x51", 1, GAS_DEF - 6, 2, W1(0xff), W1(0), 1, W4(0, 0xff, 0, 0))
+        ("0x51", 0, GAS_DEF - 6, 2, W1(0xff), W1(0), 1, W4(0, 0xff, 0, 0))
     );
     TEST_FRAME_MLOAD(3,
         ("0x51", 0, GAS_DEF, 0, 1, W1(0x00)),
-        ("0x51", 1, GAS_DEF - 6, 1, W1(0), 1, W1(0))
+        ("0x51", 0, GAS_DEF - 6, 1, W1(0), 1, W1(0))
     );
 
     #undef TEST_FRAME_MLOAD
@@ -261,7 +261,7 @@ void test_frame_MSTORE(bool show)
 
     TEST_FRAME_MSTORE(1,
         ("0x52", 0, GAS_DEF, 0, 2, W1(0xff), W1(0x00)),
-        ("0x52", 1, GAS_DEF - 6, 1, W1(0xff), 0)
+        ("0x52", 0, GAS_DEF - 6, 1, W1(0xff), 0)
     );
 
     #undef TEST_FRAME_MSTORE
@@ -304,11 +304,11 @@ void test_frame_MSTORE8(bool show)
 
     TEST_FRAME_MSTORE8(1,
         ("0x53", 0, GAS_DEF, 0, 2, W1(0xff), W1(0x00)),
-        ("0x53", 1, GAS_DEF - 6, 1, W4(U64_FF, 0, 0, 0), 0)
+        ("0x53", 0, GAS_DEF - 6, 1, W4(U64_FF, 0, 0, 0), 0)
     );
     TEST_FRAME_MSTORE8(2,
         ("0x53", 0, GAS_DEF, 0, 2, W1(0xffff), W1(0x00)),
-        ("0x53", 1, GAS_DEF - 6, 1, W4(U64_FF, 0, 0, 0), 0)
+        ("0x53", 0, GAS_DEF - 6, 1, W4(U64_FF, 0, 0, 0), 0)
     );
 
     #undef TEST_FRAME_MSTORE8
@@ -512,7 +512,7 @@ void test_frame()
     test_frame_init(show);
 
     test_frame_get_opcode(show);
-    test_frame_PUSH_uint64(show);
+    test_frame_push_uint64(show);
 
     test_frame_STOP(show);
 
