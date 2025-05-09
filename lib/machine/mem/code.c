@@ -4,6 +4,7 @@
 
 #include "debug.h"
 #include "../../../mods/clu/header.h"
+#include "../../../mods/macros/assert.h"
 
 #include "../gas/header.h"
 #include "../bytes/header.h"
@@ -15,7 +16,6 @@
 #ifdef DEBUG
 
 #include "../../utils/debug.h"
-#include "../../word/debug.h"
 
 
 

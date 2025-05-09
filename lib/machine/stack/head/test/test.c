@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 #include "../debug.h"
 #include "../../../../../testrc.h"
 #include "../../../../../mods/macros/test.h"

@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 #include "debug.h"
 #include "../../../mods/clu/header.h"
 #include "../../../mods/macros/assert.h"
@@ -7,6 +5,7 @@
 #include "../gas/header.h"
 #include "../bytes/header.h"
 #include "../mem/header.h"
+#include "../stack/head/header.h"
 #include "../../utils/header.h"
 #include "../../word/header.h"
 
@@ -16,7 +15,6 @@
 
 #include "../mem/debug.h"
 #include "../stack/head/debug.h"
-#include "../bytes/debug.h"
 #include "../../utils/debug.h"
 
 

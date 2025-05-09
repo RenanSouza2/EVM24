@@ -294,8 +294,7 @@ byte_vec_t byte_vec_init(uint64_t size)
     if(size == 0)
         return byte_vec_init_zero();
 
-    // byte_p arr = calloc(size, sizeof(byte_t));
-    byte_p arr = malloc(size * sizeof(byte_t));
+    byte_p arr = calloc(size, sizeof(byte_t));
     assert(arr);
 
     return (byte_vec_t)
