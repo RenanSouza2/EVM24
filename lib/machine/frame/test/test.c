@@ -184,7 +184,7 @@ void test_frame_mload(bool show)
         TEST_CASE_CLOSE                                         \
     }
 
-    TEST_FRAME_MLOAD(4, ("0x51", 0, GAS_DEF, 1, W1(0xff), 0), 1);
+    TEST_FRAME_MLOAD(4, ("0x51", 0, GAS_DEF, 1, W1(0xff), 0), 0x11);
     TEST_FRAME_MLOAD(5, ("0x51", 0, 0, 1, W1(0xff), 1, W1(0x00)), 2);
     TEST_FRAME_MLOAD(6, ("0x51", 0, GAS_DEF, 0, 1, W1(U64_MAX)), 2);
 
@@ -228,7 +228,7 @@ void test_frame_mstore(bool show)
         TEST_CASE_CLOSE                                         \
     }
 
-    TEST_FRAME_MLOAD(2, ("0x52", 0, GAS_DEF, 0, 0), 1);
+    TEST_FRAME_MLOAD(2, ("0x52", 0, GAS_DEF, 0, 0), 0x11);
     TEST_FRAME_MLOAD(3, ("0x52", 0, GAS_DEF, 0, 2, W1(0), W1(U64_MAX)), 2);
     TEST_FRAME_MLOAD(4, ("0x52", 0, 0, 0, 2, W1(0xff), W1(0x00)), 2);
     TEST_FRAME_MLOAD(5, ("0x52", 0, 0, 0, 1, W1(0xff)), 2);
@@ -275,7 +275,7 @@ void test_frame_mstore8(bool show)
         TEST_CASE_CLOSE                                         \
     }
 
-    TEST_FRAME_MLOAD(3, ("0x53", 0, GAS_DEF, 0, 0), 1);
+    TEST_FRAME_MLOAD(3, ("0x53", 0, GAS_DEF, 0, 0), 0x11);
     TEST_FRAME_MLOAD(4, ("0x53", 0, GAS_DEF, 0, 2, W1(0), W1(U64_MAX)), 2);
     TEST_FRAME_MLOAD(5, ("0x53", 0, 0, 0, 2, W1(0xff), W1(0x00)), 2);
     TEST_FRAME_MLOAD(6, ("0x53", 0, 0, 0, 1, W1(0xff)), 2);
@@ -344,7 +344,7 @@ void test_frame_push(bool show)
         evm_frame_t f = frame_init_immed("0x5f", 0, GAS_DEF, 0, 0);
         frame_populate_stack(&f, 1024);
         uint64_t err = frame_push(&f);
-        assert_64(err, 2);
+        assert_64(err, 0x12);
         frame_free(&f);
     }
     TEST_CASE_CLOSE
@@ -406,7 +406,7 @@ void test_frame_return(bool show)
             1, W4(0x0001020304050607, 0x08090a0b0c0d0e0f, 0x1011121314151617, 0x18191a1b1c1d1e1f),
             1, W1(0x20)
         ),
-        (false, GAS_DEF, "0x")
+        (false, 0, "0x")
     );
     TEST_FRAME_RETURN(5,
         (
@@ -414,7 +414,7 @@ void test_frame_return(bool show)
             1, W4(0x0001020304050607, 0x08090a0b0c0d0e0f, 0x1011121314151617, 0x18191a1b1c1d1e1f),
             0
         ),
-        (false, GAS_DEF, "0x")
+        (false, 0, "0x")
     );
     TEST_FRAME_RETURN(6,
         (
@@ -422,7 +422,7 @@ void test_frame_return(bool show)
             1, W4(0x0001020304050607, 0x08090a0b0c0d0e0f, 0x1011121314151617, 0x18191a1b1c1d1e1f),
             2, W1(0x20), W1(U64_MAX)
         ),
-        (false, GAS_DEF, "0x")
+        (false, 0, "0x")
     );
     TEST_FRAME_RETURN(7,
         (
@@ -430,7 +430,7 @@ void test_frame_return(bool show)
             1, W4(0x0001020304050607, 0x08090a0b0c0d0e0f, 0x1011121314151617, 0x18191a1b1c1d1e1f),
             2, W1(0x20), W1(U64_MAX)
         ),
-        (false, GAS_DEF, "0x")
+        (false, 0, "0x")
     );
     TEST_FRAME_RETURN(8,
         (

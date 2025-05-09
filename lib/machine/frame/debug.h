@@ -56,12 +56,12 @@ void frame_o_free(evm_frame_o_p fo);
 
 evm_frame_o_t frame_stop(evm_frame_p f);
 
-int frame_pop(evm_frame_p f);
-int frame_mload(evm_frame_p f);
-int frame_mstore(evm_frame_p f);
-int frame_mstore8(evm_frame_p f);
+uint64_t frame_pop(evm_frame_p f);
+uint64_t frame_mload(evm_frame_p f);
+uint64_t frame_mstore(evm_frame_p f);
+uint64_t frame_mstore8(evm_frame_p f);
 
-int frame_push(evm_frame_p f);
+uint64_t frame_push(evm_frame_p f);
 
 evm_frame_o_t frame_return(evm_frame_p f);
 
