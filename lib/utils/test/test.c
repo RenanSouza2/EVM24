@@ -68,7 +68,8 @@ void test_utils_uint64_get_byte(bool show)
     {
         TEST_CASE_OPEN(i + 1)
         {
-            assert_byte(uint64_get_byte(0x0807060504030201, i), i + 1);
+            byte_t res = uint64_get_byte(0x0807060504030201, i);
+            assert_byte(res, i + 1);
         }
         TEST_CASE_CLOSE
     }

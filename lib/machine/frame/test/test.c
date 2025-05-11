@@ -506,7 +506,7 @@ void test_frame()
 {
     TEST_LIB
 
-    bool show = true;
+    bool show = false;
 
     test_frame_get_jumpdest(show);
     test_frame_init(show);

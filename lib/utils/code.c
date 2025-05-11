@@ -241,12 +241,14 @@ uint64_t uint64_add(uint64_t u1, uint64_t u2)
     return sum < u1 ? UINT64_MAX : sum;
 }
 
+// small endian
 byte_t uint64_get_byte(uint64_t u, uint64_t index)
 {
     assert(index < 8);
     return (byte_t)(u >> (index << 3));
 }
 
+// small endian
 uint64_t uint64_set_byte(uint64_t u, uint64_t index, byte_t b)
 {
     assert(index < 8);
@@ -304,13 +306,13 @@ byte_vec_t byte_vec_init(uint64_t size)
     };
 }
 
-byte_vec_t byte_vec_init_uint64(uint64_t num)
+byte_vec_t byte_vec_init_uint64(uint64_t value)
 {
-    uint64_t size = uint64_get_size(num);
+    uint64_t size = uint64_get_size(value);
     byte_vec_t b = byte_vec_init(size);
 
     for(uint64_t i = 0; i < size; i++)
-        b.arr[size - 1 - i] = uint64_get_byte(num, i);
+        b.arr[size - 1 - i] = uint64_get_byte(value, i);
 
     return b;
 }

@@ -36,15 +36,11 @@ bool frame_o_immed(evm_frame_o_t fo, bool success, uint64_t gas, char str_return
 
 #define ADDRESS         0x30    //  TODO ENV
 
-#define ORIGIN          0x32    //  TODO ENV
-#define CALLER          0x33    //  TODO ENV
-#define CALLVALUE       0x34    //  TODO CALLDATA
 #define CALLDATALOAD    0x35    //  TODO CALLDATA
 #define CALLDATASIZE    0x36    //  TODO CALLDATA
 #define CALLDATACOPY    0x37    //  TODO CALLDATA
 #define CODESIZE        0x38    //  TODO CODE
 #define CODECOPY        0x39    //  TODO CODE
-#define GASPRICE        0x3a    //  TODO ENV
 
 #define RETURNDATASIZE  0x3d    //  TODO RETURNDATABUFFER
 #define RETURNDATACOPY  0x3e    //  TODO RETURNDATABUFFER
