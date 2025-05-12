@@ -16,22 +16,26 @@ evm_rlp_t rlp_init_variadic(uint64_t type, va_list *args)
 {
     switch (type)
     {
-    case BYTES:;
-        char *str = va_arg(*args, char *);
-        byte_vec_t b = byte_vec_init_immed(str);
-        return rlp_init_byte_vec(b);
-
-    case LIST:;
-        uint64_t size = va_arg(*args, uint64_t);
-        evm_rlp_vec_t r = rlp_vec_init(size);
-        for(uint64_t i = 0; i < size; i++)
+        case BYTES:
         {
-            uint64_t r1_type = va_arg(*args, uint64_t);
-            r.arr[i] = rlp_init_variadic(r1_type, args);
+            char *str = va_arg(*args, char *);
+            byte_vec_t b = byte_vec_init_immed(str);
+            return rlp_init_byte_vec(b);
         }
 
-        return rlp_init_list(r);
+        case LIST:
+        {
+            uint64_t size = va_arg(*args, uint64_t);
+            evm_rlp_vec_t r = rlp_vec_init(size);
+            for(uint64_t i = 0; i < size; i++)
+            {
+                uint64_t r1_type = va_arg(*args, uint64_t);
+                r.arr[i] = rlp_init_variadic(r1_type, args);
+            }
+            return rlp_init_list(r);
+        }
     }
+
     assert(false);
 }
 
@@ -44,42 +48,42 @@ evm_rlp_t rlp_init_immed(uint64_t type, ...)
 
 
 
-bool rlp_vec_test(evm_rlp_vec_t r, evm_rlp_vec_t r_exp)
+bool rlp_vec_test(evm_rlp_vec_t r_1, evm_rlp_vec_t r_2)
 {
-    if(!uint64_test(r.size, r_exp.size))
+    if(!uint64_test(r_1.size, r_2.size))
     {
         printf("\n\tRLP VECTOR ASSERTION ERROR\t| SIZE");
         return false;
     }
 
-    for(uint64_t i = 0; i < r.size; i++)
+    for(uint64_t i = 0; i < r_1.size; i++)
     {
-        if(!rlp_test(r.arr[i], r_exp.arr[i]))
+        if(!rlp_test(r_1.arr[i], r_2.arr[i]))
         {
             printf("\n\tRLP VECTOR ASSERTION ERROR\t| ITEM | " U64P() "", i);
             return false;
         }
     }
 
-    vec_free(&r_exp);
-    vec_free(&r);
+    vec_free(&r_1);
+    vec_free(&r_2);
     return true;
 }
 
-bool rlp_test(evm_rlp_t r, evm_rlp_t r_exp)
+bool rlp_test(evm_rlp_t r_1, evm_rlp_t r_2)
 {
-    if(!byte_test(r.type, r_exp.type))
+    if(!byte_test(r_1.type, r_2.type))
     {
         printf("\n\tRLP ASSERTION ERROR\t| TYPE");
         return false;
     }
 
-    switch (r.type)
+    switch (r_1.type)
     {
         case BYTES:
         {
 
-            if(!byte_vec_test(r.arr.b, r_exp.arr.b))
+            if(!byte_vec_test(r_1.arr.b, r_2.arr.b))
             {
                 printf("\n\tRLP ASSERTION ERROR\t| BYTE VEC");
                 return false;
@@ -89,7 +93,7 @@ bool rlp_test(evm_rlp_t r, evm_rlp_t r_exp)
 
         case LIST:
         {
-            if(!rlp_vec_test(r.arr.r, r_exp.arr.r))
+            if(!rlp_vec_test(r_1.arr.r, r_2.arr.r))
             {
                 printf("\n\tRLP ASSERTION ERROR\t| LIST VEC");
                 return false;
@@ -106,8 +110,8 @@ bool rlp_immed(evm_rlp_t r, uint64_t type, ...)
 {
     va_list args;
     va_start(args, type);
-    evm_rlp_t r_exp = rlp_init_variadic(type, &args);
-    bool res = rlp_test(r, r_exp);
+    evm_rlp_t r_2 = rlp_init_variadic(type, &args);
+    bool res = rlp_test(r, r_2);
     return res;
 }
 
@@ -191,43 +195,47 @@ byte_vec_t rlp_encode(evm_rlp_p r)
 {
     switch (r->type)
     {
-    case BYTES:;
-        byte_vec_t b = r->arr.b;
-        if(b.size == 1)
-            if(b.arr[0] < 128)
-                return b;
-
-        if(b.size < 56)
+        case BYTES:
         {
-            byte_vec_t b_size = byte_vec_init_uint64(128 + b.size);
-            return byte_vec_concat(&b_size, &b);
+            byte_vec_t b = r->arr.b;
+            if(b.size == 1)
+                if(b.arr[0] < 128)
+                    return b;
+
+            if(b.size < 56)
+            {
+                byte_vec_t b_size = byte_vec_init_uint64(128 + b.size);
+                return byte_vec_concat(&b_size, &b);
+            }
+
+            byte_vec_t b_size_2 = byte_vec_init_uint64(b.size);
+            byte_vec_t b_size_1 = byte_vec_init_uint64(183 + b_size_2.size);
+            b_size_1 = byte_vec_concat(&b_size_1, &b_size_2);
+            return byte_vec_concat(&b_size_1, &b);
         }
 
-        byte_vec_t b_size_2 = byte_vec_init_uint64(b.size);
-        byte_vec_t b_size_1 = byte_vec_init_uint64(183 + b_size_2.size);
-        b_size_1 = byte_vec_concat(&b_size_1, &b_size_2);
-        return byte_vec_concat(&b_size_1, &b);
-
-    case LIST:;
-        evm_rlp_vec_t _r = r->arr.r;
-        b = byte_vec_init_zero();
-        for(uint64_t i = 0; i < _r.size; i++)
+        case LIST:
         {
-            byte_vec_t _b = rlp_encode(&_r.arr[i]);
-            b = byte_vec_concat(&b, &_b);
-        }
-        vec_free(&_r);
+            evm_rlp_vec_t _r = r->arr.r;
+            byte_vec_t b = byte_vec_init_zero();
+            for(uint64_t i = 0; i < _r.size; i++)
+            {
+                byte_vec_t _b = rlp_encode(&_r.arr[i]);
+                b = byte_vec_concat(&b, &_b);
+            }
+            vec_free(&_r);
 
-        if(b.size < 56)
-        {
-            byte_vec_t b_size = byte_vec_init_uint64(192 + b.size);
-            return byte_vec_concat(&b_size, &b);
-        }
+            if(b.size < 56)
+            {
+                byte_vec_t b_size = byte_vec_init_uint64(192 + b.size);
+                return byte_vec_concat(&b_size, &b);
+            }
 
-        b_size_2 = byte_vec_init_uint64(b.size);
-        b_size_1 = byte_vec_init_uint64(247 + b_size_2.size);
-        b_size_1 = byte_vec_concat(&b_size_1, &b_size_2);
-        return byte_vec_concat(&b_size_1, &b);
+            byte_vec_t b_size_2 = byte_vec_init_uint64(b.size);
+            byte_vec_t b_size_1 = byte_vec_init_uint64(247 + b_size_2.size);
+            b_size_1 = byte_vec_concat(&b_size_1, &b_size_2);
+            return byte_vec_concat(&b_size_1, &b);
+        }
     }
     assert(false);
 }

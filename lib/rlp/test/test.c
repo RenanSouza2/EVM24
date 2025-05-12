@@ -5,16 +5,14 @@
 #include "../../utils/debug.h"
 
 
-
-#define f00t1f "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
-#define f00tdf                                                             \
-    f00t1f                                                                 \
-        "202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f" \
-        "404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f" \
-        "606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f" \
-        "808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9f" \
-        "a0a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4b5b6b7b8b9babbbcbdbebf" \
-        "c0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedf"
+#define REPEAT(HEAD)                                                                \
+    #HEAD "0" #HEAD "1" #HEAD "2" #HEAD "3" #HEAD "4" #HEAD "5" #HEAD "6" #HEAD "7" \
+    #HEAD "8" #HEAD "9" #HEAD "a" #HEAD "b" #HEAD "c" #HEAD "d" #HEAD "e" #HEAD "f"
+#define F00T2F REPEAT(0) REPEAT(1) REPEAT(2)
+#define F00TEF                                          \
+    REPEAT(0) REPEAT(1) REPEAT(2) REPEAT(3) REPEAT(4)   \
+    REPEAT(5) REPEAT(6) REPEAT(7) REPEAT(8) REPEAT(9)   \
+    REPEAT(a) REPEAT(b) REPEAT(c) REPEAT(d) REPEAT(e)
 
 
 
@@ -33,29 +31,29 @@ void test_rlp_encode(bool show)
         TEST_CASE_CLOSE                                     \
     }
 
-    TEST_RLP_ENCODE(1 , (BYTES, "0x"), "0x80");
+    TEST_RLP_ENCODE(1, (BYTES, "0x"), "0x80");
     TEST_RLP_ENCODE(2, (BYTES, "0x00"), "0x00");
     TEST_RLP_ENCODE(3, (BYTES, "0x01"), "0x01");
     TEST_RLP_ENCODE(4, (BYTES, "0x7f"), "0x7f");
     TEST_RLP_ENCODE(5, (BYTES, "0x80"), "0x8180");
-    TEST_RLP_ENCODE(6, (BYTES, "0x80"), "0x8180");
+    TEST_RLP_ENCODE(6, (BYTES, "0x81"), "0x8181");
     TEST_RLP_ENCODE(7, (BYTES, "0xff"), "0x81ff");
     TEST_RLP_ENCODE(8, (BYTES, "0x0000"), "0x820000");
     TEST_RLP_ENCODE(9,
-        (BYTES, "0x" f00t1f "202122232425262728292a2b2c2d2e2f30313233343536"),
-        "0xb7" f00t1f "202122232425262728292a2b2c2d2e2f30313233343536"
+        (BYTES, "0x" F00T2F "30313233343536"),
+        "0xb7" F00T2F "30313233343536"
     );
     TEST_RLP_ENCODE(10,
-        (BYTES, "0x" f00t1f "202122232425262728292a2b2c2d2e2f3031323334353637"),
-        "0xb838" f00t1f "202122232425262728292a2b2c2d2e2f3031323334353637"
+        (BYTES, "0x" F00T2F "3031323334353637"),
+        "0xb838" F00T2F "3031323334353637"
     );
     TEST_RLP_ENCODE(11,
-        (BYTES, "0x" f00tdf "e0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfe"),
-        "0xb8ff" f00tdf "e0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfe"
+        (BYTES, "0x" F00TEF "f0f1f2f3f4f5f6f7f8f9fafbfcfdfe"),
+        "0xb8ff" F00TEF "f0f1f2f3f4f5f6f7f8f9fafbfcfdfe"
     );
     TEST_RLP_ENCODE(12,
-        (BYTES, "0x" f00tdf "e0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff"),
-        "0xb90100" f00tdf "e0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff"
+        (BYTES, "0x" F00TEF REPEAT(f)),
+        "0xb90100" F00TEF REPEAT(f)
     );
     TEST_RLP_ENCODE(13, (LIST, 0), "0xc0");
     TEST_RLP_ENCODE(14, (LIST, 1, BYTES, "0x00"), "0xc100");
@@ -64,20 +62,20 @@ void test_rlp_encode(bool show)
     TEST_RLP_ENCODE(17, (LIST, 2, LIST, 0, BYTES, "0x01"), "0xc2c001");
     TEST_RLP_ENCODE(18, (LIST, 2, LIST, 1, BYTES, "0x00", BYTES, "0x01"), "0xc3c10001");
     TEST_RLP_ENCODE(19,
-        (LIST, 1, BYTES, "0x" f00t1f "202122232425262728292a2b2c2d2e2f303132333435"),
-        "0xf7b6" f00t1f "202122232425262728292a2b2c2d2e2f303132333435"
+        (LIST, 1, BYTES, "0x" F00T2F "303132333435"),
+        "0xf7b6" F00T2F "303132333435"
     );
     TEST_RLP_ENCODE(20,
-        (LIST, 1, BYTES, "0x" f00t1f "202122232425262728292a2b2c2d2e2f30313233343536"),
-        "0xf838b7" f00t1f "202122232425262728292a2b2c2d2e2f30313233343536"
+        (LIST, 1, BYTES, "0x" F00T2F "30313233343536"),
+        "0xf838b7" F00T2F "30313233343536"
     );
     TEST_RLP_ENCODE(21,
-        (LIST, 1, BYTES, "0x" f00tdf "e0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfc"),
-        "0xf8ffb8fd" f00tdf "e0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfc"
+        (LIST, 1, BYTES, "0x" F00TEF "f0f1f2f3f4f5f6f7f8f9fafbfc"),
+        "0xf8ffb8fd" F00TEF "f0f1f2f3f4f5f6f7f8f9fafbfc"
     );
     TEST_RLP_ENCODE(22,
-        (LIST, 1, BYTES, "0x" f00tdf "e0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfd"),
-        "0xf90100b8fe" f00tdf "e0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfd"
+        (LIST, 1, BYTES, "0x" F00TEF "f0f1f2f3f4f5f6f7f8f9fafbfcfd"),
+        "0xf90100b8fe" F00TEF "f0f1f2f3f4f5f6f7f8f9fafbfcfd"
     );
     TEST_FN_CLOSE
 }
@@ -108,21 +106,18 @@ void test_rlp_decode(bool show)
     TEST_RLP_DECODE(7, "0x81ff", (BYTES, "0xff"));
     TEST_RLP_DECODE(8, "0x820000", (BYTES, "0x0000"));
     TEST_RLP_DECODE(9,
-        "0xb7" f00t1f "202122232425262728292a2b2c2d2e2f30313233343536",
-        (BYTES, "0x" f00t1f "202122232425262728292a2b2c2d2e2f30313233343536")
+        "0xb7" F00T2F "30313233343536",
+        (BYTES, "0x" F00T2F "30313233343536")
     );
     TEST_RLP_DECODE(10,
-        "0xb838" f00t1f "202122232425262728292a2b2c2d2e2f3031323334353637",
-        (BYTES, "0x" f00t1f "202122232425262728292a2b2c2d2e2f3031323334353637")
+        "0xb838" F00T2F "3031323334353637",
+        (BYTES, "0x" F00T2F "3031323334353637")
     );
     TEST_RLP_DECODE(11,
-        "0xb8ff" f00tdf "e0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfe",
-        (BYTES, "0x" f00tdf "e0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfe")
+        "0xb8ff" F00TEF "f0f1f2f3f4f5f6f7f8f9fafbfcfdfe",
+        (BYTES, "0x" F00TEF "f0f1f2f3f4f5f6f7f8f9fafbfcfdfe")
     );
-    TEST_RLP_DECODE(12,
-        "0xb90100" f00tdf "e0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff",
-        (BYTES, "0x" f00tdf "e0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff")
-    );
+    TEST_RLP_DECODE(12, "0xb90100" F00TEF REPEAT(f), (BYTES, "0x" F00TEF REPEAT(f)));
     TEST_RLP_DECODE(13, "0xc0", (LIST, 0));
     TEST_RLP_DECODE(14, "0xc100", (LIST, 1, BYTES, "0x00"));
     TEST_RLP_DECODE(15, "0xc28180", (LIST, 1, BYTES, "0x80"));
@@ -130,20 +125,20 @@ void test_rlp_decode(bool show)
     TEST_RLP_DECODE(17, "0xc2c001", (LIST, 2, LIST, 0, BYTES, "0x01") );
     TEST_RLP_DECODE(18, "0xc3c10001", (LIST, 2, LIST, 1, BYTES, "0x00", BYTES, "0x01"));
     TEST_RLP_DECODE(19,
-        "0xf7b6" f00t1f "202122232425262728292a2b2c2d2e2f303132333435",
-        (LIST, 1, BYTES, "0x" f00t1f "202122232425262728292a2b2c2d2e2f303132333435")
+        "0xf7b6" F00T2F "303132333435",
+        (LIST, 1, BYTES, "0x" F00T2F "303132333435")
     );
     TEST_RLP_DECODE(20,
-        "0xf838b7" f00t1f "202122232425262728292a2b2c2d2e2f30313233343536",
-        (LIST, 1, BYTES, "0x" f00t1f "202122232425262728292a2b2c2d2e2f30313233343536")
+        "0xf838b7" F00T2F "30313233343536",
+        (LIST, 1, BYTES, "0x" F00T2F "30313233343536")
     );
     TEST_RLP_DECODE(21,
-        "0xf8ffb8fd" f00tdf "e0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfc",
-        (LIST, 1, BYTES, "0x" f00tdf "e0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfc")
+        "0xf8ffb8fd" F00TEF "f0f1f2f3f4f5f6f7f8f9fafbfc",
+        (LIST, 1, BYTES, "0x" F00TEF "f0f1f2f3f4f5f6f7f8f9fafbfc")
     );
     TEST_RLP_DECODE(22,
-        "0xf90100b8fe" f00tdf "e0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfd",
-        (LIST, 1, BYTES, "0x" f00tdf "e0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfd")
+        "0xf90100b8fe" F00TEF "f0f1f2f3f4f5f6f7f8f9fafbfcfd",
+        (LIST, 1, BYTES, "0x" F00TEF "f0f1f2f3f4f5f6f7f8f9fafbfcfd")
     );
 
     #undef TEST_RLP_DECODE
