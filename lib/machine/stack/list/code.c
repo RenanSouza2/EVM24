@@ -10,6 +10,7 @@
 
 
 
+// TODO CLU_HANDLER_IS_SAFE
 evm_stack_l_p stack_l_init_variadic(uint64_t n, va_list *args)
 {
     evm_stack_l_p sl = NULL;

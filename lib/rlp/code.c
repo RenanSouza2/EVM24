@@ -36,7 +36,7 @@ evm_rlp_t rlp_init_variadic(uint64_t type, va_list *args)
         }
     }
 
-    assert(false);
+    exit(EXIT_FAILURE);
 }
 
 evm_rlp_t rlp_init_immed(uint64_t type, ...)
@@ -188,7 +188,8 @@ void rlp_free(evm_rlp_p r)
         }
         return;
     }
-    assert(false);
+
+    exit(EXIT_FAILURE);
 }
 
 byte_vec_t rlp_encode(evm_rlp_p r)
@@ -237,7 +238,8 @@ byte_vec_t rlp_encode(evm_rlp_p r)
             return byte_vec_concat(&b_size_1, &b);
         }
     }
-    assert(false);
+    
+    exit(EXIT_FAILURE);
 }
 
 uint64_t rlp_get_size_long(

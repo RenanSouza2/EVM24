@@ -56,7 +56,7 @@ byte_t cton(byte_t c)
         case 'a' ... 'f': return c - 'a' + 10;
         case 'A' ... 'F': return c - 'A' + 10;
     }
-    assert(false);
+    exit(EXIT_FAILURE);
 }
 
 byte_vec_t byte_vec_init_immed(char str[])

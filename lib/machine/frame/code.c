@@ -486,8 +486,8 @@ evm_frame_o_t frame_execute(evm_bytes_t code, uint64_t gas)
             CASE_EXIT(RETURN)
 
             CASE_EXIT(INVALID)
-
-            default: assert(false);
         }
+
+        exit(EXIT_FAILURE);
     }
 }

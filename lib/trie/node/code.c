@@ -50,25 +50,13 @@ evm_rlp_t rlp_init_node(evm_node_p n)
 {
     switch (n->type)
     {
-        case LEAF:
-        {
-            return rlp_init_node_leaf(NL(n));
-        }
-
-        case BRANCH:
-        {
-            return rlp_init_node_branch(NB(n));
-        }
-
-        case EXTENSION:
-        {
-            return rlp_init_node_extension(NE(n));
-        }
+        case LEAF      : return rlp_init_node_leaf(NL(n));
+        case BRANCH    : return rlp_init_node_branch(NB(n));
+        case EXTENSION : return rlp_init_node_extension(NE(n));
     }
-    assert(false);
+    exit(EXIT_FAILURE);
+    exit(EXIT_FAILURE);
 }
-
-word_t node_encode_header(evm_node_p n);
 
 byte_vec_t node_encode(evm_node_p n) // TODO test
 {
