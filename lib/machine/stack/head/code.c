@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 #include "debug.h"
 #include "../../../../mods/clu/header.h"
 
@@ -44,13 +42,13 @@ bool stack_test_inner(evm_stack_t s_1, evm_stack_t s_2)
 {
     if(!uint64_test(s_2.count, s_2.count))
     {
-        printf("\n\tSTACK ASSERTION ERROR | COUNT");
+        printf("\n\tSTACK ASSERTION ERROR\t| COUNT");
         return false;
     }
 
     if(!stack_l_test(s_1.sl, s_2.sl))
     {
-        printf("\n\tSTACK ASSERTION ERROR | STACK LIST");
+        printf("\n\tSTACK ASSERTION ERROR\t| STACK LIST");
         return false;
     }
 

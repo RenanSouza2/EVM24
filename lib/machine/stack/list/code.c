@@ -1,5 +1,3 @@
-#include <stdlib.h>
-
 #include "debug.h"
 #include "../../../../mods/clu/header.h"
 #include "../../../../mods/macros/assert.h"
@@ -12,6 +10,7 @@
 
 
 
+// TODO CLU_HANDLER_IS_SAFE
 evm_stack_l_p stack_l_init_variadic(uint64_t n, va_list *args)
 {
     evm_stack_l_p sl = NULL;
@@ -54,7 +53,7 @@ bool stack_l_test_inner(evm_stack_l_p sl_1, evm_stack_l_p sl_2)
     {
         if(!word_test(sl_1->w, sl_2->w))
         {
-            printf("\n\tSTACK LIST ASSERTION ERROR | WORD | " U64P(), i);
+            printf("\n\tSTACK LIST ASSERTION ERROR\t| WORD | " U64P(), i);
             return false;
         }
 
@@ -64,13 +63,13 @@ bool stack_l_test_inner(evm_stack_l_p sl_1, evm_stack_l_p sl_2)
 
     if(sl_2 != NULL)
     {
-        printf("\n\n\tSTACK LIST ASSERTION ERROR | LIST SHORTER | " U64P() "", i);
+        printf("\n\n\tSTACK LIST ASSERTION ERROR\t| LIST SHORTER | " U64P() "", i);
         return false;
     }
 
     if(sl_1 != NULL)
     {
-        printf("\n\n\tSTACK LIST ASSERTION ERROR | LIST LONGER | " U64P() "", i);
+        printf("\n\n\tSTACK LIST ASSERTION ERROR\t| LIST LONGER | " U64P() "", i);
         return false;
     }
 

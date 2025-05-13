@@ -1,4 +1,3 @@
-#include <stdlib.h>
 #include <string.h>
 
 #include "debug.h"
@@ -11,8 +10,12 @@
 
 #include <stdarg.h>
 
+
+
 void byte_vec_display(byte_vec_t b)
 {
+    CLU_HANDLER_IS_SAFE(b.arr);
+
     printf("\n\nbytes (" U64P() "):", b.size);
     printf("\n");
     for(uint64_t i = 0; i < b.size >> 5; i++)
@@ -31,13 +34,15 @@ void byte_vec_display(byte_vec_t b)
     printf("\n");
 }
 
-void uint64_vec_display(uint64_vec_t vec)
+void uint64_vec_display(uint64_vec_t b)
 {
-    printf("\n\nuint64 (" U64P() "):", vec.size);
+    CLU_HANDLER_IS_SAFE(b.arr);
+
+    printf("\n\nuint64 (" U64P() "):", b.size);
     printf("\n");
-    for(uint64_t i = 0; i < vec.size; i++)
+    for(uint64_t i = 0; i < b.size; i++)
     {
-        printf("\n\t0x" U64PX "", vec.arr[i]);
+        printf("\n\t0x" U64PX "", b.arr[i]);
     }
 
     printf("\n");
@@ -47,14 +52,11 @@ byte_t cton(byte_t c)
 {
     switch (c)
     {
-    case '0' ... '9':
-        return c - '0';
-    case 'a' ... 'f':
-        return c - 'a' + 10;
-    case 'A' ... 'F':
-        return c - 'A' + 10;
+        case '0' ... '9': return c - '0';
+        case 'a' ... 'f': return c - 'a' + 10;
+        case 'A' ... 'F': return c - 'A' + 10;
     }
-    assert(false);
+    exit(EXIT_FAILURE);
 }
 
 byte_vec_t byte_vec_init_immed(char str[])
@@ -72,15 +74,11 @@ byte_vec_t byte_vec_init_immed(char str[])
     if(size == 0)
         return byte_vec_init_zero();
 
-    byte_t *arr = malloc(size);
+    byte_vec_t b = byte_vec_init(size);
     for(uint64_t i = 0; i < size; i++)
-        arr[i] = (cton(str[2 * i + 2]) << 4) | cton(str[2 * i + 3]);
+        b.arr[i] = (cton(str[2 * i + 2]) << 4) | cton(str[2 * i + 3]);
 
-    return (byte_vec_t)
-    {
-        .size = size,
-        .arr = arr
-    };
+    return b;
 }
 
 uint64_vec_t uint64_vec_init_variadic(uint64_t n, va_list *args)
@@ -99,13 +97,6 @@ uint64_vec_t uint64_vec_init_immed(uint64_t n, ...)
     return uint64_vec_init_variadic(n, &args);
 }
 
-uint64_t uint64_init_byte_immed(char str[])
-{
-    byte_vec_t b = byte_vec_init_immed(str);
-    uint64_t res = uint64_init_byte_arr(b.arr, b.size);
-    vec_free(&b);
-    return res;
-}
 
 
 bool byte_test(byte_t u1, byte_t u2)
@@ -113,25 +104,30 @@ bool byte_test(byte_t u1, byte_t u2)
     if(u1 == u2)
         return true;
 
-    printf("\n\n\tUCHAR ASSERTION ERROR | %d %d", u1, u2);
+    printf("\n\n\tUCHAR ASSERTION ERROR\t| %d %d", u1, u2);
     return false;
 }
 
 bool uint64_test(uint64_t i1, uint64_t i2)
 {
-    if(i1 == i2)
-        return true;
+    if(i1 != i2)
+    {
+        printf("\n");
+        printf("\n\t0x" U64PX, i1);
+        printf("\n\t0x" U64PX, i2);
+        printf("\n");
+        printf("\n\tUINT64 ASSERTION ERROR");
+        return false;
+    }
 
-    printf("\n");
-    printf("\n\t0x" U64PX, i1);
-    printf("\n\t0x" U64PX, i2);
-    printf("\n");
-    printf("\n\tUINT64 ASSERTION ERROR");
-    return false;
+    return true;
 }
 
 bool byte_vec_test_inner(byte_vec_t b_1, byte_vec_t b_2)
 {
+    CLU_HANDLER_IS_SAFE(b_1.arr);
+    CLU_HANDLER_IS_SAFE(b_2.arr);
+
     if(!uint64_test(b_1.size, b_2.size))
     {
         printf("\n\tBYTE VEC ASSERTION ERROR\t| LENGTH");
@@ -161,10 +157,14 @@ bool byte_vec_test_inner(byte_vec_t b_1, byte_vec_t b_2)
 
 bool byte_vec_test(byte_vec_t b_1, byte_vec_t b_2)
 {
+    CLU_HANDLER_IS_SAFE(b_1.arr);
+    CLU_HANDLER_IS_SAFE(b_2.arr);
+
     if(!byte_vec_test_inner(b_1, b_2))
     {
         printf("\n");
-        // TODO display
+        byte_vec_display(b_1);
+        byte_vec_display(b_2);
         return false;
     }
 
@@ -173,19 +173,22 @@ bool byte_vec_test(byte_vec_t b_1, byte_vec_t b_2)
     return true;
 }
 
-bool uint64_vec_test_inner(uint64_vec_t vec_1, uint64_vec_t vec_2)
+bool uint64_vec_test_inner(uint64_vec_t b_1, uint64_vec_t b_2)
 {
-    if(!uint64_test(vec_1.size, vec_2.size))
+    CLU_HANDLER_IS_SAFE(b_1.arr);
+    CLU_HANDLER_IS_SAFE(b_2.arr);
+
+    if(!uint64_test(b_1.size, b_2.size))
     {
-        printf("\n\tUINT64 VEC TEST ASSERTION ERROR | COUNT");
+        printf("\n\tUINT64 VEC TEST ASSERTION ERROR\t| COUNT");
         return false;
     }
 
-    for(uint64_t i = 0; i < vec_1.size; i++)
+    for(uint64_t i = 0; i < b_1.size; i++)
     {
-        if(!uint64_test(vec_1.arr[i], vec_2.arr[i]))
+        if(!uint64_test(b_1.arr[i], b_2.arr[i]))
         {
-            printf("\n\tUINT64 VEC TEST ASSERTION ERROR | UINT64 | " U64P() "", i);
+            printf("\n\tUINT64 VEC TEST ASSERTION ERROR\t| UINT64 | " U64P() "", i);
             return false;
         }
     }
@@ -193,32 +196,39 @@ bool uint64_vec_test_inner(uint64_vec_t vec_1, uint64_vec_t vec_2)
     return true;
 }
 
-bool uint64_vec_test(uint64_vec_t vec_1, uint64_vec_t vec_2)
+bool uint64_vec_test(uint64_vec_t b_1, uint64_vec_t b_2)
 {
-    if(!uint64_vec_test_inner(vec_1, vec_2))
+    CLU_HANDLER_IS_SAFE(b_1.arr);
+    CLU_HANDLER_IS_SAFE(b_2.arr);
+
+    if(!uint64_vec_test_inner(b_1, b_2))
     {
-        uint64_vec_display(vec_1);
-        uint64_vec_display(vec_2);
+        uint64_vec_display(b_1);
+        uint64_vec_display(b_2);
         return false;
     }
 
-    vec_free(&vec_1);
-    vec_free(&vec_2);
+    vec_free(&b_1);
+    vec_free(&b_2);
     return true;
 }
 
 bool byte_vec_immed(byte_vec_t b, char str[])
 {
+    CLU_HANDLER_IS_SAFE(b.arr);
+
     byte_vec_t b_exp = byte_vec_init_immed(str);
     return byte_vec_test(b, b_exp);
 }
 
-bool uint64_vec_immed(uint64_vec_t vec, uint64_t n, ...)
+bool uint64_vec_immed(uint64_vec_t b, uint64_t n, ...)
 {
+    CLU_HANDLER_IS_SAFE(b.arr);
+
     va_list args;
     va_start(args, n);
-    uint64_vec_t vec_2 = uint64_vec_init_variadic(n, &args);
-    return uint64_vec_test(vec, vec_2);
+    uint64_vec_t b_2 = uint64_vec_init_variadic(n, &args);
+    return uint64_vec_test(b, b_2);
 }
 
 #endif
@@ -231,12 +241,14 @@ uint64_t uint64_add(uint64_t u1, uint64_t u2)
     return sum < u1 ? UINT64_MAX : sum;
 }
 
+// small endian
 byte_t uint64_get_byte(uint64_t u, uint64_t index)
 {
     assert(index < 8);
     return (byte_t)(u >> (index << 3));
 }
 
+// small endian
 uint64_t uint64_set_byte(uint64_t u, uint64_t index, byte_t b)
 {
     assert(index < 8);
@@ -253,7 +265,7 @@ uint64_t uint64_get_size(uint64_t u)
     return 8;
 }
 
-uint64_t uint64_init_byte_arr(byte_p arr, uint64_t size)
+uint64_t uint64_init_byte_arr(uint64_t size, byte_p arr)
 {
     assert(size <= 8);
     uint64_t u = 0;
@@ -279,18 +291,6 @@ byte_vec_t byte_vec_init_zero()
     };
 }
 
-byte_vec_t byte_vec_init_uint64(uint64_t num)
-{
-    uint64_t size = uint64_get_size(num);
-    byte_vec_t b = byte_vec_init(size);
-
-    for(uint64_t i = 0; i < size; i++)
-        b.arr[size - 1 - i] = uint64_get_byte(num, i);
-
-    return b;
-}
-
-
 byte_vec_t byte_vec_init(uint64_t size)
 {
     if(size == 0)
@@ -306,32 +306,46 @@ byte_vec_t byte_vec_init(uint64_t size)
     };
 }
 
+byte_vec_t byte_vec_init_uint64(uint64_t value)
+{
+    uint64_t size = uint64_get_size(value);
+    byte_vec_t b = byte_vec_init(size);
+
+    for(uint64_t i = 0; i < size; i++)
+        b.arr[size - 1 - i] = uint64_get_byte(value, i);
+
+    return b;
+}
+
 // keeps arr
-byte_vec_t byte_vec_init_byte_arr(uint64_t size, byte_p arr) // TODO: test
+byte_vec_t byte_vec_init_byte_arr(uint64_t size, byte_p arr)
 {
     byte_vec_t b = byte_vec_init(size);
     memcpy(b.arr, arr, size);
     return b;
 }
 
-byte_vec_t byte_vec_concat(byte_vec_p b1, byte_vec_p b2) // TODO test
+byte_vec_t byte_vec_concat(byte_vec_p b_1, byte_vec_p b_2)
 {
-    if(b2->size == 0)
-        return *b1;
+    CLU_HANDLER_IS_SAFE(b_1->arr);
+    CLU_HANDLER_IS_SAFE(b_2->arr);
 
-    if(b1->size == 0)
-        return *b2;
+    if(b_2->size == 0)
+        return *b_1;
 
-    b1->arr = realloc(b1->arr, b1->size + b2->size);
-    memcpy(&b1->arr[b1->size], b2->arr, b2->size);
-    b1->size += b2->size;
-    vec_free(b2);
-    return *b1;
+    if(b_1->size == 0)
+        return *b_2;
+
+    b_1->arr = realloc(b_1->arr, b_1->size + b_2->size);
+    memcpy(&b_1->arr[b_1->size], b_2->arr, b_2->size);
+    b_1->size += b_2->size;
+    vec_free(b_2);
+    return *b_1;
 }
 
 
 
-uint64_vec_t uint64_vec_init_zero() // TODO test
+uint64_vec_t uint64_vec_init_zero()
 {
     return (uint64_vec_t)
     {
@@ -343,7 +357,7 @@ uint64_vec_t uint64_vec_init_zero() // TODO test
 uint64_vec_t uint64_vec_init(uint64_t size)
 {
     if(size == 0)
-        uint64_vec_init_zero();
+        return uint64_vec_init_zero();
 
     uint64_p arr = calloc(size, sizeof(uint64_t));
     assert(arr);
@@ -355,16 +369,19 @@ uint64_vec_t uint64_vec_init(uint64_t size)
     };
 }
 
-bool uint64_vec_has_uint64(uint64_vec_p vec, uint64_t v)
+// vec is assumed to be ordered
+bool uint64_vec_has_uint64(uint64_vec_p b, uint64_t v)
 {
-    if(vec->size == 0)
+    CLU_HANDLER_IS_SAFE(b->arr);
+
+    if(b->size == 0)
         return false;
 
     uint64_t min = 0;
-    for(uint64_t max = vec->size; max - min > 1;)
+    for(uint64_t max = b->size; max - min > 1;)
     {
         uint64_t mid = (min + max) >> 1;
-        uint64_t _v = vec->arr[mid];
+        uint64_t _v = b->arr[mid];
         if(_v == v)
             return true;
 
@@ -373,13 +390,15 @@ bool uint64_vec_has_uint64(uint64_vec_p vec, uint64_t v)
         else
             min = mid;
     }
-    return vec->arr[min] == v;
+    return b->arr[min] == v;
 }
 
 
 
 void vec_free(handler_p v)
 {
+    CLU_HANDLER_IS_SAFE(VEC(v)->arr);
+
     if(VEC(v)->arr)
         free(VEC(v)->arr);
 }

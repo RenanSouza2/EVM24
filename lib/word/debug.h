@@ -13,4 +13,6 @@ bool word_test(word_t w1, word_t w2);
 
 bool word_eq(word_p w1, word_p w2);
 
+uint64_t word_get_size(word_p w);
+
 #endif

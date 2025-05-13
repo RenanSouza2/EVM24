@@ -24,12 +24,10 @@ void byte_vec_display(byte_vec_t b);
 byte_t cton(byte_t c);
 byte_vec_t byte_vec_init_immed(char str[]);
 uint64_vec_t uint64_vec_init_immed(uint64_t n, ...);
-uint64_t uint64_init_byte_immed(char str[]);
 
 bool byte_test(byte_t u1, byte_t u2);
 bool uint64_test(uint64_t i1, uint64_t i2);
 
-bool byte_vec_test_inner(byte_vec_t b_1, byte_vec_t b_2);
 bool byte_vec_test(byte_vec_t b, byte_vec_t b_exp);
 bool uint64_vec_test(uint64_vec_t vec_1, uint64_vec_t vec_2);
 bool byte_vec_immed(byte_vec_t b, char str[]);

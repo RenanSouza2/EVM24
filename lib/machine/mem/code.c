@@ -16,7 +16,6 @@
 #ifdef DEBUG
 
 #include "../../utils/debug.h"
-#include "../../word/debug.h"
 
 
 
@@ -27,10 +26,11 @@ evm_mem_t mem_init_variadic(uint64_t n, va_list *arg)
     {
         word_t w = va_arg(*arg, word_t);
         for(int j = 0; j < 32; j++)
-            m.arr[(i << 5) + j] = word_get_byte(&w, 31 - j);
+            m.arr[(i << 5) + j] = word_get_byte(&w, j);
     }
     return m;
 }
+
 evm_mem_t mem_init_immed(uint64_t n, ...)
 {
     va_list args;
@@ -58,13 +58,13 @@ bool mem_test_inner(evm_mem_t m_1, evm_mem_t m_2)
 {
     if(!uint64_test(m_1.size, m_2.size))
     {
-        printf("\n\tMEM ASSERTTION ERROR | LENGTH");
+        printf("\n\tMEM ASSERTTION ERROR\t| LENGTH");
         return false;
     }
 
     if(!byte_vec_test(m_1, m_2))
     {
-        printf("\n\tMEM ASSERTTION ERROR | BYTES ASSERTTION ERROR");
+        printf("\n\tMEM ASSERTTION ERROR\t| BYTES ASSERTTION ERROR");
         return false;
     }
 
@@ -142,28 +142,22 @@ byte_vec_t mem_get_bytes(evm_mem_p m, uint64_t pos, uint64_t size)
         return byte_vec_init_zero();
 
     mem_expand(m, pos + size);
-    byte_t *arr = malloc(size);
-    assert(arr);
-
-    memcpy(arr, &m->arr[pos], size);
-    return (byte_vec_t)
-    {
-        .size = size,
-        .arr = arr
-    };
+    byte_vec_t b = byte_vec_init(size);
+    memcpy(b.arr, &m->arr[pos], size);
+    return b;
 }
 
-void mem_set_byte(evm_mem_p m, uint64_t pos, byte_t u)
+void mem_set_byte(evm_mem_p m, uint64_t pos, byte_t b)
 {
     mem_expand(m, pos + 1);
-    m->arr[pos] = u;
+    m->arr[pos] = b;
 }
 
 void mem_set_word(evm_mem_p m, uint64_t pos, word_p w)
 {
     mem_expand(m, pos + 32);
     for(int i = 0; i < 32; i++)
-        m->arr[pos + i] = word_get_byte(w, 31 - i);
+        m->arr[pos + i] = word_get_byte(w, i);
 }
 
 void mem_set_bytes(evm_mem_p m, uint64_t pos, byte_vec_p b)

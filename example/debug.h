@@ -1,5 +1,5 @@
-#ifndef __GAS_DEBUG_H__
-#define __GAS_DEBUG_H__
+#ifndef __EXAMPLE_DEBUG_H__
+#define __EXAMPLE_DEBUG_H__
 
 #include "header.h"
 #include "struct.h"

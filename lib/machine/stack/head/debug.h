@@ -1,14 +1,12 @@
 #ifndef __STACK_HEAD_DEBUG_H__
 #define __STACK_HEAD_DEBUG_H__
 
-#include "struct.h"
+#include "header.h"
 
 #ifdef DEBUG
 
 #include <stdbool.h>
-
-#include "../../../word/struct.h"
-
+#include <stdarg.h>
 
 evm_stack_t stack_init_variadic(uint64_t n, va_list *args);
 evm_stack_t stack_init_immed(uint64_t n, ...);
